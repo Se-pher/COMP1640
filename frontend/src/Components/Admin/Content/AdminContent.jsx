@@ -1,20 +1,12 @@
 import React, { useState } from "react";
-import * as s from "../../Style/Admin";
-import LogoImage from "../../Image/web.png";
-import AdminAvatar from "../../Image/facebook.png";
-import Navbar from "../Navbar";
-import AddUserModal from "./AddUserModal";
-import EditUserModal from "./EditUserModal";
-import DeleteUserModal from "./DeleteUserModal";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
+import * as s from "../../../Style/Admin";
+import LogoImage from "../../../Image/web.png";
+import AdminAvatar from "../../../Image/facebook.png";
+import Navbar from "../../Navbar";
 
 const Admin = () => {
   const [selectedItem, setSelectedItem] = useState("Account management");
-  const [showModal, setShowModal] = useState(false);
-  const [showEditModal, setShowEditModal] = useState(false);
-  const [deleteUserModalVisible, setDeleteUserModalVisible] = useState(false);
-  const [userData, setUserData] = useState([
+  const [userData,] = useState([
     {
       id: 1,
       name: "John Doe",
@@ -178,77 +170,10 @@ const Admin = () => {
     },
   ]);
 
-  const [showPasswordState, setShowPasswordState] = useState(
-    userData.reduce((acc, user) => {
-      acc[user.id] = false;
-      return acc;
-    }, {})
-  );
-
-  const [editedUser, setEditedUser] = useState(null);
-
-  const togglePasswordVisibility = (userId) => {
-    setShowPasswordState({
-      ...showPasswordState,
-      [userId]: !showPasswordState[userId],
-    });
-  };
-
   const handleItemClick = (item) => {
     setSelectedItem(item);
   };
 
-  const handleAddUser = (newUser) => {
-    setUserData([...userData, { id: userData.length + 1, ...newUser }]);
-  };
-
-  const handleEditUser = (user) => {
-    setEditedUser(user);
-    setShowEditModal(true);
-  };
-
-  const handleUpdateUser = (updatedUser) => {
-    setUserData(
-      userData.map((user) => (user.id === updatedUser.id ? updatedUser : user))
-    );
-  };
-
-  const openModal = () => {
-    setShowModal(true);
-  };
-
-  const closeModal = () => {
-    setShowModal(false);
-  };
-
-  const closeEditModal = () => {
-    setShowEditModal(false);
-  };
-
-  const openDeleteUserModal = (user) => {
-    setSelectedUser(user);
-    setDeleteUserModalVisible(true);
-  };
-
-  const closeDeleteUserModal = () => {
-    setDeleteUserModalVisible(false);
-  };
-
-  const handleDeleteUser = (userId) => {
-    const index = userData.findIndex((user) => user.id === userId);
-    if (index !== -1) {
-      const updatedUserData = [
-        ...userData.slice(0, index),
-        ...userData.slice(index + 1),
-      ]; 
-      for (let i = index; i < updatedUserData.length; i++) {
-        updatedUserData[i].id = i + 1;
-      }
-      setUserData(updatedUserData);
-    }
-  };
-
-  const [selectedUser, setSelectedUser] = useState(null);
 
   return (
     <s.Container>
@@ -287,7 +212,7 @@ const Admin = () => {
         <s.Main>
           <s.AddUserContainer>
             <s.SquareContainer>
-              <s.Button onClick={openModal}>
+              <s.Button>
                 <s.AddUserButton>Add User</s.AddUserButton>
               </s.Button>
               <s.TableContainer>
@@ -298,7 +223,6 @@ const Admin = () => {
                       <s.TableHeader>Name</s.TableHeader>
                       <s.TableHeader>Email</s.TableHeader>
                       <s.TableHeader>Role</s.TableHeader>
-                      <s.TableHeader>Password</s.TableHeader>
                       <s.TableHeader>Action</s.TableHeader>
                     </tr>
                   </thead>
@@ -310,28 +234,8 @@ const Admin = () => {
                         <s.TableCell>{user.email}</s.TableCell>
                         <s.TableCell>{user.role}</s.TableCell>
                         <s.TableCell>
-                          {showPasswordState[user.id]
-                            ? user.password
-                            : "*".repeat(user.password.length)}
-                          {showPasswordState[user.id] ? (
-                            <FontAwesomeIcon
-                              icon={faEyeSlash}
-                              onClick={() => togglePasswordVisibility(user.id)}
-                              style={{ marginLeft: "5px" }}
-                            />
-                          ) : (
-                            <FontAwesomeIcon
-                              icon={faEye}
-                              onClick={() => togglePasswordVisibility(user.id)}
-                              style={{ marginLeft: "5px" }}
-                            />
-                          )}
-                        </s.TableCell>
-                        <s.TableCell>
-                          <s.EditIcon onClick={() => handleEditUser(user)} />
-                          <s.DeleteIcon
-                            onClick={() => openDeleteUserModal(user)}
-                          />
+                          <s.EditIcon/>
+                          <s.DeleteIcon/>
                         </s.TableCell>
                       </s.TableRow>
                     ))}
@@ -342,23 +246,6 @@ const Admin = () => {
           </s.AddUserContainer>
         </s.Main>
       </s.MainContent>
-      {showModal && (
-        <AddUserModal onClose={closeModal} onAddUser={handleAddUser} />
-      )}
-      {showEditModal && (
-        <EditUserModal
-          onClose={closeEditModal}
-          onUpdateUser={handleUpdateUser}
-          user={editedUser}
-        />
-      )}
-      {deleteUserModalVisible && (
-        <DeleteUserModal
-          onClose={closeDeleteUserModal}
-          onDeleteUser={handleDeleteUser}
-          user={selectedUser} // Truyền dữ liệu người dùng vào DeleteUserModal
-        />
-      )}
     </s.Container>
   );
 };
