@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import * as s from '../../Style/PopUp';
+import * as s from '../../../Style/PopUp';
 
 const EditUserModal = ({ user, onClose, onUpdateUser }) => {
   const [name, setName] = useState(user.name);

@@ -1,5 +1,5 @@
 import React from 'react';
-import * as s from '../../Style/PopUp';
+import * as s from '../../../Style/PopUp';
 
 const DeleteUserModal = ({ onClose, onDeleteUser, user }) => {
   const handleDelete = () => {
