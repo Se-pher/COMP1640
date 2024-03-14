@@ -1,12 +1,25 @@
-import React from "react";
+import React, { useState } from "react";
 import * as s from "../Style/Login";
 import { Link } from "react-router-dom";
 import Img from "../Image/Login.png";
 import GoogleLogo from "../Image/google.png";
 import FBLogo from "../Image/facebook.png";
 import GithubLogo from "../Image/github.png";
+import axios from 'axios';
 
 const Login = () => {
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+
+  const handleLogin = async () => {
+    try {
+      const response = await axios.post("/login", { username, password });
+      console.log(response.data);
+    } catch (error) {
+      setError("Invalid username or password");
+    }
+  };
   return (
     <s.Container>
       <s.ImageContainer>
@@ -16,17 +29,29 @@ const Login = () => {
         <s.Title>Login</s.Title>
         <s.InputWrapper>
           <s.Label>Email:</s.Label>
-          <s.Input name="myInput" placeholder="Input Email" />
+          <s.Input 
+            name="email" 
+            placeholder="Input Email" 
+            value={username} 
+            onChange={(e) => setUsername(e.target.value)} 
+          />
         </s.InputWrapper>
         <s.InputWrapper>
           <s.Label>Password:</s.Label>
-          <s.Input name="myInput" placeholder="Input Password" />
+          <s.Input 
+            name="password" 
+            type="password" 
+            placeholder="Input Password" 
+            value={password} 
+            onChange={(e) => setPassword(e.target.value)} 
+          />
         </s.InputWrapper>
         <s.ForgotPassword>
           <Link to="/forgot-password">Forgot Password?</Link>
         </s.ForgotPassword>
         <s.ButtonWrapper>
-          <s.button type="button">Login</s.button>
+          <s.button type="button" onClick={handleLogin}>Login</s.button>
+          {error && <div>{error}</div>}
         </s.ButtonWrapper>
         <s.Divider>
           <s.DividerText>Or Continue with</s.DividerText>
