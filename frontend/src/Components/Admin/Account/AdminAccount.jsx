@@ -49,8 +49,15 @@ const Admin = () => {
     setSelectedItem(item);
   };
 
-  const handleAddUser = (newUser) => {
-    setUserData([...userData, newUser]);
+  const handleAddUser = async (newUser) => {
+    try {
+      const response = await axios.post('/api/users', newUser);
+      const addedUser = response.data;
+      const newUserData = [...userData, { id: userData.length + 1, ...addedUser }];
+      setUserData(newUserData.map((user, index) => ({ ...user, id: index + 1 })));
+    } catch (error) {
+      console.error('Error adding user:', error);
+    }
   };
 
   const handleEditUser = (user) => {
