@@ -20,6 +20,7 @@ const PopupContent = styled.div`
   border-radius: 10px;
   border: 1px solid #ccc;
   max-width: 800px;
+  margin-left: 100px;
 `;
 
 const TitleHeader = styled.h2`
