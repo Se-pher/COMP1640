@@ -5,9 +5,15 @@ const userSchema = new mongoose.Schema({
   email: { type: String, required: true, unique: true },
   password: { type: String, required: true },
   role: { type: String, required: true },
-  facultyId: { type: String }
+  facultyId: { type: Number }
 });
 
 const User = mongoose.model('User', userSchema);
+const express = require('express');
+const router = express.Router();
+const userController = require('./userController');
 
-module.exports = User;
+router.get('/users', userController.getUsers);
+router.post('/users', userController.createUser);
+
+module.exports = router;

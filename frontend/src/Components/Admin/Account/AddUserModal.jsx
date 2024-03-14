@@ -1,23 +1,18 @@
 import React, { useState } from "react";
 import * as s from "../../../Style/PopUp";
-import axios from "axios";
 
-const AddUserModal = ({ onClose }) => {
+const AddUserModal = ({ onClose, onAddUser }) => {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [role, setRole] = useState("");
   const [facultyId, setFacultyId] = useState("");
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
-    try {
-      const newUser = { username, email, password, role, facultyId };
-      await axios.post("/api/users", newUser);
-      onClose();
-    } catch (err) {
-      console.error("Error adding user:", err);
-    }
+    const newUser = { username, email, password, role, facultyId };
+    onAddUser(newUser);
+    onClose();
   };
 
   return (
