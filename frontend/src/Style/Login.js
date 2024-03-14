@@ -76,7 +76,6 @@ export const button = styled.button`
 
 export const ForgotPassword = styled.div`
   margin-left: 225px;
-  text-decoration: underline;
 
   a {
     text-decoration: none;
@@ -87,6 +86,10 @@ export const ForgotPassword = styled.div`
   a:hover {
     color: #F6793E;
     text-decoration: underline;
+  }
+
+  a:visited{
+    color: #F6793E;
   }
 `;
 
@@ -135,7 +138,7 @@ export const SignUpLink = styled.div`
   margin-top: 10px;
 
   a {
-    text-decoration: underline;
+    text-decoration: none;
     color: #000000;
     transition: color 0.3s;
   }
@@ -143,5 +146,9 @@ export const SignUpLink = styled.div`
   a:hover {
     color: #F6793E;
     text-decoration: underline;
+  }
+  
+  a:visited{
+    color: #F6793E;
   }
 `;

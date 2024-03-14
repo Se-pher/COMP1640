@@ -6,7 +6,10 @@ import Register from "./Components/Register";
 import Header from "./Components/Header";
 import Admin from "./Components/Admin/Account/AdminAccount";
 import AdminContent from "./Components/Admin/Content/AdminContent";
-import Students from "./Components/Students/Upload/Students_Upload"
+import Students from "./Components/Students/Upload/Students_Upload";
+import axios from 'axios';
+
+axios.defaults.baseURL = 'http://localhost:5000/api';
 
 function App() {
   return (

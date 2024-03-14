@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import * as s from "../../../Style/Admin";
 import LogoImage from "../../../Image/web.png";
 import AdminAvatar from "../../../Image/facebook.png";
@@ -8,184 +8,35 @@ import EditUserModal from "./EditUserModal";
 import DeleteUserModal from "./DeleteUserModal";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
+import axios from 'axios';
 
 const Admin = () => {
   const [selectedItem, setSelectedItem] = useState("Account management");
   const [showModal, setShowModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
   const [deleteUserModalVisible, setDeleteUserModalVisible] = useState(false);
-  const [userData, setUserData] = useState([
-    {
-      id: 1,
-      name: "John Doe",
-      email: "john@example.com",
-      role: "Admin",
-      password: "password1",
-    },
-    {
-      id: 2,
-      name: "Jane Smith",
-      email: "jane@example.com",
-      role: "Student",
-      password: "password2",
-    },
-    {
-      id: 3,
-      name: "Bob Johnson",
-      email: "bob@example.com",
-      role: "Guest",
-      password: "password3",
-    },
-    {
-      id: 4,
-      name: "Alice Lee",
-      email: "alice@example.com",
-      role: "Manager",
-      password: "password4",
-    },
-    {
-      id: 5,
-      name: "Michael Brown",
-      email: "michael@example.com",
-      role: "Admin",
-      password: "password5",
-    },
-    {
-      id: 6,
-      name: "Emily Davis",
-      email: "emily@example.com",
-      role: "Student",
-      password: "password6",
-    },
-    {
-      id: 7,
-      name: "Daniel Martinez",
-      email: "daniel@example.com",
-      role: "Guest",
-      password: "password7",
-    },
-    {
-      id: 8,
-      name: "Sophia Wilson",
-      email: "sophia@example.com",
-      role: "Manager",
-      password: "password8",
-    },
-    {
-      id: 9,
-      name: "Matthew Taylor",
-      email: "matthew@example.com",
-      role: "Admin",
-      password: "password9",
-    },
-    {
-      id: 10,
-      name: "Olivia Thomas",
-      email: "olivia@example.com",
-      role: "Student",
-      password: "password10",
-    },
-    {
-      id: 11,
-      name: "William Jackson",
-      email: "william@example.com",
-      role: "Guest",
-      password: "password11",
-    },
-    {
-      id: 12,
-      name: "Isabella White",
-      email: "isabella@example.com",
-      role: "Manager",
-      password: "password12",
-    },
-    {
-      id: 13,
-      name: "James Harris",
-      email: "james@example.com",
-      role: "Admin",
-      password: "password13",
-    },
-    {
-      id: 14,
-      name: "Amelia Nelson",
-      email: "amelia@example.com",
-      role: "Student",
-      password: "password14",
-    },
-    {
-      id: 15,
-      name: "Benjamin Carter",
-      email: "benjamin@example.com",
-      role: "Guest",
-      password: "password15",
-    },
-    {
-      id: 16,
-      name: "Mia Perez",
-      email: "mia@example.com",
-      role: "Manager",
-      password: "password16",
-    },
-    {
-      id: 17,
-      name: "Ethan Roberts",
-      email: "ethan@example.com",
-      role: "Admin",
-      password: "password17",
-    },
-    {
-      id: 18,
-      name: "Emma Garcia",
-      email: "emma@example.com",
-      role: "Student",
-      password: "password18",
-    },
-    {
-      id: 19,
-      name: "Alexander King",
-      email: "alexander@example.com",
-      role: "Guest",
-      password: "password19",
-    },
-    {
-      id: 20,
-      name: "Ava Wright",
-      email: "ava@example.com",
-      role: "Manager",
-      password: "password20",
-    },
-    {
-      id: 21,
-      name: "Logan Anderson",
-      email: "logan@example.com",
-      role: "Admin",
-      password: "password21",
-    },
-    {
-      id: 22,
-      name: "Charlotte Martinez",
-      email: "charlotte@example.com",
-      role: "Student",
-      password: "password22",
-    },
-    {
-      id: 23,
-      name: "Liam Davis",
-      email: "liam@example.com",
-      role: "Guest",
-      password: "password23",
-    },
-  ]);
+  const [userData, setUserData] = useState([]);
 
-  const [showPasswordState, setShowPasswordState] = useState(
-    userData.reduce((acc, user) => {
-      acc[user.id] = false;
-      return acc;
-    }, {})
-  );
+  const [showPasswordState, setShowPasswordState] = useState({});
 
   const [editedUser, setEditedUser] = useState(null);
+
+  useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        const response = await axios.get('/users');
+        setUserData(response.data);
+        const initialShowPasswordState = response.data.reduce((acc, user) => {
+          acc[user._id] = false;
+          return acc;
+        }, {});
+        setShowPasswordState(initialShowPasswordState);
+      } catch (err) {
+        console.error(err);
+      }
+    };
+    fetchUsers();
+  }, []);
 
   const togglePasswordVisibility = (userId) => {
     setShowPasswordState({
@@ -198,8 +49,15 @@ const Admin = () => {
     setSelectedItem(item);
   };
 
-  const handleAddUser = (newUser) => {
-    setUserData([...userData, { id: userData.length + 1, ...newUser }]);
+  const handleAddUser = async (newUser) => {
+    try {
+      const response = await axios.post('/api/users', newUser);
+      const addedUser = response.data;
+      const newUserData = [...userData, { id: userData.length + 1, ...addedUser }];
+      setUserData(newUserData.map((user, index) => ({ ...user, id: index + 1 })));
+    } catch (error) {
+      console.error('Error adding user:', error);
+    }
   };
 
   const handleEditUser = (user) => {
@@ -305,6 +163,7 @@ const Admin = () => {
                       <s.TableHeader>Email</s.TableHeader>
                       <s.TableHeader>Role</s.TableHeader>
                       <s.TableHeader>Password</s.TableHeader>
+                      <s.TableHeader>facultyId</s.TableHeader>
                       <s.TableHeader>Action</s.TableHeader>
                     </tr>
                   </thead>
@@ -312,7 +171,7 @@ const Admin = () => {
                     {userData.map((user) => (
                       <s.TableRow key={user.id}>
                         <s.TableCell>{user.id}</s.TableCell>
-                        <s.TableCell>{user.name}</s.TableCell>
+                        <s.TableCell>{user.username}</s.TableCell>
                         <s.TableCell>{user.email}</s.TableCell>
                         <s.TableCell>{user.role}</s.TableCell>
                         <s.TableCell>
@@ -323,16 +182,23 @@ const Admin = () => {
                             <FontAwesomeIcon
                               icon={faEyeSlash}
                               onClick={() => togglePasswordVisibility(user.id)}
-                              style={{ marginLeft: "10px", marginBottom: "2px" }}
+                              style={{
+                                marginLeft: "10px",
+                                marginBottom: "2px",
+                              }}
                             />
                           ) : (
                             <FontAwesomeIcon
                               icon={faEye}
                               onClick={() => togglePasswordVisibility(user.id)}
-                              style={{ marginLeft: "10px", marginBottom: "2px" }}
+                              style={{
+                                marginLeft: "10px",
+                                marginBottom: "2px",
+                              }}
                             />
                           )}
                         </s.TableCell>
+                        <s.TableCell>{user.facultyId}</s.TableCell>
                         <s.TableCell>
                           <s.EditIcon onClick={() => handleEditUser(user)} />
                           <s.DeleteIcon
@@ -362,7 +228,7 @@ const Admin = () => {
         <DeleteUserModal
           onClose={closeDeleteUserModal}
           onDeleteUser={handleDeleteUser}
-          user={selectedUser} // Truyền dữ liệu người dùng vào DeleteUserModal
+          user={selectedUser}
         />
       )}
     </s.Container>

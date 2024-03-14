@@ -1,15 +1,17 @@
-import React, { useState } from 'react';
-import * as s from '../../../Style/PopUp';
+import React, { useState } from "react";
+import * as s from "../../../Style/PopUp";
 
 const AddUserModal = ({ onClose, onAddUser }) => {
-  const [name, setUsername] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [role, setRole] = useState('');
+  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [role, setRole] = useState("");
+  const [facultyId, setFacultyId] = useState("");
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    onAddUser({ name, email, password, role });
+    const newUser = { username, email, password, role, facultyId };
+    onAddUser(newUser);
     onClose();
   };
 
@@ -26,7 +28,7 @@ const AddUserModal = ({ onClose, onAddUser }) => {
               <s.Label>Username</s.Label>
               <s.Input
                 type="text"
-                value={name}
+                value={username}
                 onChange={(e) => setUsername(e.target.value)}
               />
             </s.InputGroup>
@@ -55,6 +57,14 @@ const AddUserModal = ({ onClose, onAddUser }) => {
                 <option value="Coordinator">Coordinator</option>
                 <option value="Manager">Manager</option>
               </s.Select>
+            </s.InputGroup>
+            <s.InputGroup>
+              <s.Label>Faculty ID</s.Label>
+              <s.Input
+                type="text"
+                value={facultyId}
+                onChange={(e) => setFacultyId(e.target.value)}
+              />
             </s.InputGroup>
             <s.ModalFooter>
               <s.Button type="submit">Add User</s.Button>
