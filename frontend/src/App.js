@@ -6,6 +6,7 @@ import Register from "./Components/Register";
 import Header from "./Components/Header";
 import Admin from "./Components/Admin/Account/AdminAccount";
 import AdminContent from "./Components/Admin/Content/AdminContent";
+import Students from "./Components/Students/Upload/Students_Upload"
 
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
         <Route path="/register" element={<Register />} />
         <Route path="/Admin" element={<Admin />} />
         <Route path="/Admin/content" element={<AdminContent />} />
+        <Route path="/student" element={<Students />} />
       </Routes>
     </Router>
   );
