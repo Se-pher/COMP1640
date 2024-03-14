@@ -323,13 +323,13 @@ const Admin = () => {
                             <FontAwesomeIcon
                               icon={faEyeSlash}
                               onClick={() => togglePasswordVisibility(user.id)}
-                              style={{ marginLeft: "5px" }}
+                              style={{ marginLeft: "10px", marginBottom: "2px" }}
                             />
                           ) : (
                             <FontAwesomeIcon
                               icon={faEye}
                               onClick={() => togglePasswordVisibility(user.id)}
-                              style={{ marginLeft: "5px" }}
+                              style={{ marginLeft: "10px", marginBottom: "2px" }}
                             />
                           )}
                         </s.TableCell>
