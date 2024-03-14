@@ -71,7 +71,7 @@ export const ModalFooter = styled.div`
 `;
 
 export const Button = styled.button`
-  background-color: #4caf50;
+  background-color: #F6793E;
   color: white;
   padding: 10px 20px;
   border: none;

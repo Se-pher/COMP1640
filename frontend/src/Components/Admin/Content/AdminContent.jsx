@@ -1,11 +1,11 @@
 import React, { useState } from "react";
-import * as s from "../../../Style/Admin";
+import * as s from "../../../Style/Admin_Content";
 import LogoImage from "../../../Image/web.png";
 import AdminAvatar from "../../../Image/facebook.png";
 import Navbar from "../../Navbar";
 
 const Admin = () => {
-  const [selectedItem, setSelectedItem] = useState("Account management");
+  const [selectedItem, setSelectedItem] = useState("Content management");
   const [userData,] = useState([
     {
       id: 1,
@@ -179,7 +179,7 @@ const Admin = () => {
     <s.Container>
       <Navbar />
       <s.MainContent>
-        <s.Sidebar>
+      <s.Sidebar>
           <s.LogoContainer>
             <s.Logo src={LogoImage} alt="Website Logo" />
           </s.LogoContainer>
@@ -189,24 +189,30 @@ const Admin = () => {
           </s.AdminInfo>
           <s.MainMenu>
             <s.MenuTitle>Main Menu</s.MenuTitle>
-            <s.SidebarItem
+            <s.StyledLink
+              to="/Admin"
               onClick={() => handleItemClick("Account management")}
-              selected={selectedItem === "Account management"}
             >
-              Account management
-            </s.SidebarItem>
-            <s.SidebarItem
+              <s.SidebarItem selected={selectedItem === "Account management"}>
+                Account management
+              </s.SidebarItem>
+            </s.StyledLink>
+            <s.StyledLink
+              to="/Admin/content"
               onClick={() => handleItemClick("Content management")}
-              selected={selectedItem === "Content management"}
             >
-              Content management
-            </s.SidebarItem>
-            <s.SidebarItem
+              <s.SidebarItem selected={selectedItem === "Content management"}>
+                Content management
+              </s.SidebarItem>
+            </s.StyledLink>
+            <s.StyledLink
+              to="/system-settings"
               onClick={() => handleItemClick("System settings")}
-              selected={selectedItem === "System settings"}
             >
-              System settings
-            </s.SidebarItem>
+              <s.SidebarItem selected={selectedItem === "System settings"}>
+                System settings
+              </s.SidebarItem>
+            </s.StyledLink>
           </s.MainMenu>
         </s.Sidebar>
         <s.Main>
