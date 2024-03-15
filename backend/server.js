@@ -44,6 +44,54 @@ app.get('/api/users', async (req, res) => {
   }
 });
 
+app.put('/api/users/:id', async (req, res) => {
+  const { id } = req.params;
+  const { username, email, password, role, facultyId } = req.body;
+
+  try {
+    const updatedUser = await User.findByIdAndUpdate(
+      id,
+      { username, email, password, role, facultyId },
+      { new: true }
+    );
+    res.json(updatedUser);
+  } catch (err) {
+    res.status(400).json({ message: err.message });
+  }
+});
+
+app.delete('/api/users/:id', async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    await User.findByIdAndDelete(id);
+    res.json({ message: 'User deleted successfully' });
+  } catch (err) {
+    res.status(400).json({ message: err.message });
+  }
+});
+
+app.put('/api/users/:id', async (req, res) => {
+  const { id } = req.params;
+  const { username, email, password, role, facultyId } = req.body;
+
+  try {
+    const updatedUser = await User.findByIdAndUpdate(
+      id,
+      { username, email, password, role, facultyId },
+      { new: true }
+    );
+
+    if (!updatedUser) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    res.json(updatedUser);
+  } catch (err) {
+    res.status(400).json({ message: err.message });
+  }
+});
+
 app.post('/api/login', async (req, res) => {
   const { email, password } = req.body;
 
