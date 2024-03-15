@@ -66,7 +66,7 @@ const Admin = () => {
 
   const handleUpdateUser = (updatedUser) => {
     setUserData(
-      userData.map((user) => (user.id === updatedUser.id ? updatedUser : user))
+      userData.map((user) => (user._id === updatedUser._id ? updatedUser : user))
     );
   };
 
@@ -92,17 +92,8 @@ const Admin = () => {
   };
 
   const handleDeleteUser = (userId) => {
-    const index = userData.findIndex((user) => user.id === userId);
-    if (index !== -1) {
-      const updatedUserData = [
-        ...userData.slice(0, index),
-        ...userData.slice(index + 1),
-      ]; 
-      for (let i = index; i < updatedUserData.length; i++) {
-        updatedUserData[i].id = i + 1;
-      }
-      setUserData(updatedUserData);
-    }
+    const updatedUserData = userData.filter((user) => user._id !== userId);
+    setUserData(updatedUserData);
   };
 
   const [selectedUser, setSelectedUser] = useState(null);
@@ -118,7 +109,7 @@ const Admin = () => {
           <s.AdminInfo>
             <s.Avatar src={AdminAvatar} alt="Admin Avatar" />
             <s.AdminName>John Doe</s.AdminName>
-          </s.AdminInfo>  
+          </s.AdminInfo>
           <s.MainMenu>
             <s.MenuTitle>Main Menu</s.MenuTitle>
             <s.StyledLink
@@ -223,6 +214,7 @@ const Admin = () => {
           user={editedUser}
         />
       )}
+
       {deleteUserModalVisible && (
         <DeleteUserModal
           onClose={closeDeleteUserModal}
