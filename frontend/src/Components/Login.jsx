@@ -8,18 +8,27 @@ import GithubLogo from "../Image/github.png";
 import axios from 'axios';
 
 const Login = () => {
-  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
 
   const handleLogin = async () => {
     try {
-      const response = await axios.post("/login", { username, password });
-      console.log(response.data);
+      const response = await axios.post('/api/login', { email, password });
+      const user = response.data;
+  
+      if (user.role === 'student') {
+        window.location.href = '/student';
+      } else if (user.role === 'admin') {
+        window.location.href = '/admin';
+      } else {
+        setError('Invalid role');
+      }
     } catch (error) {
-      setError("Invalid username or password");
+      setError('Invalid email or password');
     }
   };
+
   return (
     <s.Container>
       <s.ImageContainer>
@@ -32,8 +41,8 @@ const Login = () => {
           <s.Input 
             name="email" 
             placeholder="Input Email" 
-            value={username} 
-            onChange={(e) => setUsername(e.target.value)} 
+            value={email}
+          onChange={(e) => setEmail(e.target.value)} 
           />
         </s.InputWrapper>
         <s.InputWrapper>
