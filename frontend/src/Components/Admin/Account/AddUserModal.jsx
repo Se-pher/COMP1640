@@ -53,7 +53,7 @@ const AddUserModal = ({ onClose, onAddUser }) => {
               <s.Select value={role} onChange={(e) => setRole(e.target.value)}>
                 <option value="">Select a role</option>
                 <option value="admin">Admin</option>
-                <option value="user">User</option>
+                <option value="student">student</option>
                 <option value="Coordinator">Coordinator</option>
                 <option value="Manager">Manager</option>
               </s.Select>

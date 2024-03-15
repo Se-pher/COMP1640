@@ -24,7 +24,7 @@ const Admin = () => {
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const response = await axios.get('/users');
+        const response = await axios.get('/api/users');
         setUserData(response.data);
         const initialShowPasswordState = response.data.reduce((acc, user) => {
           acc[user._id] = false;
@@ -53,8 +53,7 @@ const Admin = () => {
     try {
       const response = await axios.post('/api/users', newUser);
       const addedUser = response.data;
-      const newUserData = [...userData, { id: userData.length + 1, ...addedUser }];
-      setUserData(newUserData.map((user, index) => ({ ...user, id: index + 1 })));
+      setUserData((prevUserData) => [...prevUserData, addedUser]);
     } catch (error) {
       console.error('Error adding user:', error);
     }
@@ -119,7 +118,7 @@ const Admin = () => {
           <s.AdminInfo>
             <s.Avatar src={AdminAvatar} alt="Admin Avatar" />
             <s.AdminName>John Doe</s.AdminName>
-          </s.AdminInfo>
+          </s.AdminInfo>  
           <s.MainMenu>
             <s.MenuTitle>Main Menu</s.MenuTitle>
             <s.StyledLink
@@ -168,20 +167,20 @@ const Admin = () => {
                     </tr>
                   </thead>
                   <tbody>
-                    {userData.map((user) => (
-                      <s.TableRow key={user.id}>
-                        <s.TableCell>{user.id}</s.TableCell>
+                    {userData.map((user, index) => (
+                      <s.TableRow key={user._id}>
+                        <s.TableCell>{index + 1}</s.TableCell>
                         <s.TableCell>{user.username}</s.TableCell>
                         <s.TableCell>{user.email}</s.TableCell>
                         <s.TableCell>{user.role}</s.TableCell>
                         <s.TableCell>
-                          {showPasswordState[user.id]
+                          {showPasswordState[user._id]
                             ? user.password
                             : "*".repeat(user.password.length)}
-                          {showPasswordState[user.id] ? (
+                          {showPasswordState[user._id] ? (
                             <FontAwesomeIcon
                               icon={faEyeSlash}
-                              onClick={() => togglePasswordVisibility(user.id)}
+                              onClick={() => togglePasswordVisibility(user._id)}
                               style={{
                                 marginLeft: "10px",
                                 marginBottom: "2px",
@@ -190,7 +189,7 @@ const Admin = () => {
                           ) : (
                             <FontAwesomeIcon
                               icon={faEye}
-                              onClick={() => togglePasswordVisibility(user.id)}
+                              onClick={() => togglePasswordVisibility(user._id)}
                               style={{
                                 marginLeft: "10px",
                                 marginBottom: "2px",
