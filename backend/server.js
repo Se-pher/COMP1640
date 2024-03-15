@@ -1,6 +1,7 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
+const sendEmail = require('./sendEmail');
 
 const app = express();
 app.use(cors());
@@ -104,6 +105,43 @@ app.post('/api/login', async (req, res) => {
     res.json(user);
   } catch (err) {
     res.status(500).json({ message: err.message });
+  }
+});
+
+function generateRandomPassword(length = 8) {
+  const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  let password = '';
+
+  for (let i = 0; i < length; i++) {
+    const randomIndex = Math.floor(Math.random() * characters.length);
+    password += characters.charAt(randomIndex);
+  }
+
+  return password;
+}
+
+app.post('/api/forgot-password', async (req, res) => {
+  const { email } = req.body;
+
+  try {
+    const user = await User.findOne({ email });
+
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    const newPassword = generateRandomPassword();
+    user.password = newPassword;
+    await user.save();
+
+    const subject = 'Reset Password';
+    const text = `Your new password is: ${newPassword}`;
+    await sendEmail(email, subject, text);
+
+    res.json({ message: 'Password reset email sent' });
+  } catch (err) {
+    console.error('Error in /api/forgot-password:', err);
+    res.status(500).json({ message: 'Error sending password reset email' });
   }
 });
 
