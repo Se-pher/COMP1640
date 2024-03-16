@@ -11,7 +11,6 @@ const AdminFaculty = () => {
   const [selectedItem, setSelectedItem] = useState("Faculty management");
   const [showModal, setShowModal] = useState(false);
   const [facultyData, setFacultyData] = useState([]);
-  const [users, setUsers] = useState([]);
   const [editedFaculty, setEditedFaculty] = useState(null);
 
 
@@ -25,16 +24,6 @@ const AdminFaculty = () => {
       }
     };
     fetchFaculties();
-
-    const fetchUsers = async () => {
-      try {
-        const response = await axios.get('/api/users');
-        setUsers(response.data.filter(user => user.role === 'Coordinator'));
-      } catch (err) {
-        console.error(err);
-      }
-    };
-    fetchUsers();
   }, []);
 
   const handleItemClick = (item) => {
@@ -153,7 +142,6 @@ const AdminFaculty = () => {
                     <tr>
                       <s.TableHeader>Faculty ID</s.TableHeader>
                       <s.TableHeader>Faculty Name</s.TableHeader>
-                      <s.TableHeader>Coordinator</s.TableHeader>
                       <s.TableHeader>Action</s.TableHeader>
                     </tr>
                   </thead>
@@ -162,15 +150,6 @@ const AdminFaculty = () => {
                       <s.TableRow key={faculty._id}>
                         <s.TableCell>{faculty.facultyId}</s.TableCell>
                         <s.TableCell>{faculty.facultyName}</s.TableCell>
-                        <s.TableCell>
-                          <s.Select>
-                            {users.map((user) => (
-                              <option key={user._id} value={user._id}>
-                                {user.username}
-                              </option>
-                            ))}
-                          </s.Select>
-                        </s.TableCell>
                         <s.TableCell>
                           <s.EditIcon
                             onClick={() => handleEditFaculty(faculty)}

@@ -148,12 +148,10 @@ app.post('/api/forgot-password', async (req, res) => {
 const facultySchema = new mongoose.Schema({
   facultyId: String,
   facultyName: String,
-  coordinatorId: String,
 });
 
 const Faculty = mongoose.model('Faculty', facultySchema);
 
-// Lấy tất cả faculties
 app.get('/api/faculties', async (req, res) => {
   try {
     const faculties = await Faculty.find();
@@ -163,12 +161,11 @@ app.get('/api/faculties', async (req, res) => {
   }
 });
 
-// Thêm faculty mới
 app.post('/api/faculties', async (req, res) => {
-  const { facultyId, facultyName, coordinatorId } = req.body;
+  const { facultyId, facultyName } = req.body;
 
   try {
-    const newFaculty = new Faculty({ facultyId, facultyName, coordinatorId });
+    const newFaculty = new Faculty({ facultyId, facultyName });
     await newFaculty.save();
     res.status(201).json(newFaculty);
   } catch (err) {
@@ -176,15 +173,14 @@ app.post('/api/faculties', async (req, res) => {
   }
 });
 
-// Sửa faculty
 app.put('/api/faculties/:id', async (req, res) => {
   const { id } = req.params;
-  const { facultyId, facultyName, coordinatorId } = req.body;
+  const { facultyId, facultyName } = req.body;
 
   try {
     const updatedFaculty = await Faculty.findByIdAndUpdate(
       id,
-      { facultyId, facultyName, coordinatorId },
+      { facultyId, facultyName },
       { new: true }
     );
     res.json(updatedFaculty);
@@ -193,7 +189,6 @@ app.put('/api/faculties/:id', async (req, res) => {
   }
 });
 
-// Xóa faculty
 app.delete('/api/faculties/:id', async (req, res) => {
   const { id } = req.params;
 
