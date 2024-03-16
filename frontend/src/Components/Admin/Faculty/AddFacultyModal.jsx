@@ -1,28 +1,13 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import * as s from "../../../Style/PopUp";
-import axios from 'axios';
 
 const AddFacultyModal = ({ onClose, onAddFaculty }) => {
   const [facultyId, setFacultyId] = useState("");
   const [facultyName, setFacultyName] = useState("");
-  const [coordinatorId, setCoordinatorId] = useState("");
-  const [users, setUsers] = useState([]);
-
-  useEffect(() => {
-    const fetchUsers = async () => {
-      try {
-        const response = await axios.get('/api/users');
-        setUsers(response.data.filter(user => user.role === 'Coordinator'));
-      } catch (err) {
-        console.error(err);
-      }
-    };
-    fetchUsers();
-  }, []);
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const newFaculty = { facultyId, facultyName, coordinatorId };
+    const newFaculty = { facultyId, facultyName };
     onAddFaculty(newFaculty);
     onClose();
   };
@@ -51,20 +36,6 @@ const AddFacultyModal = ({ onClose, onAddFaculty }) => {
                 value={facultyName}
                 onChange={(e) => setFacultyName(e.target.value)}
               />
-            </s.InputGroup>
-            <s.InputGroup>
-              <s.Label>Coordinator</s.Label>
-              <s.Select
-                value={coordinatorId}
-                onChange={(e) => setCoordinatorId(e.target.value)}
-              >
-                <option value="">Select Coordinator</option>
-                {users.map((user) => (
-                  <option key={user._id} value={user._id}>
-                    {user.username}
-                  </option>
-                ))}
-              </s.Select>
             </s.InputGroup>
             <s.ModalFooter>
               <s.Button type="submit">Add Faculty</s.Button>
