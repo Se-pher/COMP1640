@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import * as s from "../../../Style/Admin_faculty";
 import LogoImage from "../../../Image/web.png";
 import AdminAvatar from "../../../Image/facebook.png";
@@ -12,19 +12,6 @@ const AdminFaculty = () => {
   const [showModal, setShowModal] = useState(false);
   const [facultyData, setFacultyData] = useState([]);
   const [editedFaculty, setEditedFaculty] = useState(null);
-
-
-  useEffect(() => {
-    const fetchFaculties = async () => {
-      try {
-        const response = await axios.get('/api/faculties');
-        setFacultyData(response.data);
-      } catch (err) {
-        console.error(err);
-      }
-    };
-    fetchFaculties();
-  }, []);
 
   const handleItemClick = (item) => {
     setSelectedItem(item);
