@@ -95,6 +95,7 @@ const Admin = () => {
     const updatedUserData = userData.filter((user) => user._id !== userId);
     setUserData(updatedUserData);
   };
+  
 
   const [selectedUser, setSelectedUser] = useState(null);
 
@@ -137,6 +138,23 @@ const Admin = () => {
               </s.SidebarItem>
             </s.StyledLink>
           </s.MainMenu>
+          <s.MainMenu>
+              <s.MenuTitle>More</s.MenuTitle>
+              <s.StyledLink
+              to="/setting"
+              onClick={() => handleItemClick("Settings")}
+            >
+              <s.SidebarItem selected={selectedItem === "Settings"}>
+              Settings
+              </s.SidebarItem>
+            </s.StyledLink>
+          </s.MainMenu>
+          <s.LogoutButton>
+          <s.LogoutBtn>
+            <s.LogoutIcon />
+            Logout
+          </s.LogoutBtn>
+        </s.LogoutButton>
         </s.Sidebar>
         <s.Main>
           <s.AddUserContainer>

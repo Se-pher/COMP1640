@@ -1,6 +1,7 @@
 import styled from 'styled-components';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPen, faTrash } from '@fortawesome/free-solid-svg-icons';
+import { faRightFromBracket } from '@fortawesome/free-solid-svg-icons';
 import { Link } from 'react-router-dom';
 
 
@@ -176,4 +177,31 @@ export const DeleteIcon = styled(FontAwesomeIcon).attrs({
 })`
   color: black;
   cursor:pointer;
+`;
+
+export const LogoutButton = styled.div`
+  margin-top: 100px;
+  display: flex;
+  justify-content: center;
+`;
+
+export const LogoutBtn = styled.button`
+  background-color: #F6793E;
+  color: #fff;
+  border: none;
+  font-size: 16px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px;
+  border-radius: 5px;
+  transition: background-color 0.3s ease;
+  width: 150px;
+`;
+
+export const LogoutIcon = styled(FontAwesomeIcon).attrs({
+  icon: faRightFromBracket,
+})`
+  margin-right: 5px;
 `;
