@@ -122,11 +122,19 @@ const Admin = () => {
               </s.SidebarItem>
             </s.StyledLink>
             <s.StyledLink
-              to="/Admin/content"
-              onClick={() => handleItemClick("Content management")}
+              to="/Admin/Category"
+              onClick={() => handleItemClick("Category management")}
             >
-              <s.SidebarItem selected={selectedItem === "Content management"}>
-                Content management
+              <s.SidebarItem selected={selectedItem === "Category management"}>
+              Category management
+              </s.SidebarItem>
+            </s.StyledLink>
+            <s.StyledLink
+              to="/Admin/Faculty"
+              onClick={() => handleItemClick("Faculty management")}
+            >
+              <s.SidebarItem selected={selectedItem === "Faculty management"}>
+              Faculty management
               </s.SidebarItem>
             </s.StyledLink>
             <s.StyledLink
@@ -171,7 +179,7 @@ const Admin = () => {
                       <s.TableHeader>Email</s.TableHeader>
                       <s.TableHeader>Role</s.TableHeader>
                       <s.TableHeader>Password</s.TableHeader>
-                      <s.TableHeader>facultyId</s.TableHeader>
+                      <s.TableHeader>facultyName</s.TableHeader>
                       <s.TableHeader>Action</s.TableHeader>
                     </tr>
                   </thead>
@@ -206,7 +214,7 @@ const Admin = () => {
                             />
                           )}
                         </s.TableCell>
-                        <s.TableCell>{user.facultyId}</s.TableCell>
+                        <s.TableCell>{user.facultyName}</s.TableCell>
                         <s.TableCell>
                           <s.EditIcon onClick={() => handleEditUser(user)} />
                           <s.DeleteIcon

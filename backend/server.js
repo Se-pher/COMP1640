@@ -19,16 +19,16 @@ const userSchema = new mongoose.Schema({
   email: String,
   password: String,
   role: String,
-  facultyId: String,
+  facultyName: String,
 });
 
 const User = mongoose.model('User', userSchema);
 
 app.post('/api/users', async (req, res) => {
-  const { username, email, password, role, facultyId } = req.body;
+  const { username, email, password, role, facultyName } = req.body;
 
   try {
-    const newUser = new User({ username, email, password, role, facultyId });
+    const newUser = new User({ username, email, password, role, facultyName });
     await newUser.save();
     res.status(201).json(newUser);
   } catch (err) {
@@ -47,12 +47,12 @@ app.get('/api/users', async (req, res) => {
 
 app.put('/api/users/:id', async (req, res) => {
   const { id } = req.params;
-  const { username, email, password, role, facultyId } = req.body;
+  const { username, email, password, role, facultyName } = req.body;
 
   try {
     const updatedUser = await User.findByIdAndUpdate(
       id,
-      { username, email, password, role, facultyId },
+      { username, email, password, role, facultyName },
       { new: true }
     );
     res.json(updatedUser);
@@ -74,12 +74,12 @@ app.delete('/api/users/:id', async (req, res) => {
 
 app.put('/api/users/:id', async (req, res) => {
   const { id } = req.params;
-  const { username, email, password, role, facultyId } = req.body;
+  const { username, email, password, role, facultyName } = req.body;
 
   try {
     const updatedUser = await User.findByIdAndUpdate(
       id,
-      { username, email, password, role, facultyId },
+      { username, email, password, role, facultyName },
       { new: true }
     );
 
@@ -142,6 +142,66 @@ app.post('/api/forgot-password', async (req, res) => {
   } catch (err) {
     console.error('Error in /api/forgot-password:', err);
     res.status(500).json({ message: 'Error sending password reset email' });
+  }
+});
+
+const facultySchema = new mongoose.Schema({
+  facultyId: String,
+  facultyName: String,
+  coordinatorId: String,
+});
+
+const Faculty = mongoose.model('Faculty', facultySchema);
+
+// Lấy tất cả faculties
+app.get('/api/faculties', async (req, res) => {
+  try {
+    const faculties = await Faculty.find();
+    res.json(faculties);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
+// Thêm faculty mới
+app.post('/api/faculties', async (req, res) => {
+  const { facultyId, facultyName, coordinatorId } = req.body;
+
+  try {
+    const newFaculty = new Faculty({ facultyId, facultyName, coordinatorId });
+    await newFaculty.save();
+    res.status(201).json(newFaculty);
+  } catch (err) {
+    res.status(400).json({ message: err.message });
+  }
+});
+
+// Sửa faculty
+app.put('/api/faculties/:id', async (req, res) => {
+  const { id } = req.params;
+  const { facultyId, facultyName, coordinatorId } = req.body;
+
+  try {
+    const updatedFaculty = await Faculty.findByIdAndUpdate(
+      id,
+      { facultyId, facultyName, coordinatorId },
+      { new: true }
+    );
+    res.json(updatedFaculty);
+  } catch (err) {
+    res.status(400).json({ message: err.message });
+  }
+});
+
+// Xóa faculty
+app.delete('/api/faculties/:id', async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    await Faculty.findByIdAndDelete(id);
+    res.json({ message: 'Faculty deleted successfully' });
+  } catch (err) {
+    res.status(400).json({ message: err.message });
   }
 });
 
