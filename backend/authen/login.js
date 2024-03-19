@@ -8,7 +8,7 @@ router.post('/login', async (req, res) => {
     const user = await User.findOne({ username });
 
     if (user && user.password === password) {
-      res.redirect('/forgot-password');
+      
     } else {
       res.status(401).json({ message: 'Đăng nhập không thành công', token: 'your_auth_token' });
     }
