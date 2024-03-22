@@ -219,3 +219,9 @@ const port = process.env.PORT || 5000;
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
 });
+
+const articlesRouter = require('./articles');
+app.use('/api/articles', articlesRouter);
+
+const imagesRouter = require('./images');
+app.use('/api/images', imagesRouter);

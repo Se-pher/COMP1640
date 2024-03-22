@@ -3,23 +3,50 @@ import * as s from '../../../Style/Students';
 import LogoImage from '../../../Image/web.png';
 import AdminAvatar from '../../../Image/facebook.png';
 import Navbar from '../../Navbar';
-import Term from './Term'; // Import popup Term component
+import axios from 'axios';
+import Term from './Term';
 
-const Students_Upload = () => {
-    const [selectedItem, setSelectedItem] = useState("Upload Articles");
-    const [showTerm, setShowTerm] = useState(false);
+const Student_Upload = () => {
+    const [title, setTitle] = useState('');
+    const [shortDescription, setShortDescription] = useState('');
+    const [content, setContent] = useState('');
+    const [imageFile, setImageFile] = useState(null);
 
-    const handleItemClick = (item) => {
-        setSelectedItem(item);
+    const handleImageUpload = (e) => {
+        setImageFile(e.target.files[0]);
     };
 
-    const handleShowTerm = () => {
-        setShowTerm(true);
-    };
+    const handleUpload = async () => {
+        try {
+            const imageFormData = new FormData();
+            imageFormData.append('image', imageFile);
 
-    const handleAcceptTerm = () => {
-        
-        setShowTerm(false);
+            const imageResponse = await axios.post('/api/images', imageFormData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                }
+            });
+            const contributionId = imageResponse.data._id;
+            const wordCount = content.trim().split(/\s+/).length;
+
+            const articleData = {
+                title,
+                shortDescription,
+                content,
+                wordCount,
+                contributionId
+            };
+
+            const articleResponse = await axios.post('/api/articles', articleData);
+
+            console.log('Article uploaded successfully:', articleResponse.data);
+            setTitle('');
+            setShortDescription('');
+            setContent('');
+            setImageFile(null);
+        } catch (error) {
+            console.error('Error uploading article:', error);
+        }
     };
 
     return (
@@ -38,66 +65,71 @@ const Students_Upload = () => {
                         <s.MenuTitle>Main Menu</s.MenuTitle>
                         <s.StyledLink
                             to="/Student"
-                            onClick={() => handleItemClick("Upload Articles")}
                         >
-                            <s.SidebarItem selected={selectedItem === "Upload Articles"}>
+                            <s.SidebarItem>
                                 Upload Articles
                             </s.SidebarItem>
                         </s.StyledLink>
                         <s.StyledLink
                             to="/Student/View"
-                            onClick={() => handleItemClick("View Articles")}
                         >
-                            <s.SidebarItem selected={selectedItem === "View Articles"}>
+                            <s.SidebarItem>
                                 View Articles
                             </s.SidebarItem>
                         </s.StyledLink>
                         <s.StyledLink
                             to="/system-settings"
-                            onClick={() => handleItemClick("System settings")}
                         >
-                            <s.SidebarItem selected={selectedItem === "System settings"}>
+                            <s.SidebarItem>
                                 System settings
                             </s.SidebarItem>
                         </s.StyledLink>
                     </s.MainMenu>
                 </s.Sidebar>
                 <s.Main>
-                    <s.UploadContainer>
+                <s.UploadContainer>
                         <s.SquareContainer>
                             <s.TitleHeader>Upload Articles</s.TitleHeader>
                             <s.InputWrapper>
                                 <s.Label>Title:</s.Label>
-                                <s.Input name="title" placeholder="Enter Title" />
-                            </s.InputWrapper>
-                            <s.InputWrapper>
-                                <s.Label>Cover Image:</s.Label>
-                                <s.Input type="file" name="coverImage" accept="image/*" />
+                                <s.Input
+                                    name="title"
+                                    value={title}
+                                    onChange={(e) => setTitle(e.target.value)}
+                                    placeholder="Enter Title"
+                                />
                             </s.InputWrapper>
                             <s.InputWrapper>
                                 <s.Label>Short Description:</s.Label>
                                 <s.TextArea
                                     name="shortDescription"
+                                    value={shortDescription}
+                                    onChange={(e) => setShortDescription(e.target.value)}
                                     placeholder="Enter Short Description"
                                 />
                             </s.InputWrapper>
                             <s.InputWrapper>
                                 <s.Label>Content:</s.Label>
-                                <s.TextArea name="content" placeholder="Enter Content" />
+                                <s.TextArea
+                                    name="content"
+                                    value={content}
+                                    onChange={(e) => setContent(e.target.value)}
+                                    placeholder="Enter Content"
+                                />
+                            </s.InputWrapper>
+                            <s.InputWrapper>
+                                <s.Label>Upload Image:</s.Label>
+                                <input type="file" onChange={handleImageUpload} />
                             </s.InputWrapper>
                             <s.ButtonContainer>
-                                <s.AddMoreArticlesButton>
-                                    Add more Articles
-                                </s.AddMoreArticlesButton>
-                                <s.UploadArticlesButton onClick={handleShowTerm}>Upload Articles</s.UploadArticlesButton>
+                                <s.UploadArticlesButton onClick={handleUpload}>Upload Articles</s.UploadArticlesButton>
                             </s.ButtonContainer>
                         </s.SquareContainer>
                     </s.UploadContainer>
                 </s.Main>
             </s.MainContent>
-            {showTerm && <Term onAccept={handleAcceptTerm} />}
         </s.Container>
     );
 };
 
-export default Students_Upload;
+export default Student_Upload;
