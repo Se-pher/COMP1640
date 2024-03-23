@@ -199,8 +199,29 @@ app.delete('/api/faculties/:id', async (req, res) => {
     res.status(400).json({ message: err.message });
   }
 });
+app.get('/api/currentUser', async (req, res) => {
+  try {
+    if (!req.user) {
+      return res.status(401).json({ error: 'User not logged in' });
+    }
+    const currentUser = await User.findById(req.user.id);
+    if (!currentUser) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+    res.json(currentUser);
+  } catch (error) {
+    console.error('Error fetching current user:', error);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
 
 const port = process.env.PORT || 5000;
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
 });
+
+const articlesRouter = require('./articles');
+app.use('/api/articles', articlesRouter);
+
+const imagesRouter = require('./images');
+app.use('/api/images', imagesRouter);
