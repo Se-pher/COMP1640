@@ -7,9 +7,10 @@ import Header from "./Components/Header";
 import Admin from "./Components/Admin/Account/AdminAccount";
 import Students from "./Components/Students/Upload/Students_Upload";
 import ForgotPassword from "./Components/ForgotPassword";
-import AdminCategories from "./Components/Admin/Categories/AdminCategories"
 import AdminFaculty from "./Components/Admin/Faculty/AdminFaculty";
 import ArticleDetailPage from './Components/ArticleDetailPage';
+import CoordinatorDashboard from "./Components/Coordinator/Dashboard/Coordinator_Dashboard";
+import Profile from "./Components/Admin/Profile/Admin_Profile";
 
 import axios from 'axios';
 
@@ -25,9 +26,10 @@ function App() {
         <Route path="/Admin" element={<Admin />} />
         <Route path="/articles/:id" element={<Header><ArticleDetailPage /></Header>} />
         <Route path="/student" element={<Students />} />
-        <Route path="/Admin/Category" element={<AdminCategories />} />
         <Route path="/Admin/Faculty" element={<AdminFaculty />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route path="/Coordinator" element={<CoordinatorDashboard />} />
+        <Route path="/Setting/Profile" element={<Profile />} />
       </Routes>
     </Router>
   );
