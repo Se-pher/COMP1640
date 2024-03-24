@@ -1,6 +1,14 @@
 import styled from "styled-components";
 import { Link } from "react-router-dom";
 
+export const Container = styled.div`
+  position: relative;
+`;
+
+export const Header = styled.div`
+  position: relative;
+`;
+
 export const HeaderContainer = styled.div`
   display: flex;
   justify-content: space-between;
@@ -12,7 +20,7 @@ export const HeaderContainer = styled.div`
   margin-left: 15%;
   margin-right: 15%;
   margin-top: 30px;
-  position: fixed;
+  position: absolute;
   z-index: 1000;
   top: 0;
   left: 0;

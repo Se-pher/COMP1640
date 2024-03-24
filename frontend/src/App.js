@@ -9,6 +9,8 @@ import Students from "./Components/Students/Upload/Students_Upload";
 import ForgotPassword from "./Components/ForgotPassword";
 import AdminCategories from "./Components/Admin/Categories/AdminCategories"
 import AdminFaculty from "./Components/Admin/Faculty/AdminFaculty";
+import ArticleDetailPage from './Components/ArticleDetailPage';
+
 import axios from 'axios';
 
 axios.defaults.baseURL = 'http://localhost:5000';
@@ -21,6 +23,7 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/Admin" element={<Admin />} />
+        <Route path="/articles/:id" element={<Header><ArticleDetailPage /></Header>} />
         <Route path="/student" element={<Students />} />
         <Route path="/Admin/Category" element={<AdminCategories />} />
         <Route path="/Admin/Faculty" element={<AdminFaculty />} />
