@@ -4,7 +4,7 @@ import LogoImage from '../../../Image/web.png';
 import AdminAvatar from '../../../Image/facebook.png';
 import Navbar from '../../Navbar';
 import axios from 'axios';
-import Term from './Term';
+// import Term from './Term';
 
 const Student_Upload = () => {
     const [title, setTitle] = useState('');

@@ -136,14 +136,6 @@ const Admin = () => {
               </s.SidebarItem>
             </s.StyledLink>
             <s.StyledLink
-              to="/Admin/Category"
-              onClick={() => handleItemClick("Category management")}
-            >
-              <s.SidebarItem selected={selectedItem === "Category management"}>
-              Category management
-              </s.SidebarItem>
-            </s.StyledLink>
-            <s.StyledLink
               to="/Admin/Faculty"
               onClick={() => handleItemClick("Faculty management")}
             >
@@ -163,10 +155,10 @@ const Admin = () => {
           <s.MainMenu>
               <s.MenuTitle>More</s.MenuTitle>
               <s.StyledLink
-              to="/setting"
-              onClick={() => handleItemClick("Settings")}
+              to="/Setting/Profile"
+              onClick={() => handleItemClick("profile")}
             >
-              <s.SidebarItem selected={selectedItem === "Settings"}>
+              <s.SidebarItem selected={selectedItem === "profile"}>
               Settings
               </s.SidebarItem>
             </s.StyledLink>
