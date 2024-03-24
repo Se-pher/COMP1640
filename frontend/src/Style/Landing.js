@@ -121,6 +121,56 @@ export const Pagination = styled.div`
   }
 `;
 
-export const Footer = styled.footer`
-  /* Styles for the footer */
+export const Sidebar = styled.div`
+  display: flex;
+  align-items: center;
+  width: 40%;
+  justify-content: space-between;
 `;
+
+export const SidebarImageContainer = styled.div`
+  position: relative;
+`;
+
+export const SidebarImage = styled.img`
+  width: 100%;
+  max-width: 500px;
+  height: auto;
+`;
+
+export const ArticleCount = styled.div`
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  background-color: rgba(0, 0, 0, 0.5);
+  color: #fff;
+  padding: 5px 10px;
+  border-radius: 5px;
+`;
+
+
+export const Footer = styled.footer`
+  background-color: #333;
+  color: #fff;
+  padding: 2rem;
+  display: flex;
+  justify-content: space-between;
+`;
+
+export const FooterIcon = styled.img`
+  width: 32px;
+  height: 32px;
+`;
+
+export const FooterText = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+`;
+
+export const FooterLink = styled.a`
+  color: #fff;
+  text-decoration: none;
+  margin-bottom: 0.5rem;
+`;
+
