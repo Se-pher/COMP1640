@@ -15,8 +15,9 @@ const Login = () => {
   const handleLogin = async () => {
     try {
       const response = await axios.post('/api/login', { email, password });
-      const user = response.data;
-  
+      const { user, token } = response.data;
+      localStorage.setItem('jwtToken', token);
+
       if (user.role === 'student') {
         window.location.href = '/student';
       } else if (user.role === 'admin') {
