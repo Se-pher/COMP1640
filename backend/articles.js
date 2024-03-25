@@ -3,13 +3,17 @@ const router = express.Router();
 const Article = require('./model/article');
 
 router.post('/', async (req, res) => {
-    const { content, wordCount, contributionId } = req.body;
+    const { title, description, content, createdAt, facultyName, author, avatarURL } = req.body;
 
     try {
         const newArticle = new Article({
+            title,
+            description,
             content,
-            wordCount,
-            contributionId
+            createdAt,
+            facultyName,
+            author,
+            avatarURL
         });
         await newArticle.save();
 
