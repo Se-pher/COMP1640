@@ -11,6 +11,7 @@ import AdminFaculty from "./Components/Admin/Faculty/AdminFaculty";
 import ArticleDetailPage from './Components/ArticleDetailPage';
 import CoordinatorDashboard from "./Components/Coordinator/Dashboard/Coordinator_Dashboard";
 import Profile from "./Components/Admin/Profile/Admin_Profile";
+import CoordinatorArticles from "./Components/Coordinator/Articles/Coordinator_Articles";
 
 import axios from 'axios';
 
@@ -29,6 +30,7 @@ function App() {
         <Route path="/Admin/Faculty" element={<AdminFaculty />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/Coordinator" element={<CoordinatorDashboard />} />
+        <Route path="/Coordinator/Articles" element={<CoordinatorArticles />} />
         <Route path="/Setting/Profile" element={<Profile />} />
       </Routes>
     </Router>

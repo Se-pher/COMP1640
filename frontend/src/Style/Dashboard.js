@@ -134,9 +134,6 @@ export const ChartContainer = styled.div`
 
 export const DataContainer = styled.div`
   display: flex;
-  justify-content: space-around;
-  width: 100%;
-  margin-top: 20px;
 `;
 
 export const NewPostsContainer = styled.div`

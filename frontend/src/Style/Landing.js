@@ -100,6 +100,7 @@ export const Pagination = styled.div`
   display: flex;
   justify-content: center;
   margin-top: 2rem;
+  margin-bottom: 3rem;
 
   button {
     background-color: #f2f2f2;
