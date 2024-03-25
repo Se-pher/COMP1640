@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 const sendEmail = require('./sendEmail');
 const app = express();
+const Article= require('./model/article');
 app.use(cors());
 app.use(express.json());
 const jwt = require('jsonwebtoken');
@@ -23,7 +24,6 @@ const userSchema = new mongoose.Schema({
 });
 
 const User = mongoose.model('User', userSchema);
-
 app.post('/api/users', async (req, res) => {
   const { username, email, password, role, facultyName } = req.body;
 
@@ -222,6 +222,46 @@ const authenticateToken = (req, res, next) => {
       return res.status(403).json({ message: 'Invalid token' });
   }
 };
+
+
+
+
+//ARTICLE
+app.get('/api/articles', async (req, res) => {
+  try {
+    const articles = await Article.find();
+    res.json(articles);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+
+
+
+//TOKEN
+
+app.get('/api/decode-token', async (req, res) => {
+  if (!req.headers.authorization || !req.headers.authorization.startsWith('Bearer ')) {
+    return res.status(401).json({ message: 'No token provided' });
+  }
+
+  const token = req.headers.authorization.split(' ')[1];
+
+  try {
+    const decoded = jwt.verify(token, SECRET_KEY); 
+    const user = await User.findById(decoded.userId); 
+
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    res.json({ username: user.username }); 
+  } catch (err) {
+    res.status(500).json({ message: 'Invalid token' });
+  }
+});
+
 
 
 

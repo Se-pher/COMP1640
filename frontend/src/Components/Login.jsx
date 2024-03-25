@@ -17,18 +17,21 @@ const Login = () => {
       const response = await axios.post('/api/login', { email, password });
       const { user, token } = response.data;
       localStorage.setItem('jwtToken', token);
-
       if (user.role === 'student') {
         window.location.href = '/student';
       } else if (user.role === 'admin') {
         window.location.href = '/admin';
-      } else {
+      } else if(user.role === 'coordinator'){
+        window.location.href = '/coordinator';
+      } 
+      else {
         setError('Invalid role');
       }
     } catch (error) {
       setError('Invalid email or password');
     }
   };
+  
 
   return (
     <s.Container>
