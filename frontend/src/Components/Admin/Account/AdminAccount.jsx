@@ -96,6 +96,31 @@ const Admin = () => {
     setUserData(updatedUserData);
   };
 
+  useEffect(() => {
+    const token = localStorage.getItem('jwtToken');
+    if (token) {
+      fetchUsername(token);
+    }
+  }, []);
+
+  const fetchUsername = async (token) => {
+    try {
+      const response = await axios.get('/api/decode-token', {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
+      setUserName(response.data.username);
+    } catch (error) {
+      console.error('Error fetching username:', error.response.data.message);
+    }
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem('jwtToken'); // Xóa JWT từ local storage
+    window.location.href = '/login'; // Chuyển hướng người dùng về trang đăng nhập
+  };
+
   return (
     <s.Container>
       <Navbar />
@@ -146,7 +171,7 @@ const Admin = () => {
               </s.SidebarItem>
             </s.StyledLink>
           </s.MainMenu>
-          <s.LogoutButton>
+          <s.LogoutButton onClick={handleLogout}>
           <s.LogoutBtn>
             <s.LogoutIcon />
             Logout
