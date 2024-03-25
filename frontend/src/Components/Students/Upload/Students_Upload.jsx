@@ -8,42 +8,45 @@ import axios from 'axios';
 
 const Student_Upload = () => {
     const [title, setTitle] = useState('');
-    const [shortDescription, setShortDescription] = useState('');
+    const [description, setDescription] = useState('');
     const [content, setContent] = useState('');
-    const [imageFile, setImageFile] = useState(null);
+    // const [imageFile, setImageFile] = useState(null);
 
-    const handleImageUpload = (e) => {
-        setImageFile(e.target.files[0]);
-    };
+    // const handleImageUpload = (e) => {
+    //     setImageFile(e.target.files[0]);
+    // };
 
     const handleUpload = async () => {
         try {
-            const imageFormData = new FormData();
-            imageFormData.append('image', imageFile);
+            // const imageFormData = new FormData();
+            // imageFormData.append('image', imageFile);
 
-            const imageResponse = await axios.post('/api/images', imageFormData, {
-                headers: {
-                    'Content-Type': 'multipart/form-data'
-                }
-            });
-            const contributionId = imageResponse.data._id;
+            // const imageResponse = await axios.post('/api/images', imageFormData, {
+            //     headers: {
+            //         'Content-Type': 'multipart/form-data'
+            //     }
+            // });
+            // const contributionId = imageResponse.data._id;
             const wordCount = content.trim().split(/\s+/).length;
 
             const articleData = {
                 title,
-                shortDescription,
+                description,
                 content,
-                wordCount,
-                contributionId
+                createdAt: new Date(),
+                facultyName: 'Your Faculty Name', 
+                author: 'Your Name', 
+                avatarURL: 'Your Avatar URL',
+                // contributionId
             };
 
             const articleResponse = await axios.post('/api/articles', articleData);
 
             console.log('Article uploaded successfully:', articleResponse.data);
             setTitle('');
-            setShortDescription('');
+            setDescription('');
             setContent('');
-            setImageFile(null);
+            // setImageFile(null);
         } catch (error) {
             console.error('Error uploading article:', error);
         }
@@ -100,12 +103,12 @@ const Student_Upload = () => {
                                 />
                             </s.InputWrapper>
                             <s.InputWrapper>
-                                <s.Label>Short Description:</s.Label>
+                                <s.Label>Description:</s.Label>
                                 <s.TextArea
-                                    name="shortDescription"
-                                    value={shortDescription}
-                                    onChange={(e) => setShortDescription(e.target.value)}
-                                    placeholder="Enter Short Description"
+                                    name="description"
+                                    value={description}
+                                    onChange={(e) => setDescription(e.target.value)}
+                                    placeholder="Enter Description"
                                 />
                             </s.InputWrapper>
                             <s.InputWrapper>
@@ -117,10 +120,10 @@ const Student_Upload = () => {
                                     placeholder="Enter Content"
                                 />
                             </s.InputWrapper>
-                            <s.InputWrapper>
+                            {/* <s.InputWrapper>
                                 <s.Label>Upload Image:</s.Label>
                                 <input type="file" onChange={handleImageUpload} />
-                            </s.InputWrapper>
+                            </s.InputWrapper> */}
                             <s.ButtonContainer>
                                 <s.UploadArticlesButton onClick={handleUpload}>Upload Articles</s.UploadArticlesButton>
                             </s.ButtonContainer>

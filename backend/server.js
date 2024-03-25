@@ -233,6 +233,3 @@ app.listen(port, () => {
 
 const articlesRouter = require('./articles');
 app.use('/api/articles', articlesRouter);
-
-const imagesRouter = require('./images');
-app.use('/api/images', imagesRouter);
