@@ -5,10 +5,26 @@ import AdminAvatar from "../../../Image/facebook.png";
 import Navbar from "../../Navbar";
 
 const Admin_Profile = () => {
-    const [selectedItem, setSelectedItem] = useState("profile");
-    const handleItemClick = (item) => {
-        setSelectedItem(item);
-      };
+  const [selectedItem, setSelectedItem] = useState("profile");
+  const handleItemClick = (item) => {
+    setSelectedItem(item);
+  };
+
+  const userProfile = {
+    name: "John Doe",
+    email: "john.doe@example.com",
+  };
+
+  const [newName, setNewName] = useState(userProfile.name);
+  const [newEmail, setNewEmail] = useState(userProfile.email);
+  const [newPassword, setNewPassword] = useState("");
+
+  const handleDiscardAll = () => {
+    setNewName(userProfile.name);
+    setNewEmail(userProfile.email);
+    setNewPassword("");
+  };
+
   return (
     <s.Container>
       <Navbar />
@@ -19,32 +35,32 @@ const Admin_Profile = () => {
           </s.LogoContainer>
           <s.AdminInfo>
             <s.Avatar src={AdminAvatar} alt="Admin Avatar" />
-            <s.AdminName>John Doe</s.AdminName>
+            <s.AdminName>Joe</s.AdminName>
           </s.AdminInfo>
           <s.MainMenu>
             <s.MenuTitle>Main Menu</s.MenuTitle>
             <s.StyledLink
-              to="/Coordinator"
-              onClick={() => handleItemClick("Dash Broad")}
+              to="/Admin"
+              onClick={() => handleItemClick("Account management")}
             >
-              <s.SidebarItem selected={selectedItem === "Dash Broad"}>
-              Dash Broad
+              <s.SidebarItem selected={selectedItem === "Account management"}>
+                Account management
               </s.SidebarItem>
             </s.StyledLink>
             <s.StyledLink
               to="/Admin/Faculty"
-              onClick={() => handleItemClick("Articles")}
+              onClick={() => handleItemClick("Faculty management")}
             >
-              <s.SidebarItem selected={selectedItem === "Articles"}>
-              Articles
+              <s.SidebarItem selected={selectedItem === "Faculty management"}>
+                Faculty management
               </s.SidebarItem>
             </s.StyledLink>
             <s.StyledLink
               to="/system-settings"
-              onClick={() => handleItemClick("Export Report")}
+              onClick={() => handleItemClick("System settings")}
             >
-              <s.SidebarItem selected={selectedItem === "Export Report"}>
-                Export Report
+              <s.SidebarItem selected={selectedItem === "System settings"}>
+                System settings
               </s.SidebarItem>
             </s.StyledLink>
           </s.MainMenu>
@@ -55,7 +71,7 @@ const Admin_Profile = () => {
               onClick={() => handleItemClick("profile")}
             >
               <s.SidebarItem selected={selectedItem === "profile"}>
-              Settings
+                Settings
               </s.SidebarItem>
             </s.StyledLink>
           </s.MainMenu>
@@ -69,7 +85,54 @@ const Admin_Profile = () => {
         <s.Main>
           <s.AddUserContainer>
             <s.SquareContainer>
+              <s.ProfileContainer>
+                <s.ProfileHeader>Personal Profile</s.ProfileHeader>
+                <s.AvatarSection>
+                  <s.Avatar src={AdminAvatar} alt="Admin Avatar" />
+                  <s.AvatarButtons>
+                    <s.AvatarButton>Change Photo</s.AvatarButton>
+                    <s.AvatarButton>Delete</s.AvatarButton>
+                  </s.AvatarButtons>
+                </s.AvatarSection>
 
+                <s.UserInfoSection>
+                  <s.UserInfoField>
+                    <s.FieldLabel>Name</s.FieldLabel>
+                    <s.FieldInput
+                      placeholder={userProfile.name}
+                      value={newName}
+                      onChange={(e) => setNewName(e.target.value)}
+                    />
+                  </s.UserInfoField>
+
+                  <s.UserInfoField>
+                    <s.FieldLabel>Email</s.FieldLabel>
+                    <s.FieldInput
+                      placeholder={userProfile.email}
+                      value={newEmail}
+                      onChange={(e) => setNewEmail(e.target.value)}
+                    />
+                  </s.UserInfoField>
+
+                  <s.UserInfoField>
+                    <s.FieldLabel>Password</s.FieldLabel>
+                    <s.FieldInput
+                      placeholder="********"
+                      value={newPassword}
+                      onChange={(e) => setNewPassword(e.target.value)}
+                      type="password"
+                    />
+                  </s.UserInfoField>
+
+                  {(newName !== userProfile.name ||
+                    newEmail !== userProfile.email ||
+                    newPassword !== "") && (
+                    <s.DiscardButton>Discard All</s.DiscardButton>
+                  )}
+
+                  <s.SaveButton>Save</s.SaveButton>
+                </s.UserInfoSection>
+              </s.ProfileContainer>
             </s.SquareContainer>
           </s.AddUserContainer>
         </s.Main>

@@ -91,23 +91,11 @@ export const Main = styled.div`
   margin-top: 50px;
 `;
 
-export const AddUserContainer = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  height: 100%;
-`;
-
-export const SquareContainer = styled.div`
-  width: 1100px;
-  height: 650px;
-  background-color: white;
+export const ArticlesContainer = styled.div`
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  width: 100%;
   align-items: center;
-  border-radius: 10px;
-  padding-bottom: 20px;
 `;
 
 export const LogoutButton = styled.div`
@@ -137,83 +125,97 @@ export const LogoutIcon = styled(FontAwesomeIcon).attrs({
   margin-right: 5px;
 `;
 
-export const ProfileContainer = styled.div`
+export const ArticleGrid = styled.div`
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-gap: 2rem;
+  margin-bottom: 2rem;
+`;
+
+export const ArticleCard = styled.div`
+  background-color: #fff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  border-radius: 4px;
+  overflow: hidden;
+  height: 250px;
+`;
+
+export const Pagination = styled.div`
+  position: fixed; 
+  bottom: 20px; 
+  left: 50%; 
+  transform: translateX(30%); 
   display: flex;
-  flex-direction: column;
-  padding: 20px;
-  margin-left: 20px;
+  justify-content: center;
+
+  button {
+    background-color: #f2f2f2;
+    border: none;
+    color: #333;
+    padding: 0.5rem 1rem;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 1rem;
+    margin: 0 0.25rem;
+    cursor: pointer;
+    border-radius: 4px;
+
+    &:disabled {
+      background-color: #ccc;
+      cursor: not-allowed;
+    }
+  }
 `;
 
-export const ProfileHeader = styled.h2`
-  margin-bottom: 20px;
+export const ArticleImage = styled.img`
+  width: 100%;
+  height: 130px;
+  object-fit: cover;
+  border-radius: 10px;
 `;
 
-export const AvatarSection = styled.div`
+export const ArticleInfo = styled.div`
+  padding: 1rem;
+  padding-top: 0px;
+`;
+
+export const ArticleDate = styled.p`
+  font-size: 0.8rem;
+  color: #666;
+  margin-bottom: 1px;
+`;
+
+export const ArticleTitle = styled.h3`
+  font-size: 1.2rem;
+  margin-bottom: 0.5rem;
+`;
+
+export const ArticleDescription = styled.p`
+  font-size: 0.9rem;
+  color: #666;
+  margin-bottom: 1rem;
+`;
+
+export const ArticleAuthor = styled.div`
   display: flex;
   align-items: center;
-  margin-bottom: 20px;
 `;
 
-export const AvatarButtons = styled.div`
-  display: flex;
-  gap: 10px;
-  margin-left: 20px;
+export const AuthorAvatar = styled.img`
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  margin-right: 0.5rem;
 `;
 
-export const AvatarButton = styled.button`
-  background-color: #f6793e;
-  color: #fff;
-  border: none;
-  padding: 8px 16px;
-  border-radius: 5px;
-  cursor: pointer;
-  font-size: 14px;
-`;
-
-export const UserInfoSection = styled.div`
+export const CoordinatorArticleCard = styled.div`
+  background-color: #fff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  border-radius: 4px;
+  overflow: hidden;
+  height: 290px;
   display: flex;
   flex-direction: column;
-`;
 
-export const UserInfoField = styled.div`
-  display: flex;
-  align-items: center;
-  margin-bottom: 10px;
-`;
-
-export const FieldLabel = styled.label`
-  font-weight: bold;
-  margin-right: 10px;
-  width: 100px;
-`;
-
-export const FieldInput = styled.input`
-  flex: 1;
-  padding: 8px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-`;
-
-export const DiscardButton = styled.button`
-  background-color: #ccc;
-  color: #333;
-  border: none;
-  padding: 8px 16px;
-  border-radius: 5px;
-  cursor: pointer;
-  font-size: 14px;
-  margin-top: 10px;
-  align-self: flex-end;
-`;
-
-export const SaveButton = styled.button`
-  background-color: #f6793e;
-  color: #fff;
-  border: none;
-  padding: 10px 20px;
-  border-radius: 5px;
-  cursor: pointer;
-  font-size: 16px;
-  margin-top: 10px;
-  align-self: flex-end;
 `;

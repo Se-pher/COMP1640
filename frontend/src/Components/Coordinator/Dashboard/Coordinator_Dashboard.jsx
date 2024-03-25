@@ -73,7 +73,7 @@ const Coordinator_Dashboard = () => {
               </s.SidebarItem>
             </s.StyledLink>
             <s.StyledLink
-              to="/Admin/Faculty"
+              to="/Coordinator/Articles"
               onClick={() => handleItemClick("Articles")}
             >
               <s.SidebarItem selected={selectedItem === "Articles"}>
