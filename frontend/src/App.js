@@ -12,7 +12,7 @@ import ArticleDetailPage from './Components/ArticleDetailPage';
 import CoordinatorDashboard from "./Components/Coordinator/Dashboard/Coordinator_Dashboard";
 import Profile from "./Components/Admin/Profile/Admin_Profile";
 import CoordinatorArticles from "./Components/Coordinator/Articles/Coordinator_Articles";
-
+import CoordinatorArticlesDetails from "./Components/Coordinator/Articles/Coordinator_Articles_Details"; // Import the component
 import axios from 'axios';
 
 axios.defaults.baseURL = 'http://localhost:5000';
@@ -31,6 +31,7 @@ function App() {
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/Coordinator" element={<CoordinatorDashboard />} />
         <Route path="/Coordinator/Articles" element={<CoordinatorArticles />} />
+        <Route path="/Coordinator/Articles/:id" element={<CoordinatorArticlesDetails />} /> {/* Add this line */}
         <Route path="/Setting/Profile" element={<Profile />} />
       </Routes>
     </Router>
