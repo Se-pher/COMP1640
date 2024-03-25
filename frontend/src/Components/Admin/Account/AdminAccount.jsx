@@ -16,10 +16,8 @@ const Admin = () => {
   const [showEditModal, setShowEditModal] = useState(false);
   const [deleteUserModalVisible, setDeleteUserModalVisible] = useState(false);
   const [userData, setUserData] = useState([]);
-  const [currentUser, setCurrentUser] = useState(null); // Changed variable name
-
   const [showPasswordState, setShowPasswordState] = useState({});
-
+  const [userName, setUserName] = useState('');
   const [editedUser, setEditedUser] = useState(null);
   const [selectedUser, setSelectedUser] = useState(null);
 
@@ -98,21 +96,6 @@ const Admin = () => {
     setUserData(updatedUserData);
   };
 
-  useEffect(() => {
-    const fetchCurrentUser = async () => {
-      try {
-        const response = await axios.get('/api/currentUser'); 
-        const currentUserData = response.data;
-        setCurrentUser(currentUserData); // Set currentUser instead of currentUserData
-      } catch (error) {
-        console.error('Error fetching current user:', error);
-      }
-    };
-  
-    fetchCurrentUser();
-  }, []);
-  
-
   return (
     <s.Container>
       <Navbar />
@@ -123,7 +106,7 @@ const Admin = () => {
           </s.LogoContainer>
           <s.AdminInfo>
             <s.Avatar src={AdminAvatar} alt="Admin Avatar" />
-            <s.AdminName>{currentUser && currentUser.username}</s.AdminName>
+            <s.AdminName>{userName}</s.AdminName>
           </s.AdminInfo>
           <s.MainMenu>
             <s.MenuTitle>Main Menu</s.MenuTitle>
@@ -133,14 +116,6 @@ const Admin = () => {
             >
               <s.SidebarItem selected={selectedItem === "Account management"}>
                 Account management
-              </s.SidebarItem>
-            </s.StyledLink>
-            <s.StyledLink
-              to="/Admin/Category"
-              onClick={() => handleItemClick("Category management")}
-            >
-              <s.SidebarItem selected={selectedItem === "Category management"}>
-              Category management
               </s.SidebarItem>
             </s.StyledLink>
             <s.StyledLink
@@ -163,10 +138,10 @@ const Admin = () => {
           <s.MainMenu>
               <s.MenuTitle>More</s.MenuTitle>
               <s.StyledLink
-              to="/setting"
-              onClick={() => handleItemClick("Settings")}
+              to="/Setting/Profile"
+              onClick={() => handleItemClick("profile")}
             >
-              <s.SidebarItem selected={selectedItem === "Settings"}>
+              <s.SidebarItem selected={selectedItem === "profile"}>
               Settings
               </s.SidebarItem>
             </s.StyledLink>

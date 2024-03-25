@@ -1,7 +1,6 @@
 import styled from 'styled-components';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPen, faTrash } from '@fortawesome/free-solid-svg-icons';
 import { faRightFromBracket } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Link } from 'react-router-dom';
 
 
@@ -99,26 +98,6 @@ export const AddUserContainer = styled.div`
   height: 100%;
 `;
 
-export const AddUserButton = styled.button`
-    background-color: #F6793E;
-    color: #fff;
-    border: none;
-    border-radius: 10px;
-    padding: 10px 20px;
-    font-size: 16px;
-    cursor: pointer;
-    display: flex;
-    justify-content: center;
-    width: 150px;
-`;
-
-export const Button = styled.div`
-  display: flex;
-  justify-content: flex-end;
-  margin-top: 20px;
-  margin-left: 54rem;
-`;
-
 export const SquareContainer = styled.div`
   width: 1100px;
   height: 650px;
@@ -129,54 +108,6 @@ export const SquareContainer = styled.div`
   align-items: center;
   border-radius: 10px;
   padding-bottom: 20px;
-`;
-
-export const TableContainer = styled.div`
-  margin-top: 10px;
-  width: 95%;
-  height: 90%;
-  background-color: #fff;
-  overflow-y: auto;
-`;
-
-export const UserTable = styled.table`
-  width: 100%;
-  border-collapse: separate;
-  border-spacing: 0;
-  background-color: #fff;
-`;
-
-export const TableHeader = styled.th`
-  padding: 10px;
-  text-align: center;
-  border: 1px solid #ddd;
-`;
-
-export const TableRow = styled.tr`
-  &:nth-child(even) {
-    background-color: transparent;
-  }
-`;
-
-export const TableCell = styled.td`
-  padding: 10px;
-  border: 1px solid #ddd;
-  text-align: center;
-`;
-
-export const EditIcon = styled(FontAwesomeIcon).attrs({
-  icon: faPen,
-})`
-  color: black;
-  margin-right: 10px;
-  cursor:pointer;
-`;
-
-export const DeleteIcon = styled(FontAwesomeIcon).attrs({
-  icon: faTrash,
-})`
-  color: black;
-  cursor:pointer;
 `;
 
 export const LogoutButton = styled.div`
@@ -204,4 +135,85 @@ export const LogoutIcon = styled(FontAwesomeIcon).attrs({
   icon: faRightFromBracket,
 })`
   margin-right: 5px;
+`;
+
+export const ProfileContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+  margin-left: 20px;
+`;
+
+export const ProfileHeader = styled.h2`
+  margin-bottom: 20px;
+`;
+
+export const AvatarSection = styled.div`
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+`;
+
+export const AvatarButtons = styled.div`
+  display: flex;
+  gap: 10px;
+  margin-left: 20px;
+`;
+
+export const AvatarButton = styled.button`
+  background-color: #f6793e;
+  color: #fff;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 14px;
+`;
+
+export const UserInfoSection = styled.div`
+  display: flex;
+  flex-direction: column;
+`;
+
+export const UserInfoField = styled.div`
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+`;
+
+export const FieldLabel = styled.label`
+  font-weight: bold;
+  margin-right: 10px;
+  width: 100px;
+`;
+
+export const FieldInput = styled.input`
+  flex: 1;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+`;
+
+export const DiscardButton = styled.button`
+  background-color: #ccc;
+  color: #333;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 14px;
+  margin-top: 10px;
+  align-self: flex-end;
+`;
+
+export const SaveButton = styled.button`
+  background-color: #f6793e;
+  color: #fff;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  margin-top: 10px;
+  align-self: flex-end;
 `;

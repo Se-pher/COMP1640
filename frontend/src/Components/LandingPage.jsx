@@ -1,8 +1,23 @@
-import React from "react";
+import React, { useState } from "react";
 import Mountain from "../Image/Mountains.jpg";
 import * as s from "../Style/Landing";
+import ArticleCard from "./ArticleCard";
+import { articles } from "./data";
 
 const LandingPage = () => {
+  const [currentPage, setCurrentPage] = useState(1);
+  const articlesPerPage = 9;
+  const indexOfLastArticle = currentPage * articlesPerPage;
+  const indexOfFirstArticle = indexOfLastArticle - articlesPerPage;
+  const currentArticles = articles.slice(
+    indexOfFirstArticle,
+    indexOfLastArticle
+  );
+
+  const handlePageChange = (pageNumber) => {
+    setCurrentPage(pageNumber);
+  };
+
   return (
     <s.Container>
       <s.Header>
@@ -15,7 +30,44 @@ const LandingPage = () => {
       </s.Header>
       <s.Section>
         <s.Title>Articles</s.Title>
+        <s.ArticleGrid>
+          {currentArticles.map((article) => (
+            <ArticleCard key={article.id} article={article} />
+          ))}
+        </s.ArticleGrid>
+        <s.Pagination>
+          {Array.from(
+            { length: Math.ceil(articles.length / articlesPerPage) },
+            (_, i) => (
+              <button
+                key={i + 1}
+                onClick={() => handlePageChange(i + 1)}
+                disabled={currentPage === i + 1}
+              >
+                {i + 1}
+              </button>
+            )
+          )}
+        </s.Pagination>
+        <s.Sidebar>
+          <s.SidebarImageContainer>
+            <s.SidebarImage src={Mountain} alt="Sidebar Image" />
+            <s.ArticleCount>
+              Currently {articles.length} Articles
+            </s.ArticleCount>
+          </s.SidebarImageContainer>
+        </s.Sidebar>
       </s.Section>
+      <s.Footer>
+        <div>
+          <s.FooterIcon src="icon-url.jpg" alt="Website Icon" />
+          <s.FooterText>
+            <s.FooterLink href="#">Our Mission</s.FooterLink>
+            <s.FooterLink href="#">About Us</s.FooterLink>
+          </s.FooterText>
+        </div>
+        <p>&copy; 2024 Your Website. All rights reserved.</p>
+      </s.Footer>
     </s.Container>
   );
 };
