@@ -2,11 +2,11 @@ const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const sendEmail = require('./sendEmail');
-
 const app = express();
 app.use(cors());
 app.use(express.json());
-
+const jwt = require('jsonwebtoken');
+const SECRET_KEY = 'secretkey';
 mongoose.connect('mongodb+srv://COMP1640:COMP1640group5@cluster0.kgdq0tl.mongodb.net/COMP1640?retryWrites=true&w=majority', {
   useNewUrlParser: true,
   useUnifiedTopology: true,
@@ -102,7 +102,11 @@ app.post('/api/login', async (req, res) => {
     if (!user) {
       return res.status(401).json({ message: 'Invalid email or password' });
     }
-    res.json(user);
+    const token = jwt.sign({ userId: user._id, role: user.role }, SECRET_KEY, {
+      expiresIn: '1d', 
+    });
+
+    res.json({ user, token });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
@@ -199,21 +203,28 @@ app.delete('/api/faculties/:id', async (req, res) => {
     res.status(400).json({ message: err.message });
   }
 });
-app.get('/api/currentUser', async (req, res) => {
-  try {
-    if (!req.user) {
-      return res.status(401).json({ error: 'User not logged in' });
-    }
-    const currentUser = await User.findById(req.user.id);
-    if (!currentUser) {
-      return res.status(404).json({ error: 'User not found' });
-    }
-    res.json(currentUser);
-  } catch (error) {
-    console.error('Error fetching current user:', error);
-    res.status(500).json({ error: 'Server error' });
+
+
+const authenticateToken = (req, res, next) => {
+  const token = req.header['auth-token'];
+
+  if (!token) {
+      return res.status(401).json({ message: 'Missing token' });
   }
-});
+
+  try {
+      
+      const decodedToken = jwt.verify(token, SECRET_KEY);
+      console.log('Decoded token:', decodedToken);
+      req.user = decodedToken; 
+      next();
+  } catch (err) {
+      return res.status(403).json({ message: 'Invalid token' });
+  }
+};
+
+
+
 
 const port = process.env.PORT || 5000;
 app.listen(port, () => {
