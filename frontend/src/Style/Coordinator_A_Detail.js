@@ -183,13 +183,12 @@ export const ArticleDetails = styled.div`
 
 export const ArticleMetadata = styled.div`
   display: flex;
+  justify-content: space-between;
   align-items: center;
-  font-size: 1rem;
-  margin-bottom: 1rem;
 `;
 
 export const ArticleDate = styled.span`
-  margin-right: 1rem;
+  margin-right: 10px;
 `;
 
 export const ArticleAuthor = styled.div`
@@ -201,11 +200,15 @@ export const AuthorAvatar = styled.img`
   width: 32px;
   height: 32px;
   border-radius: 50%;
-  margin-right: 0.5rem;
+  margin-right: 5px;
+`;
+
+export const AuthorName = styled.span`
+  font-weight: bold;
 `;
 
 export const ArticleDescription = styled.div`
-  font-size: 1rem;
+  font-size: 1.05rem;
   line-height: 1.6;
   text-align: justify;
 `;
@@ -215,4 +218,61 @@ export const ArticleImage = styled.img`
   object-fit: cover;
   border-radius: 5px;
   height:600px;
+`;
+
+export const ActionsContainer = styled.div`
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 1rem;
+  margin-left: auto;
+  margin-right: 2rem;
+`;
+
+
+export const ApprovalDropdown = styled.div`
+  position: relative;
+`;
+
+export const DropdownButton = styled.button`
+  background-color: rgb(246, 121, 62);;
+  color: #fff;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+`;
+
+export const DropdownMenu = styled.div`
+  position: absolute;
+  background-color: #fff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  border-radius: 4px;
+  padding: 8px 16px;
+  z-index: 1;
+`;
+
+export const DropdownOption = styled.div`
+  padding: 8px 16px;
+  cursor: pointer;
+
+  &:hover {
+    background-color: #f0f0f0;
+  }
+`;
+
+export const DropdownIcon = styled.span`
+  margin-left: 4px;
+
+  &::after {
+    content: '▼';
+  }
+`;
+
+export const Divider = styled.hr`
+  width: 100%;
+  height: 1px;
+  background-color: #ccc;
+  margin: 20px 0; 
 `;

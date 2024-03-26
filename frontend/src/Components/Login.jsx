@@ -21,7 +21,7 @@ const Login = () => {
         window.location.href = '/student';
       } else if (user.role === 'admin') {
         window.location.href = '/admin';
-      } else if(user.role === 'coordinator'){
+      } else if(user.role === 'Coordinator'){
         window.location.href = '/coordinator';
       } 
       else {
