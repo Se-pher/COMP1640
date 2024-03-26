@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import axios from 'axios';
 import styled from 'styled-components';
 
@@ -61,11 +62,13 @@ const Article = () => {
         <div>
           {articles.map((article, index) => (
             <ArticleCard key={index}>
-              <ArticleTitle>{article.title}</ArticleTitle>
+              <ArticleTitle>
+                <Link to={`/edit-article/${article._id}`}>{article.title}</Link>
+              </ArticleTitle>
               <ArticleDescription>Description: {article.description}</ArticleDescription>
               <ArticleContent>Content: {article.content}</ArticleContent>
               <ArticleAuthor>Author: {article.author}</ArticleAuthor>
-              <ArticleDate>Published Date: {new Date(article.createdAt).toLocaleDateString()}</ArticleDate> 
+              <ArticleDate>Published Date: {new Date(article.createdAt).toLocaleDateString()}</ArticleDate>
             </ArticleCard>
           ))}
         </div>
