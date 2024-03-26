@@ -263,6 +263,47 @@ app.get('/api/decode-token', async (req, res) => {
 });
 
 
+app.put('/api/user/decode-update', async (req, res) => {
+  const { username, email, currentPassword, newPassword } = req.body;
+
+  if (!req.headers.authorization || !req.headers.authorization.startsWith('Bearer ')) {
+    return res.status(401).json({ message: 'Token không được cung cấp' });
+  }
+
+  const token = req.headers.authorization.split(' ')[1];
+
+  try {
+    const decoded = jwt.verify(token, SECRET_KEY);
+    const user = await User.findById(decoded.userId);
+
+    if (!user) {
+      return res.status(404).json({ message: 'Không tìm thấy người dùng' });
+    }
+
+    const isMatch = await bcrypt.compare(currentPassword, user.password);
+    if (!isMatch) {
+      return res.status(400).json({ message: 'Mật khẩu hiện tại không chính xác' });
+    }
+    user.username = username || user.username;
+    user.email = email || user.email;
+    if (newPassword) {
+      user.password = await bcrypt.hash(newPassword, 10);
+    }
+    await user.save();
+    res.json({
+      username: user.username,
+      email: user.email,
+      message: 'Thông tin người dùng và mật khẩu đã được cập nhật'
+    });
+  } catch (err) {
+    res.status(500).json({ message: 'Token không hợp lệ hoặc lỗi server' });
+  }
+});
+
+
+
+
+
 
 
 
