@@ -2,6 +2,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const sendEmail = require('./sendEmail');
+const path = require('path');
 const app = express();
 const Article= require('./model/article');
 app.use(cors());
@@ -309,8 +310,11 @@ const articlesRouter = require('./articles');
 app.use('/api/articles', articlesRouter);
 
 if (process.env.NODE_ENV === 'production') {
-  app.use(express.static(path.join(__dirname, 'client/build')));
-  app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, 'client/build', 'index.html'));
-  })
+  // Serve any static files
+  app.use(express.static(path.join(__dirname, 'build')));
+
+// Điều hướng tất cả các yêu cầu khác đến tệp index.html
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'build', 'index.html'));
+});
 }
