@@ -1,9 +1,8 @@
 import React, { useState } from "react";
 import * as s from "../../../Style/Dashboard";
-import LogoImage from "../../../Image/web.png";
-import AdminAvatar from "../../../Image/facebook.png";
 import Navbar from "../../Navbar";
 import { Bar } from "react-chartjs-2";
+import Sidebar from "../Sidebar";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -54,59 +53,7 @@ const Coordinator_Dashboard = () => {
     <s.Container>
       <Navbar />
       <s.MainContent>
-        <s.Sidebar>
-          <s.LogoContainer>
-            <s.Logo src={LogoImage} alt="Website Logo" />
-          </s.LogoContainer>
-          <s.AdminInfo>
-            <s.Avatar src={AdminAvatar} alt="Admin Avatar" />
-            <s.AdminName>John Doe</s.AdminName>
-          </s.AdminInfo>
-          <s.MainMenu>
-            <s.MenuTitle>Main Menu</s.MenuTitle>
-            <s.StyledLink
-              to="/Coordinator"
-              onClick={() => handleItemClick("Dash Broad")}
-            >
-              <s.SidebarItem selected={selectedItem === "Dash Broad"}>
-                Dash Broad
-              </s.SidebarItem>
-            </s.StyledLink>
-            <s.StyledLink
-              to="/Coordinator/Articles"
-              onClick={() => handleItemClick("Articles")}
-            >
-              <s.SidebarItem selected={selectedItem === "Articles"}>
-                Articles
-              </s.SidebarItem>
-            </s.StyledLink>
-            <s.StyledLink
-              to="/system-settings"
-              onClick={() => handleItemClick("Export Report")}
-            >
-              <s.SidebarItem selected={selectedItem === "Export Report"}>
-                Export Report
-              </s.SidebarItem>
-            </s.StyledLink>
-          </s.MainMenu>
-          <s.MainMenu>
-            <s.MenuTitle>More</s.MenuTitle>
-            <s.StyledLink
-              to="/Setting/Profile"
-              onClick={() => handleItemClick("Profile")}
-            >
-              <s.SidebarItem selected={selectedItem === "Profile"}>
-                Settings
-              </s.SidebarItem>
-            </s.StyledLink>
-          </s.MainMenu>
-          <s.LogoutButton>
-            <s.LogoutBtn>
-              <s.LogoutIcon />
-              Logout
-            </s.LogoutBtn>
-          </s.LogoutButton>
-        </s.Sidebar>
+      <Sidebar selectedItem={selectedItem} handleItemClick={handleItemClick} />
         <s.Main>
           <s.DashboardContainer>
             <s.ChartContainerWrapper>
