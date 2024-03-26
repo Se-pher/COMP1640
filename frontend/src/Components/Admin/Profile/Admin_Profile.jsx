@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import * as s from "../../../Style/Profile";
-import LogoImage from "../../../Image/web.png";
-import AdminAvatar from "../../../Image/facebook.png";
+import Sidebar from "../sidebar";
 import Navbar from "../../Navbar";
 import axios from "axios";
 const Admin_Profile = () => {
@@ -14,9 +13,32 @@ const Admin_Profile = () => {
   const [newEmail, setNewEmail] = useState("");
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
+  const [userName, setUserName] = useState("");
 
-  // Hàm xử lý khi người dùng nhấn nút "Discard All"
+  useEffect(() => {
+    const token = localStorage.getItem("jwtToken");
+    if (token) {
+      fetchUsername(token);
+    }
+  }, []);
 
+  const fetchUsername = async (token) => {
+    try {
+      const response = await axios.get("/api/decode-token", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      setUserName(response.data.username);
+    } catch (error) {
+      console.error("Error fetching username:", error.response.data.message);
+    }
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem("jwtToken");
+    window.location.href = "/login"; 
+  };
 
   const handleSave = async () => {
     try {
@@ -42,7 +64,7 @@ const Admin_Profile = () => {
       // Handle error (e.g., display error message)
     }
   };
-  
+
   const fetchUserProfile = async () => {
     try {
       const token = localStorage.getItem("jwtToken");
@@ -51,16 +73,16 @@ const Admin_Profile = () => {
           Authorization: `Bearer ${token}`,
         },
       });
-  
+
       console.log("User profile data from backend:", response.data);
-  
+
       setUserProfile(response.data);
       setNewName(response.data.username);
     } catch (error) {
       console.error("Error fetching user profile:", error);
     }
   };
-  
+
   useEffect(() => {
     fetchUserProfile();
   }, []);
@@ -71,89 +93,30 @@ const Admin_Profile = () => {
     setCurrentPassword("");
     setNewPassword("");
   };
-  
-  const handleLogout = () => {
-    localStorage.removeItem('jwtToken'); // Xóa JWT từ local storage
-    window.location.href = '/login'; // Chuyển hướng người dùng về trang đăng nhập
-  };
+
   return (
     <s.Container>
       <Navbar />
       <s.MainContent>
-        <s.Sidebar>
-          <s.LogoContainer>
-            <s.Logo src={LogoImage} alt="Website Logo" />
-          </s.LogoContainer>
-          <s.AdminInfo>
-            <s.Avatar src={AdminAvatar} alt="Admin Avatar" />
-            <s.AdminName>Joe</s.AdminName>
-          </s.AdminInfo>
-          <s.MainMenu>
-            <s.MenuTitle>Main Menu</s.MenuTitle>
-            <s.StyledLink
-              to="/Admin"
-              onClick={() => handleItemClick("Account management")}
-            >
-              <s.SidebarItem selected={selectedItem === "Account management"}>
-                Account management
-              </s.SidebarItem>
-            </s.StyledLink>
-            <s.StyledLink
-              to="/Admin/Faculty"
-              onClick={() => handleItemClick("Faculty management")}
-            >
-              <s.SidebarItem selected={selectedItem === "Faculty management"}>
-                Faculty management
-              </s.SidebarItem>
-            </s.StyledLink>
-            <s.StyledLink
-              to="/system-settings"
-              onClick={() => handleItemClick("System settings")}
-            >
-              <s.SidebarItem selected={selectedItem === "System settings"}>
-                System settings
-              </s.SidebarItem>
-            </s.StyledLink>
-          </s.MainMenu>
-          <s.MainMenu>
-            <s.MenuTitle>More</s.MenuTitle>
-            <s.StyledLink
-              to="/Setting/Profile"
-              onClick={() => handleItemClick("profile")}
-            >
-              <s.SidebarItem selected={selectedItem === "profile"}>
-                Settings
-              </s.SidebarItem>
-            </s.StyledLink>
-          </s.MainMenu>
-          <s.LogoutButton onClick={handleLogout}>
-            <s.LogoutBtn>
-              <s.LogoutIcon />
-              Logout
-            </s.LogoutBtn>
-          </s.LogoutButton>
-        </s.Sidebar>
+        <Sidebar
+          selectedItem={selectedItem}
+          handleItemClick={handleItemClick}
+          userName={userName}
+          handleLogout={handleLogout}
+        />
         <s.Main>
           <s.AddUserContainer>
             <s.SquareContainer>
               <s.ProfileContainer>
                 <s.ProfileHeader>Personal Profile</s.ProfileHeader>
-                <s.AvatarSection>
-                  <s.Avatar src={AdminAvatar} alt="Admin Avatar" />
-                  <s.AvatarButtons>
-                    <s.AvatarButton>Change Photo</s.AvatarButton>
-                    <s.AvatarButton>Delete</s.AvatarButton>
-                  </s.AvatarButtons>
-                </s.AvatarSection>
-
                 <s.UserInfoSection>
                   <s.UserInfoField>
                     <s.FieldLabel>Name</s.FieldLabel>
                     <s.FieldInput
-  placeholder={userProfile.name}
-  value={newName}
-  onChange={(e) => setNewName(e.target.value)}
-/>
+                      placeholder={userProfile.name}
+                      value={newName}
+                      onChange={(e) => setNewName(e.target.value)}
+                    />
                   </s.UserInfoField>
 
                   <s.UserInfoField>
@@ -166,13 +129,13 @@ const Admin_Profile = () => {
                   </s.UserInfoField>
 
                   <s.UserInfoField>
-                  <s.FieldLabel>Current Password</s.FieldLabel>
-                  <s.FieldInput
-                    placeholder="Enter Current Password" // Bạn có thể thay đổi placeholder này
-                    onChange={(e) => setCurrentPassword(e.target.value)}
-                    type="password"
-                  />
-                </s.UserInfoField>
+                    <s.FieldLabel>Current Password</s.FieldLabel>
+                    <s.FieldInput
+                      placeholder="Enter Current Password" // Bạn có thể thay đổi placeholder này
+                      onChange={(e) => setCurrentPassword(e.target.value)}
+                      type="password"
+                    />
+                  </s.UserInfoField>
                   <s.UserInfoField>
                     <s.FieldLabel>Password</s.FieldLabel>
                     <s.FieldInput
