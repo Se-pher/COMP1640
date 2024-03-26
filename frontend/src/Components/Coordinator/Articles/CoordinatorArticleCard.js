@@ -1,5 +1,5 @@
 import React from 'react';
-import * as s from '../../../Style/CoordinatorArticles';
+import * as s from '../../../Style/Coordinator/CoordinatorArticles';
 import { Link } from 'react-router-dom';
 
 const CoordinatorArticleCard = ({ article }) => {
