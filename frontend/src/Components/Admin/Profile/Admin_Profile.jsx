@@ -1,30 +1,81 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import * as s from "../../../Style/Profile";
 import LogoImage from "../../../Image/web.png";
 import AdminAvatar from "../../../Image/facebook.png";
 import Navbar from "../../Navbar";
-
+import axios from "axios";
 const Admin_Profile = () => {
   const [selectedItem, setSelectedItem] = useState("profile");
   const handleItemClick = (item) => {
     setSelectedItem(item);
   };
-
-  const userProfile = {
-    name: "John Doe",
-    email: "john.doe@example.com",
-  };
-
-  const [newName, setNewName] = useState(userProfile.name);
-  const [newEmail, setNewEmail] = useState(userProfile.email);
+  const [userProfile, setUserProfile] = useState({});
+  const [newName, setNewName] = useState("");
+  const [newEmail, setNewEmail] = useState("");
+  const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
 
-  const handleDiscardAll = () => {
+  // Hàm xử lý khi người dùng nhấn nút "Discard All"
+
+
+  const handleSave = async () => {
+    try {
+      const token = localStorage.getItem("jwtToken");
+      const response = await axios.put(
+        "/api/user/decode-update",
+        {
+          name: newName,
+          email: newEmail,
+          currentPassword: currentPassword,
+          newPassword: newPassword,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      console.log("Updated user profile:", response.data);
+      // Optionally update state or show a success message
+    } catch (error) {
+      console.error("Error updating user profile:", error);
+      // Handle error (e.g., display error message)
+    }
+  };
+  
+  const fetchUserProfile = async () => {
+    try {
+      const token = localStorage.getItem("jwtToken");
+      const response = await axios.get("/api/decode-token", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+  
+      console.log("User profile data from backend:", response.data);
+  
+      setUserProfile(response.data);
+      setNewName(response.data.username);
+    } catch (error) {
+      console.error("Error fetching user profile:", error);
+    }
+  };
+  
+  useEffect(() => {
+    fetchUserProfile();
+  }, []);
+
+  const handleDiscard = () => {
     setNewName(userProfile.name);
     setNewEmail(userProfile.email);
+    setCurrentPassword("");
     setNewPassword("");
   };
-
+  
+  const handleLogout = () => {
+    localStorage.removeItem('jwtToken'); // Xóa JWT từ local storage
+    window.location.href = '/login'; // Chuyển hướng người dùng về trang đăng nhập
+  };
   return (
     <s.Container>
       <Navbar />
@@ -75,7 +126,7 @@ const Admin_Profile = () => {
               </s.SidebarItem>
             </s.StyledLink>
           </s.MainMenu>
-          <s.LogoutButton>
+          <s.LogoutButton onClick={handleLogout}>
             <s.LogoutBtn>
               <s.LogoutIcon />
               Logout
@@ -99,10 +150,10 @@ const Admin_Profile = () => {
                   <s.UserInfoField>
                     <s.FieldLabel>Name</s.FieldLabel>
                     <s.FieldInput
-                      placeholder={userProfile.name}
-                      value={newName}
-                      onChange={(e) => setNewName(e.target.value)}
-                    />
+  placeholder={userProfile.name}
+  value={newName}
+  onChange={(e) => setNewName(e.target.value)}
+/>
                   </s.UserInfoField>
 
                   <s.UserInfoField>
@@ -114,6 +165,14 @@ const Admin_Profile = () => {
                     />
                   </s.UserInfoField>
 
+                  <s.UserInfoField>
+                  <s.FieldLabel>Current Password</s.FieldLabel>
+                  <s.FieldInput
+                    placeholder="Enter Current Password" // Bạn có thể thay đổi placeholder này
+                    onChange={(e) => setCurrentPassword(e.target.value)}
+                    type="password"
+                  />
+                </s.UserInfoField>
                   <s.UserInfoField>
                     <s.FieldLabel>Password</s.FieldLabel>
                     <s.FieldInput
@@ -127,10 +186,12 @@ const Admin_Profile = () => {
                   {(newName !== userProfile.name ||
                     newEmail !== userProfile.email ||
                     newPassword !== "") && (
-                    <s.DiscardButton>Discard All</s.DiscardButton>
+                    <s.DiscardButton onClick={handleDiscard}>
+                      Discard All
+                    </s.DiscardButton>
                   )}
 
-                  <s.SaveButton>Save</s.SaveButton>
+                  <s.SaveButton onClick={handleSave}>Save</s.SaveButton>
                 </s.UserInfoSection>
               </s.ProfileContainer>
             </s.SquareContainer>
