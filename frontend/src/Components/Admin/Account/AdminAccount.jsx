@@ -16,10 +16,8 @@ const Admin = () => {
   const [showEditModal, setShowEditModal] = useState(false);
   const [deleteUserModalVisible, setDeleteUserModalVisible] = useState(false);
   const [userData, setUserData] = useState([]);
-  const [currentUser, setCurrentUser] = useState(null); // Changed variable name
-
   const [showPasswordState, setShowPasswordState] = useState({});
-
+  const [userName, setUserName] = useState('');
   const [editedUser, setEditedUser] = useState(null);
   const [selectedUser, setSelectedUser] = useState(null);
 
@@ -99,19 +97,29 @@ const Admin = () => {
   };
 
   useEffect(() => {
-    const fetchCurrentUser = async () => {
-      try {
-        const response = await axios.get('/api/currentUser'); 
-        const currentUserData = response.data;
-        setCurrentUser(currentUserData); // Set currentUser instead of currentUserData
-      } catch (error) {
-        console.error('Error fetching current user:', error);
-      }
-    };
-  
-    fetchCurrentUser();
+    const token = localStorage.getItem('jwtToken');
+    if (token) {
+      fetchUsername(token);
+    }
   }, []);
-  
+
+  const fetchUsername = async (token) => {
+    try {
+      const response = await axios.get('/api/decode-token', {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
+      setUserName(response.data.username);
+    } catch (error) {
+      console.error('Error fetching username:', error.response.data.message);
+    }
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem('jwtToken'); // Xóa JWT từ local storage
+    window.location.href = '/login'; // Chuyển hướng người dùng về trang đăng nhập
+  };
 
   return (
     <s.Container>
@@ -123,7 +131,7 @@ const Admin = () => {
           </s.LogoContainer>
           <s.AdminInfo>
             <s.Avatar src={AdminAvatar} alt="Admin Avatar" />
-            <s.AdminName>{currentUser && currentUser.username}</s.AdminName>
+            <s.AdminName>{userName}</s.AdminName>
           </s.AdminInfo>
           <s.MainMenu>
             <s.MenuTitle>Main Menu</s.MenuTitle>
@@ -163,7 +171,7 @@ const Admin = () => {
               </s.SidebarItem>
             </s.StyledLink>
           </s.MainMenu>
-          <s.LogoutButton>
+          <s.LogoutButton onClick={handleLogout}>
           <s.LogoutBtn>
             <s.LogoutIcon />
             Logout

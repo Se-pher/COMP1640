@@ -2,11 +2,12 @@ const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const sendEmail = require('./sendEmail');
-
 const app = express();
+const Article= require('./model/article');
 app.use(cors());
 app.use(express.json());
-
+const jwt = require('jsonwebtoken');
+const SECRET_KEY = 'secretkey';
 mongoose.connect('mongodb+srv://COMP1640:COMP1640group5@cluster0.kgdq0tl.mongodb.net/COMP1640?retryWrites=true&w=majority', {
   useNewUrlParser: true,
   useUnifiedTopology: true,
@@ -23,7 +24,6 @@ const userSchema = new mongoose.Schema({
 });
 
 const User = mongoose.model('User', userSchema);
-
 app.post('/api/users', async (req, res) => {
   const { username, email, password, role, facultyName } = req.body;
 
@@ -102,7 +102,11 @@ app.post('/api/login', async (req, res) => {
     if (!user) {
       return res.status(401).json({ message: 'Invalid email or password' });
     }
-    res.json(user);
+    const token = jwt.sign({ userId: user._id, role: user.role }, SECRET_KEY, {
+      expiresIn: '1d', 
+    });
+
+    res.json({ user, token });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
@@ -199,21 +203,68 @@ app.delete('/api/faculties/:id', async (req, res) => {
     res.status(400).json({ message: err.message });
   }
 });
-app.get('/api/currentUser', async (req, res) => {
+
+
+const authenticateToken = (req, res, next) => {
+  const token = req.header['auth-token'];
+
+  if (!token) {
+      return res.status(401).json({ message: 'Missing token' });
+  }
+
   try {
-    if (!req.user) {
-      return res.status(401).json({ error: 'User not logged in' });
-    }
-    const currentUser = await User.findById(req.user.id);
-    if (!currentUser) {
-      return res.status(404).json({ error: 'User not found' });
-    }
-    res.json(currentUser);
+      
+      const decodedToken = jwt.verify(token, SECRET_KEY);
+      console.log('Decoded token:', decodedToken);
+      req.user = decodedToken; 
+      next();
+  } catch (err) {
+      return res.status(403).json({ message: 'Invalid token' });
+  }
+};
+
+
+
+
+//ARTICLE
+app.get('/api/articles', async (req, res) => {
+  try {
+    const articles = await Article.find();
+    res.json(articles);
   } catch (error) {
-    console.error('Error fetching current user:', error);
-    res.status(500).json({ error: 'Server error' });
+    res.status(500).json({ message: error.message });
   }
 });
+
+
+
+
+//TOKEN
+
+app.get('/api/decode-token', async (req, res) => {
+  if (!req.headers.authorization || !req.headers.authorization.startsWith('Bearer ')) {
+    return res.status(401).json({ message: 'No token provided' });
+  }
+
+  const token = req.headers.authorization.split(' ')[1];
+
+  try {
+    const decoded = jwt.verify(token, SECRET_KEY); 
+    const user = await User.findById(decoded.userId); 
+
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    res.json({ username: user.username }); 
+  } catch (err) {
+    res.status(500).json({ message: 'Invalid token' });
+  }
+});
+
+
+
+
 
 const port = process.env.PORT || 5000;
 app.listen(port, () => {
@@ -222,6 +273,3 @@ app.listen(port, () => {
 
 const articlesRouter = require('./articles');
 app.use('/api/articles', articlesRouter);
-
-const imagesRouter = require('./images');
-app.use('/api/images', imagesRouter);
