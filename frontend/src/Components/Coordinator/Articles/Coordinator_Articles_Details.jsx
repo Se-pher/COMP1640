@@ -5,11 +5,29 @@ import AdminAvatar from "../../../Image/facebook.png";
 import Navbar from "../../Navbar";
 import { articles } from "../../data";
 import { useParams } from "react-router-dom";
+import FeedbackPopup from "./FeedbackPopup";
 
 const Coordinator_Articles_Details = () => {
   const [selectedItem, setSelectedItem] = useState("Articles");
   const handleItemClick = (item) => {
     setSelectedItem(item);
+  };
+
+  const [isPopupOpen, setIsPopupOpen] = useState(false);
+  const [selectedOption, setSelectedOption] = useState("");
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+
+  const handleOptionSelect = (option) => {
+    setSelectedOption(option);
+    setIsPopupOpen(true);
+  };
+
+  const handleSubmitFeedback = (feedback) => {
+    console.log(`Feedback for ${selectedOption}: ${feedback}`);
+  };
+
+  const toggleDropdown = () => {
+    setIsDropdownOpen(!isDropdownOpen);
   };
 
   const { id } = useParams();
@@ -78,14 +96,41 @@ const Coordinator_Articles_Details = () => {
         <s.Main>
           <s.ArticlesContainer>
             <s.SquareContainer>
+              <s.ActionsContainer>
+                <s.ApprovalDropdown>
+                  <s.DropdownButton onClick={toggleDropdown}>
+                    Choose option <s.DropdownIcon />
+                  </s.DropdownButton>
+                  {isDropdownOpen && (
+                    <s.DropdownMenu>
+                      <s.DropdownOption
+                        onClick={() => handleOptionSelect("Approved")}
+                      >
+                        Approved
+                      </s.DropdownOption>
+                      <s.DropdownOption
+                        onClick={() => handleOptionSelect("Rejected")}
+                      >
+                        Rejected
+                      </s.DropdownOption>
+                    </s.DropdownMenu>
+                  )}
+                </s.ApprovalDropdown>
+              </s.ActionsContainer>
+              <FeedbackPopup
+                isOpen={isPopupOpen}
+                onClose={() => setIsPopupOpen(false)}
+                onSubmit={handleSubmitFeedback}
+              />
               <s.ArticleHeader>
                 <s.ArticleTitle>{article.title}</s.ArticleTitle>
               </s.ArticleHeader>
               <s.ArticleContent>
                 <s.ArticleDetails>
-                <s.ArticleDescription>
+                  <s.ArticleDescription>
                     {article.description}
                   </s.ArticleDescription>
+                  <s.Divider />
                   <s.ArticleMetadata>
                     <s.ArticleDate>{article.date}</s.ArticleDate>
                     <s.ArticleAuthor>
