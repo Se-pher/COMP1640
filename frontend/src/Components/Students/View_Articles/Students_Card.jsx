@@ -5,8 +5,8 @@ import { Link } from 'react-router-dom';
 const StudentsCard = ({ article }) => {
     return (
       <s.StudentsCard>
-        <Link to={`/Student/Articles/${article.id}`}>
-        <s.ArticleImage src={article.avatarURL} alt={article.title} />
+        <Link to={`/Student/View/article/${article._id}`}>
+        <s.ArticleImage src={article.imageURL} alt={article.title} />
         </Link>
         <s.ArticleInfo>
         <s.ArticleDate>

@@ -11,12 +11,17 @@ const Student_Upload = () => {
   const [description, setDescription] = useState("");
   const [content, setContent] = useState("");
   const [userName, setUserName] = useState("");
+  const [imageFile, setImageFile] = useState(null);
+  const [wordFile, setWordFile] = useState(null);
 
-  // const [imageFile, setImageFile] = useState(null);
+  const handleImageUpload = (e) => {
+    setImageFile(e.target.files[0]);
+  };
 
-  // const handleImageUpload = (e) => {
-  //     setImageFile(e.target.files[0]);
-  // };
+  const handleWordUpload = (e) => {
+    setWordFile(e.target.files[0]);
+  };
+
   const handleItemClick = (item) => {
     setSelectedItem(item);
   };
@@ -43,42 +48,51 @@ const Student_Upload = () => {
 
   const handleLogout = () => {
     localStorage.removeItem("jwtToken");
-    window.location.href = "/login"; 
+    window.location.href = "/login";
   };
 
   const handleUpload = async () => {
     try {
-      // const imageFormData = new FormData();
-      // imageFormData.append('image', imageFile);
-
-      // const imageResponse = await axios.post('/api/images', imageFormData, {
-      //     headers: {
-      //         'Content-Type': 'multipart/form-data'
-      //     }
-      // });
-      // const contributionId = imageResponse.data._id;
-      const wordCount = content.trim().split(/\s+/).length;
-
+      const imageFormData = new FormData();
+      imageFormData.append('image', imageFile);
+  
+      const wordFileFormData = new FormData();
+      wordFileFormData.append('wordFile', wordFile);
+  
+      const imageResponse = await axios.post('/api/images', imageFormData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+      const imageURL = imageResponse.data.secure_url;
+  
+      const wordFileResponse = await axios.post('/api/wordFiles', wordFileFormData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+      const wordFileURL = wordFileResponse.data.secure_url;
+  
+      // Lấy facultyName từ localStorage hoặc state của ứng dụng
+      const facultyName = 'Your Faculty Name'; // Thay đổi này bằng cách lấy giá trị thực tế từ nguồn dữ liệu của bạn
+  
       const articleData = {
         title,
         description,
-        content,
-        createdAt: new Date(),
-        facultyName: "Your Faculty Name",
-        author: "Your Name",
-        avatarURL: "Your Avatar URL",
-        // contributionId
+        imageURL,
+        wordFileURL,
+        facultyName,
       };
-
-      const articleResponse = await axios.post("/api/articles", articleData);
-
-      console.log("Article uploaded successfully:", articleResponse.data);
-      setTitle("");
-      setDescription("");
-      setContent("");
-      // setImageFile(null);
+  
+      const articleResponse = await axios.post('/api/articles', articleData);
+  
+      console.log('Article uploaded successfully:', articleResponse.data);
+      setTitle('');
+      setDescription('');
+      setImageFile(null);
+      setWordFile(null);
     } catch (error) {
-      console.error("Error uploading article:", error);
+      console.error('Error uploading article:', error);
     }
   };
 
@@ -115,18 +129,13 @@ const Student_Upload = () => {
                 />
               </s.InputWrapper>
               <s.InputWrapper>
-                <s.Label>Content:</s.Label>
-                <s.TextArea
-                  name="content"
-                  value={content}
-                  onChange={(e) => setContent(e.target.value)}
-                  placeholder="Enter Content"
-                />
+                <s.Label>Upload Image:</s.Label>
+                <input type="file" onChange={handleImageUpload} />
               </s.InputWrapper>
-              {/* <s.InputWrapper>
-                                <s.Label>Upload Image:</s.Label>
-                                <input type="file" onChange={handleImageUpload} />
-                            </s.InputWrapper> */}
+              <s.InputWrapper>
+                <s.Label>Upload Word File:</s.Label>
+                <input type="file" onChange={handleWordUpload} />
+              </s.InputWrapper>
               <s.ButtonContainer>
                 <s.UploadArticlesButton onClick={handleUpload}>
                   Upload Articles

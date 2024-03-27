@@ -149,7 +149,7 @@ export const AuthorAvatar = styled.img`
 export const StudentsCard = styled.div`
   background-color: #fff;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  border-radius: 4px;
+  border-radius: 10px;
   overflow: hidden;
   height: 290px;
   display: flex;

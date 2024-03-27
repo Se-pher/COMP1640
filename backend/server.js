@@ -4,6 +4,9 @@ const cors = require('cors');
 const sendEmail = require('./sendEmail');
 const path = require('path');
 const app = express();
+const cloudinary = require("cloudinary").v2;
+const multer = require('multer');
+const upload = multer({ dest: 'uploads/' });
 const Article= require('./model/article');
 app.use(cors());
 app.use(express.json());
@@ -318,3 +321,44 @@ app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, 'build', 'index.html'));
 });
 }
+
+cloudinary.config({ 
+  cloud_name: 'dfb35pzql', 
+  api_key: '132197331175924', 
+  api_secret: 'AUAXIDuv1M5AC7ObFPwEMvyiQKo' 
+});
+
+app.post('/api/images', upload.single('image'), async (req, res) => {
+  try {
+    if (!req.file) {
+      return res.status(400).json({ message: 'No file uploaded' });
+    }
+
+    const fileStr = req.file.path;
+    const uploadResponse = await cloudinary.uploader.upload(fileStr, {
+      upload_preset: 'COMP1640',
+    });
+    res.json(uploadResponse);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ err: 'Something went wrong' });
+  }
+});
+
+app.post('/api/wordFiles', upload.single('wordFile'), async (req, res) => {
+  try {
+    if (!req.file) {
+      return res.status(400).json({ message: 'No file uploaded' });
+    }
+
+    const fileStr = req.file.path;
+    const uploadResponse = await cloudinary.uploader.upload(fileStr, {
+      upload_preset: 'COMP1640',
+      resource_type: 'raw',
+    });
+    res.json(uploadResponse);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ err: 'Something went wrong' });
+  }
+});
