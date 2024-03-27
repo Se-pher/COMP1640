@@ -4,12 +4,13 @@ import Sidebar from "../sidebar";
 import Navbar from "../../Navbar";
 import axios from "axios";
 // import Term from './Term';
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const Student_Upload = () => {
   const [selectedItem, setSelectedItem] = useState("Upload Articles");
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
-  const [content, setContent] = useState("");
   const [userName, setUserName] = useState("");
   const [imageFile, setImageFile] = useState(null);
   const [wordFile, setWordFile] = useState(null);
@@ -54,28 +55,31 @@ const Student_Upload = () => {
   const handleUpload = async () => {
     try {
       const imageFormData = new FormData();
-      imageFormData.append('image', imageFile);
-  
+      imageFormData.append("image", imageFile);
+
       const wordFileFormData = new FormData();
-      wordFileFormData.append('wordFile', wordFile);
-  
-      const imageResponse = await axios.post('/api/images', imageFormData, {
+      wordFileFormData.append("wordFile", wordFile);
+
+      const imageResponse = await axios.post("/api/images", imageFormData, {
         headers: {
-          'Content-Type': 'multipart/form-data',
+          "Content-Type": "multipart/form-data",
         },
       });
       const imageURL = imageResponse.data.secure_url;
-  
-      const wordFileResponse = await axios.post('/api/wordFiles', wordFileFormData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      });
+
+      const wordFileResponse = await axios.post(
+        "/api/wordFiles",
+        wordFileFormData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
       const wordFileURL = wordFileResponse.data.secure_url;
-  
-      // Lấy facultyName từ localStorage hoặc state của ứng dụng
-      const facultyName = 'Your Faculty Name'; // Thay đổi này bằng cách lấy giá trị thực tế từ nguồn dữ liệu của bạn
-  
+
+      const facultyName = "Your Faculty Name";
+
       const articleData = {
         title,
         description,
@@ -83,16 +87,36 @@ const Student_Upload = () => {
         wordFileURL,
         facultyName,
       };
-  
-      const articleResponse = await axios.post('/api/articles', articleData);
-  
-      console.log('Article uploaded successfully:', articleResponse.data);
-      setTitle('');
-      setDescription('');
+
+      const articleResponse = await axios.post("/api/articles", articleData);
+
+      console.log("Article uploaded successfully:", articleResponse.data);
+      setTitle("");
+      setDescription("");
       setImageFile(null);
       setWordFile(null);
+
+      toast.success("Article uploaded successfully!", {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
     } catch (error) {
-      console.error('Error uploading article:', error);
+      console.error("Error uploading article:", error);
+
+      toast.error("Error uploading article", {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
     }
   };
 
@@ -145,6 +169,7 @@ const Student_Upload = () => {
           </s.UploadContainer>
         </s.Main>
       </s.MainContent>
+      <ToastContainer />
     </s.Container>
   );
 };
