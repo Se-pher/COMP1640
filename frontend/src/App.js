@@ -14,6 +14,7 @@ import Profile from "./Components/Admin/Profile/Admin_Profile";
 import CoordinatorArticles from "./Components/Coordinator/Articles/Coordinator_Articles";
 import CoordinatorArticlesDetails from "./Components/Coordinator/Articles/Coordinator_Articles_Details"; // Import the component
 import StudentsView from "./Components/Students/View_Articles/Students_View";
+import StudentArticleDetails from "./Components/Students/View_Articles/Student_Article_Details";
 import axios from 'axios';
 
 axios.defaults.baseURL = 'http://localhost:5000';
@@ -35,6 +36,7 @@ function App() {
         <Route path="/Coordinator/Articles/:id" element={<CoordinatorArticlesDetails />} /> {/* Add this line */}
         <Route path="/Setting/Profile" element={<Profile />} />
         <Route path="/student/View" element={<StudentsView />} />
+        <Route path="/Student/View/article/:id" component={StudentArticleDetails} />
       </Routes>
     </Router>
   );
