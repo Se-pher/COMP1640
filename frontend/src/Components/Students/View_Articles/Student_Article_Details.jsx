@@ -3,24 +3,26 @@ import axios from "axios";
 import Sidebar from "../sidebar";
 import Navbar from "../../Navbar";
 import * as s from "../../../Style/Student/Student_Details";
+import DocViewer, { DocViewerRenderers } from "@cyntler/react-doc-viewer";
+import { useParams } from "react-router-dom";
 
-const Student_Article_Details = ({ match }) => {
+const Student_Article_Details = () => {
+  const { id } = useParams();
   const [article, setArticle] = useState(null);
   const [userName, setUserName] = useState("");
 
   useEffect(() => {
     const fetchArticle = async () => {
       try {
-        const { data } = await axios.get(`/api/articles/${match.params.id}`);
-        console.log("Fetched article data:", data); // Thêm dòng này
+        const { data } = await axios.get(`/api/articles/${id}`);
+        console.log("Fetched article data:", data);
         setArticle(data);
       } catch (error) {
         console.error("Error fetching article:", error);
       }
     };
-
     fetchArticle();
-  }, [match.params.id]);
+  }, [id]);
 
   useEffect(() => {
     const token = localStorage.getItem("jwtToken");
@@ -59,13 +61,20 @@ const Student_Article_Details = ({ match }) => {
         <s.Main>
           {article && (
             <s.ArticleContainer>
-              <iframe
-                src={`https://docs.google.com/viewer?url=${article.wordFileUrl}&embedded=true`}
-                frameBorder="0"
-                width="100%"
-                height="600px"
-                title="Article Preview"
-              ></iframe>
+              {article && article.wordFileURL ? (
+                <DocViewer
+                  pluginRenderers={DocViewerRenderers}
+                  documents={[
+                    {
+                      uri: article.wordFileURL,
+                      fileType: "docx",
+                    },
+                  ]}
+                  style={{ height: "600px" }}
+                />
+              ) : (
+                <p>Không tìm thấy tệp word.</p>
+              )}
             </s.ArticleContainer>
           )}
         </s.Main>

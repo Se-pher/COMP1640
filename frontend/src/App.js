@@ -33,10 +33,10 @@ function App() {
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/Coordinator" element={<CoordinatorDashboard />} />
         <Route path="/Coordinator/Articles" element={<CoordinatorArticles />} />
-        <Route path="/Coordinator/Articles/:id" element={<CoordinatorArticlesDetails />} /> {/* Add this line */}
+        <Route path="/Coordinator/Articles/:id" element={<CoordinatorArticlesDetails />} />
         <Route path="/Setting/Profile" element={<Profile />} />
         <Route path="/student/View" element={<StudentsView />} />
-        <Route path="/Student/View/article/:id" component={StudentArticleDetails} />
+        <Route path="/Student/View/article/:id" element={<StudentArticleDetails />} />
       </Routes>
     </Router>
   );

@@ -55,48 +55,44 @@ const Student_Upload = () => {
   const handleUpload = async () => {
     try {
       const imageFormData = new FormData();
-      imageFormData.append("image", imageFile);
-
+      imageFormData.append('image', imageFile);
+  
       const wordFileFormData = new FormData();
-      wordFileFormData.append("wordFile", wordFile);
-
-      const imageResponse = await axios.post("/api/images", imageFormData, {
+      wordFileFormData.append('wordFile', wordFile);
+  
+      const imageResponse = await axios.post('/api/images', imageFormData, {
         headers: {
-          "Content-Type": "multipart/form-data",
+          'Content-Type': 'multipart/form-data',
         },
       });
       const imageURL = imageResponse.data.secure_url;
-
-      const wordFileResponse = await axios.post(
-        "/api/wordFiles",
-        wordFileFormData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      );
-      const wordFileURL = wordFileResponse.data.secure_url;
-
-      const facultyName = "Your Faculty Name";
-
+  
+      const wordFileResponse = await axios.post('/api/wordFiles', wordFileFormData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+      const fileURL = wordFileResponse.data.fileURL;
+  
+      const facultyName = 'Your Faculty Name'; 
+  
       const articleData = {
         title,
         description,
         imageURL,
-        wordFileURL,
+        wordFileURL: fileURL,
         facultyName,
       };
-
-      const articleResponse = await axios.post("/api/articles", articleData);
-
-      console.log("Article uploaded successfully:", articleResponse.data);
-      setTitle("");
-      setDescription("");
+  
+      const articleResponse = await axios.post('/api/articles', articleData);
+  
+      console.log('Article uploaded successfully:', articleResponse.data);
+      setTitle('');
+      setDescription('');
       setImageFile(null);
       setWordFile(null);
-
-      toast.success("Article uploaded successfully!", {
+  
+      toast.success('Article uploaded successfully!', {
         position: "top-right",
         autoClose: 5000,
         hideProgressBar: false,
@@ -106,9 +102,9 @@ const Student_Upload = () => {
         progress: undefined,
       });
     } catch (error) {
-      console.error("Error uploading article:", error);
-
-      toast.error("Error uploading article", {
+      console.error('Error uploading article:', error);
+  
+      toast.error('Error uploading article', {
         position: "top-right",
         autoClose: 5000,
         hideProgressBar: false,
