@@ -154,5 +154,5 @@ export const StudentsCard = styled.div`
   height: 290px;
   display: flex;
   flex-direction: column;
-
+  width: 340px;
 `;

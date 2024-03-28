@@ -352,13 +352,36 @@ app.post('/api/wordFiles', upload.single('wordFile'), async (req, res) => {
     }
 
     const fileStr = req.file.path;
+    const fileExtension = path.extname(req.file.originalname).toLowerCase();
+    const fileType = fileExtension === '.doc' ? 'application/msword' : 'application/vnd.openxmlformats-officedocument.wordprocessingml.document';
+
     const uploadResponse = await cloudinary.uploader.upload(fileStr, {
       upload_preset: 'COMP1640',
-      resource_type: 'raw',
+      resource_type: 'auto', // Thay đổi thành 'auto' hoặc loại tệp phù hợp
+      file_type: fileType,
+      public_id: `${req.file.originalname.split('.')[0]}`,
+      use_filename: true,
+      unique_filename: false,
+      overwrite: true,
     });
-    res.json(uploadResponse);
+
+    const fileURL = uploadResponse.secure_url;
+
+    res.json({ fileURL });
   } catch (err) {
     console.error(err);
     res.status(500).json({ err: 'Something went wrong' });
+  }
+});
+
+app.get('/api/articles/:id', async (req, res) => {
+  try {
+    const article = await Article.findById(req.params.id);
+    if (!article) {
+      return res.status(404).json({ message: 'Article not found' });
+    }
+    res.json(article);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
   }
 });
