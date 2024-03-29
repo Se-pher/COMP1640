@@ -4,7 +4,6 @@ const cors = require('cors');
 const sendEmail = require('./sendEmail');
 const path = require('path');
 const app = express();
-const cloudinary = require("cloudinary").v2;
 const multer = require('multer');
 const upload = multer({ dest: 'uploads/' });
 const Article= require('./model/article');
@@ -322,58 +321,6 @@ app.get('*', (req, res) => {
 });
 }
 
-cloudinary.config({ 
-  cloud_name: 'dfb35pzql', 
-  api_key: '132197331175924', 
-  api_secret: 'AUAXIDuv1M5AC7ObFPwEMvyiQKo' 
-});
-
-app.post('/api/images', upload.single('image'), async (req, res) => {
-  try {
-    if (!req.file) {
-      return res.status(400).json({ message: 'No file uploaded' });
-    }
-
-    const fileStr = req.file.path;
-    const uploadResponse = await cloudinary.uploader.upload(fileStr, {
-      upload_preset: 'COMP1640',
-    });
-    res.json(uploadResponse);
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ err: 'Something went wrong' });
-  }
-});
-
-app.post('/api/wordFiles', upload.single('wordFile'), async (req, res) => {
-  try {
-    if (!req.file) {
-      return res.status(400).json({ message: 'No file uploaded' });
-    }
-
-    const fileStr = req.file.path;
-    const fileExtension = path.extname(req.file.originalname).toLowerCase();
-    const fileType = fileExtension === '.doc' ? 'application/msword' : 'application/vnd.openxmlformats-officedocument.wordprocessingml.document';
-
-    const uploadResponse = await cloudinary.uploader.upload(fileStr, {
-      upload_preset: 'COMP1640',
-      resource_type: 'auto', // Thay đổi thành 'auto' hoặc loại tệp phù hợp
-      file_type: fileType,
-      public_id: `${req.file.originalname.split('.')[0]}`,
-      use_filename: true,
-      unique_filename: false,
-      overwrite: true,
-    });
-
-    const fileURL = uploadResponse.secure_url;
-
-    res.json({ fileURL });
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ err: 'Something went wrong' });
-  }
-});
-
 app.get('/api/articles/:id', async (req, res) => {
   try {
     const article = await Article.findById(req.params.id);
@@ -383,5 +330,75 @@ app.get('/api/articles/:id', async (req, res) => {
     res.json(article);
   } catch (error) {
     res.status(500).json({ message: error.message });
+  }
+});
+
+const admin = require('firebase-admin');
+
+const serviceAccount = require('./comp1640clound-firebase-adminsdk-8bb7x-be325de63f.json');
+
+admin.initializeApp({
+  credential: admin.credential.cert(serviceAccount),
+  storageBucket: 'comp1640clound.appspot.com'
+});
+
+const bucket = admin.storage().bucket();
+
+app.post('/api/images', upload.single('image'), async (req, res) => {
+  try {
+    if (!req.file) {
+      return res.status(400).json({ message: 'No file uploaded' });
+    }
+
+    const file = req.file;
+    const imagePath = `images/${file.originalname}`;
+
+    await bucket.upload(file.path, {
+      destination: imagePath,
+    });
+
+    const blob = bucket.file(imagePath);
+    
+    const [imageUrl] = await blob.getSignedUrl({
+      action: 'read',
+      expires: '03-17-2025',
+    });
+
+    res.json({ secure_url: imageUrl });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ err: 'Something went wrong' });
+  }
+});
+
+
+app.post('/api/wordFiles', upload.single('wordFile'), async (req, res) => {
+  try {
+    if (!req.file) {
+      return res.status(400).json({ message: 'No file uploaded' });
+    }
+
+    const file = req.file;
+    const fileExtension = path.extname(file.originalname).toLowerCase();
+    const fileType =
+      fileExtension === '.doc'
+        ? 'application/msword'
+        : 'application/vnd.openxmlformats-officedocument.wordprocessingml.document';
+
+    const wordFilePath = `wordFiles/${file.originalname}`;
+
+    await bucket.upload(file.path, {
+      destination: wordFilePath,
+      metadata: {
+        contentType: fileType,
+      },
+    });
+
+    const fileURL = `https://storage.googleapis.com/${bucket.name}/${wordFilePath}`;
+
+    res.json({ fileURL });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ err: 'Something went wrong' });
   }
 });
