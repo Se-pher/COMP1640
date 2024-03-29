@@ -12,6 +12,7 @@ const Student_Upload = () => {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [userName, setUserName] = useState("");
+  const [facultyName, setFacultyName] = useState("");
   const [imageFile, setImageFile] = useState(null);
   const [wordFile, setWordFile] = useState(null);
 
@@ -31,6 +32,7 @@ const Student_Upload = () => {
     const token = localStorage.getItem("jwtToken");
     if (token) {
       fetchUsername(token);
+      fetchUserData(token);
     }
   }, []);
 
@@ -41,9 +43,26 @@ const Student_Upload = () => {
           Authorization: `Bearer ${token}`,
         },
       });
-      setUserName(response.data.username);
+      return response.data;
     } catch (error) {
       console.error("Error fetching username:", error.response.data.message);
+    }
+  };
+
+  const fetchUserData = async (token) => {
+    try {
+      const response = await axios.get("/api/decode-token", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      if (response.data) {
+        setFacultyName(response.data.facultyName);
+      } else {
+        console.error("Error: User data is null");
+      }
+    } catch (error) {
+      console.error("Error fetching user data:", error.response.data.message);
     }
   };
 
@@ -56,54 +75,55 @@ const Student_Upload = () => {
     try {
       const imageFormData = new FormData();
       imageFormData.append('image', imageFile);
-  
+
       const wordFileFormData = new FormData();
       wordFileFormData.append('wordFile', wordFile);
-  
+
       const imageResponse = await axios.post('/api/images', imageFormData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
       });
       const imageURL = imageResponse.data.secure_url;
-  
+
       const wordFileResponse = await axios.post('/api/wordFiles', wordFileFormData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
       });
       const fileURL = wordFileResponse.data.fileURL;
-  
-      const facultyName = 'Your Faculty Name'; 
-  
-      const articleData = {
-        title,
-        description,
-        imageURL,
-        wordFileURL: fileURL,
-        facultyName,
-      };
-  
-      const articleResponse = await axios.post('/api/articles', articleData);
-  
-      console.log('Article uploaded successfully:', articleResponse.data);
-      setTitle('');
-      setDescription('');
-      setImageFile(null);
-      setWordFile(null);
-  
-      toast.success('Article uploaded successfully!', {
-        position: "top-right",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-      });
+
+      const token = localStorage.getItem("jwtToken");
+      if (token) {
+        const articleData = {
+          title,
+          description,
+          imageURL,
+          wordFileURL: fileURL,
+          facultyName,
+        };
+
+        const articleResponse = await axios.post('/api/articles', articleData);
+
+        console.log('Article uploaded successfully:', articleResponse.data);
+        setTitle('');
+        setDescription('');
+        setImageFile(null);
+        setWordFile(null);
+
+        toast.success('Article uploaded successfully!', {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
+      }
     } catch (error) {
       console.error('Error uploading article:', error);
-  
+
       toast.error('Error uploading article', {
         position: "top-right",
         autoClose: 5000,
