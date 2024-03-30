@@ -28,7 +28,7 @@ const Coordinator_Dashboard = () => {
     setSelectedItem(item);
   };
 
-  const [chartData, setChartData] = useState([
+  const [chartData] = useState([
     { day: "Monday", value: 10 },
     { day: "Tuesday", value: 15 },
     { day: "Wednesday", value: 12 },
@@ -38,13 +38,13 @@ const Coordinator_Dashboard = () => {
     { day: "Sunday", value: 22 },
   ]);
 
-  const [newPosts, setNewPosts] = useState([
+  const [newPosts] = useState([
     { id: 1, title: "Post 1", author: "John Doe" },
     { id: 2, title: "Post 2", author: "Jane Smith" },
     { id: 3, title: "Post 3", author: "Bob Johnson" },
   ]);
 
-  const [facultyCounts, setFacultyCounts] = useState([
+  const [facultyCounts] = useState([
     { faculty: "Faculty of Arts", count: 25 },
     { faculty: "Faculty of Science", count: 32 },
     { faculty: "Faculty of Engineering", count: 18 },
