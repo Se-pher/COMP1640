@@ -3,7 +3,6 @@ import * as s from "../../../Style/Student/Students_view";
 import Sidebar from "../sidebar";
 import Navbar from "../../Navbar";
 import StudentsCard from "./Students_Card";
-import { Link } from "react-router-dom";
 import axios from "axios";
 
 const Students_View = () => {
