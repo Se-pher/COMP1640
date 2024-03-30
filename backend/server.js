@@ -18,6 +18,8 @@ mongoose.connect('mongodb+srv://COMP1640:COMP1640group5@cluster0.kgdq0tl.mongodb
   .then(() => console.log('MongoDB connected'))
   .catch((err) => console.log(err));
 
+
+//USER
 const userSchema = new mongoose.Schema({
   username: String,
   email: String,
@@ -25,7 +27,6 @@ const userSchema = new mongoose.Schema({
   role: String,
   facultyName: String,
 });
-
 const User = mongoose.model('User', userSchema);
 app.post('/api/users', async (req, res) => {
   const { username, email, password, role, facultyName } = req.body;
@@ -152,6 +153,8 @@ app.post('/api/forgot-password', async (req, res) => {
   }
 });
 
+
+//FACULTY
 const facultySchema = new mongoose.Schema({
   facultyId: String,
   facultyName: String,
@@ -208,26 +211,6 @@ app.delete('/api/faculties/:id', async (req, res) => {
 });
 
 
-const authenticateToken = (req, res, next) => {
-  const token = req.header['auth-token'];
-
-  if (!token) {
-      return res.status(401).json({ message: 'Missing token' });
-  }
-
-  try {
-      
-      const decodedToken = jwt.verify(token, SECRET_KEY);
-      console.log('Decoded token:', decodedToken);
-      req.user = decodedToken; 
-      next();
-  } catch (err) {
-      return res.status(403).json({ message: 'Invalid token' });
-  }
-};
-
-
-
 
 //ARTICLE
 app.get('/api/articles', async (req, res) => {
@@ -238,9 +221,6 @@ app.get('/api/articles', async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 });
-
-
-
 
 //TOKEN
 
@@ -278,7 +258,7 @@ app.put('/api/user/decode-update', async (req, res) => {
   try {
     const decoded = jwt.verify(token, SECRET_KEY);
     const user = await User.findById(decoded.userId);
-
+    console.log(decoded.userId)
     if (!user) {
       return res.status(404).json({ message: 'Không tìm thấy người dùng' });
     }
@@ -310,6 +290,7 @@ app.listen(port, () => {
 
 const articlesRouter = require('./articles');
 app.use('/api/articles', articlesRouter);
+
 
 if (process.env.NODE_ENV === 'production') {
   // Serve any static files
