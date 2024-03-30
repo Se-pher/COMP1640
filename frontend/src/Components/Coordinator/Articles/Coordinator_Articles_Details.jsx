@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import * as s from "../../../Style/Coordinator_A_Detail";
+import * as s from "../../../Style/Coordinator/Coordinator_A_Detail";
 import Sidebar from "../Sidebar";
 import Navbar from "../../Navbar";
 import { articles } from "../../data";

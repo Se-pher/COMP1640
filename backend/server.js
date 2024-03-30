@@ -2,7 +2,10 @@ const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const sendEmail = require('./sendEmail');
+const path = require('path');
 const app = express();
+const multer = require('multer');
+const upload = multer({ dest: 'uploads/' });
 const Article= require('./model/article');
 app.use(cors());
 app.use(express.json());
@@ -236,7 +239,7 @@ app.get('/api/decode-token', async (req, res) => {
       return res.status(404).json({ message: 'User not found' });
     }
 
-    res.json({ username: user.username }); 
+    res.json({ username: user.username, facultyName: user.facultyName }); 
   } catch (err) {
     res.status(500).json({ message: 'Invalid token' });
   }
@@ -280,8 +283,6 @@ app.put('/api/user/decode-update', async (req, res) => {
   }
 });
 
-
-
 const port = process.env.PORT || 5000;
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
@@ -289,3 +290,96 @@ app.listen(port, () => {
 
 const articlesRouter = require('./articles');
 app.use('/api/articles', articlesRouter);
+
+
+if (process.env.NODE_ENV === 'production') {
+  // Serve any static files
+  app.use(express.static(path.join(__dirname, 'build')));
+
+// Điều hướng tất cả các yêu cầu khác đến tệp index.html
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'build', 'index.html'));
+});
+}
+
+app.get('/api/articles/:id', async (req, res) => {
+  try {
+    const article = await Article.findById(req.params.id);
+    if (!article) {
+      return res.status(404).json({ message: 'Article not found' });
+    }
+    res.json(article);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+const admin = require('firebase-admin');
+
+const serviceAccount = require('./comp1640clound-firebase-adminsdk-8bb7x-be325de63f.json');
+
+admin.initializeApp({
+  credential: admin.credential.cert(serviceAccount),
+  storageBucket: 'comp1640clound.appspot.com'
+});
+
+const bucket = admin.storage().bucket();
+
+app.post('/api/images', upload.single('image'), async (req, res) => {
+  try {
+    if (!req.file) {
+      return res.status(400).json({ message: 'No file uploaded' });
+    }
+
+    const file = req.file;
+    const imagePath = `images/${file.originalname}`;
+
+    await bucket.upload(file.path, {
+      destination: imagePath,
+    });
+
+    const blob = bucket.file(imagePath);
+    
+    const [imageUrl] = await blob.getSignedUrl({
+      action: 'read',
+      expires: '03-17-2025',
+    });
+
+    res.json({ secure_url: imageUrl });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ err: 'Something went wrong' });
+  }
+});
+
+
+app.post('/api/wordFiles', upload.single('wordFile'), async (req, res) => {
+  try {
+    if (!req.file) {
+      return res.status(400).json({ message: 'No file uploaded' });
+    }
+
+    const file = req.file;
+    const fileExtension = path.extname(file.originalname).toLowerCase();
+    const fileType =
+      fileExtension === '.doc'
+        ? 'application/msword'
+        : 'application/vnd.openxmlformats-officedocument.wordprocessingml.document';
+
+    const wordFilePath = `wordFiles/${file.originalname}`;
+
+    await bucket.upload(file.path, {
+      destination: wordFilePath,
+      metadata: {
+        contentType: fileType,
+      },
+    });
+
+    const fileURL = `https://storage.googleapis.com/${bucket.name}/${wordFilePath}`;
+
+    res.json({ fileURL });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ err: 'Something went wrong' });
+  }
+});

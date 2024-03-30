@@ -1,138 +1,193 @@
-import React, { useState } from 'react';
-import * as s from '../../../Style/Students';
-import LogoImage from '../../../Image/web.png';
-import AdminAvatar from '../../../Image/facebook.png';
-import Navbar from '../../Navbar';
-import axios from 'axios';
+import React, { useState, useEffect } from "react";
+import * as s from "../../../Style/Student/Students";
+import Sidebar from "../sidebar";
+import Navbar from "../../Navbar";
+import axios from "axios";
 // import Term from './Term';
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const Student_Upload = () => {
-    const [title, setTitle] = useState('');
-    const [description, setDescription] = useState('');
-    const [content, setContent] = useState('');
-    // const [imageFile, setImageFile] = useState(null);
+  const [selectedItem, setSelectedItem] = useState("Upload Articles");
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
+  const [userName, setUserName] = useState("");
+  const [facultyName, setFacultyName] = useState("");
+  const [imageFile, setImageFile] = useState(null);
+  const [wordFile, setWordFile] = useState(null);
 
-    // const handleImageUpload = (e) => {
-    //     setImageFile(e.target.files[0]);
-    // };
+  const handleImageUpload = (e) => {
+    setImageFile(e.target.files[0]);
+  };
 
-    const handleUpload = async () => {
-        try {
-            // const imageFormData = new FormData();
-            // imageFormData.append('image', imageFile);
+  const handleWordUpload = (e) => {
+    setWordFile(e.target.files[0]);
+  };
 
-            // const imageResponse = await axios.post('/api/images', imageFormData, {
-            //     headers: {
-            //         'Content-Type': 'multipart/form-data'
-            //     }
-            // });
-            // const contributionId = imageResponse.data._id;
-            const wordCount = content.trim().split(/\s+/).length;
+  const handleItemClick = (item) => {
+    setSelectedItem(item);
+  };
 
-            const articleData = {
-                title,
-                description,
-                content,
-                createdAt: new Date(),
-                facultyName: 'Your Faculty Name', 
-                author: 'Your Name', 
-                avatarURL: 'Your Avatar URL',
-                // contributionId
-            };
+  useEffect(() => {
+    const token = localStorage.getItem("jwtToken");
+    if (token) {
+      fetchUsername(token);
+      fetchUserData(token);
+    }
+  }, []);
 
-            const articleResponse = await axios.post('/api/articles', articleData);
+  const fetchUsername = async (token) => {
+    try {
+      const response = await axios.get("/api/decode-token", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      return response.data;
+    } catch (error) {
+      console.error("Error fetching username:", error.response.data.message);
+    }
+  };
 
-            console.log('Article uploaded successfully:', articleResponse.data);
-            setTitle('');
-            setDescription('');
-            setContent('');
-            // setImageFile(null);
-        } catch (error) {
-            console.error('Error uploading article:', error);
-        }
-    };
+  const fetchUserData = async (token) => {
+    try {
+      const response = await axios.get("/api/decode-token", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      if (response.data) {
+        setFacultyName(response.data.facultyName);
+      } else {
+        console.error("Error: User data is null");
+      }
+    } catch (error) {
+      console.error("Error fetching user data:", error.response.data.message);
+    }
+  };
 
-    return (
-        <s.Container>
-            <Navbar />
-            <s.MainContent>
-                <s.Sidebar>
-                    <s.LogoContainer>
-                        <s.Logo src={LogoImage} alt="Website Logo" />
-                    </s.LogoContainer>
-                    <s.AdminInfo>
-                        <s.Avatar src={AdminAvatar} alt="Admin Avatar" />
-                        <s.AdminName>John Doe</s.AdminName>
-                    </s.AdminInfo>
-                    <s.MainMenu>
-                        <s.MenuTitle>Main Menu</s.MenuTitle>
-                        <s.StyledLink
-                            to="/Student"
-                        >
-                            <s.SidebarItem>
-                                Upload Articles
-                            </s.SidebarItem>
-                        </s.StyledLink>
-                        <s.StyledLink
-                            to="/Student/View"
-                        >
-                            <s.SidebarItem>
-                                View Articles
-                            </s.SidebarItem>
-                        </s.StyledLink>
-                        <s.StyledLink
-                            to="/system-settings"
-                        >
-                            <s.SidebarItem>
-                                System settings
-                            </s.SidebarItem>
-                        </s.StyledLink>
-                    </s.MainMenu>
-                </s.Sidebar>
-                <s.Main>
-                <s.UploadContainer>
-                        <s.SquareContainer>
-                            <s.TitleHeader>Upload Articles</s.TitleHeader>
-                            <s.InputWrapper>
-                                <s.Label>Title:</s.Label>
-                                <s.Input
-                                    name="title"
-                                    value={title}
-                                    onChange={(e) => setTitle(e.target.value)}
-                                    placeholder="Enter Title"
-                                />
-                            </s.InputWrapper>
-                            <s.InputWrapper>
-                                <s.Label>Description:</s.Label>
-                                <s.TextArea
-                                    name="description"
-                                    value={description}
-                                    onChange={(e) => setDescription(e.target.value)}
-                                    placeholder="Enter Description"
-                                />
-                            </s.InputWrapper>
-                            <s.InputWrapper>
-                                <s.Label>Content:</s.Label>
-                                <s.TextArea
-                                    name="content"
-                                    value={content}
-                                    onChange={(e) => setContent(e.target.value)}
-                                    placeholder="Enter Content"
-                                />
-                            </s.InputWrapper>
-                            {/* <s.InputWrapper>
-                                <s.Label>Upload Image:</s.Label>
-                                <input type="file" onChange={handleImageUpload} />
-                            </s.InputWrapper> */}
-                            <s.ButtonContainer>
-                                <s.UploadArticlesButton onClick={handleUpload}>Upload Articles</s.UploadArticlesButton>
-                            </s.ButtonContainer>
-                        </s.SquareContainer>
-                    </s.UploadContainer>
-                </s.Main>
-            </s.MainContent>
-        </s.Container>
-    );
+  const handleLogout = () => {
+    localStorage.removeItem("jwtToken");
+    window.location.href = "/login";
+  };
+
+  const handleUpload = async () => {
+    try {
+      const imageFormData = new FormData();
+      imageFormData.append('image', imageFile);
+
+      const wordFileFormData = new FormData();
+      wordFileFormData.append('wordFile', wordFile);
+
+      const imageResponse = await axios.post('/api/images', imageFormData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+      const imageURL = imageResponse.data.secure_url;
+
+      const wordFileResponse = await axios.post('/api/wordFiles', wordFileFormData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+      const fileURL = wordFileResponse.data.fileURL;
+
+      const token = localStorage.getItem("jwtToken");
+      if (token) {
+        const articleData = {
+          title,
+          description,
+          imageURL,
+          wordFileURL: fileURL,
+          facultyName,
+        };
+
+        const articleResponse = await axios.post('/api/articles', articleData);
+
+        console.log('Article uploaded successfully:', articleResponse.data);
+        setTitle('');
+        setDescription('');
+        setImageFile(null);
+        setWordFile(null);
+
+        toast.success('Article uploaded successfully!', {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
+      }
+    } catch (error) {
+      console.error('Error uploading article:', error);
+
+      toast.error('Error uploading article', {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+    }
+  };
+
+  return (
+    <s.Container>
+      <Navbar />
+      <s.MainContent>
+        <Sidebar
+          selectedItem={selectedItem}
+          handleItemClick={handleItemClick}
+          userName={userName}
+          handleLogout={handleLogout}
+        />
+        <s.Main>
+          <s.UploadContainer>
+            <s.SquareContainer>
+              <s.TitleHeader>Upload Articles</s.TitleHeader>
+              <s.InputWrapper>
+                <s.Label>Title:</s.Label>
+                <s.Input
+                  name="title"
+                  value={title}
+                  onChange={(e) => setTitle(e.target.value)}
+                  placeholder="Enter Title"
+                />
+              </s.InputWrapper>
+              <s.InputWrapper>
+                <s.Label>Description:</s.Label>
+                <s.TextArea
+                  name="description"
+                  value={description}
+                  onChange={(e) => setDescription(e.target.value)}
+                  placeholder="Enter Description"
+                />
+              </s.InputWrapper>
+              <s.InputWrapper>
+                <s.Label>Upload Image:</s.Label>
+                <input type="file" onChange={handleImageUpload} />
+              </s.InputWrapper>
+              <s.InputWrapper>
+                <s.Label>Upload Word File:</s.Label>
+                <input type="file" onChange={handleWordUpload} />
+              </s.InputWrapper>
+              <s.ButtonContainer>
+                <s.UploadArticlesButton onClick={handleUpload}>
+                  Upload Articles
+                </s.UploadArticlesButton>
+              </s.ButtonContainer>
+            </s.SquareContainer>
+          </s.UploadContainer>
+        </s.Main>
+      </s.MainContent>
+      <ToastContainer />
+    </s.Container>
+  );
 };
 
 export default Student_Upload;

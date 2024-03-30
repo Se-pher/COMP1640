@@ -1,14 +1,17 @@
 const mongoose = require('mongoose');
 
-const articleSchema = new mongoose.Schema({
+const articleSchema = new mongoose.Schema(
+  {
     title: String,
     description: String,
-    content: String,
-    createdAt: Date,
+    imageURL: String,
+    wordFileURL: String,
+    createdAt: { type: Date, default: Date.now },
     facultyName: String,
-    author: String,
-    avatarURL: String
-}, { collection: 'Articles' }, { versionKey: false });
+  },
+  { collection: 'Articles' },
+  { versionKey: false }
+);
 
 const Article = mongoose.model('Article', articleSchema);
 

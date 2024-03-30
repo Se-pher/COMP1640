@@ -1,7 +1,6 @@
 import React, { useState, useEffect  } from "react";
-import * as s from "../../../Style/Admin_faculty";
-import LogoImage from "../../../Image/web.png";
-import AdminAvatar from "../../../Image/facebook.png";
+import * as s from "../../../Style/Admin/Admin_faculty";
+import Sidebar from "../sidebar";
 import Navbar from "../../Navbar";
 import AddFacultyModal from "./AddFacultyModal";
 import EditFacultyModal from "./EditFacultyModal";
@@ -12,6 +11,7 @@ const AdminFaculty = () => {
   const [showModal, setShowModal] = useState(false);
   const [facultyData, setFacultyData] = useState([]);
   const [editedFaculty, setEditedFaculty] = useState(null);
+  const [userName, setUserName] = useState('');
 
   useEffect(() => {
     const fetchFacultyData = async () => {
@@ -65,63 +65,41 @@ const AdminFaculty = () => {
     }
   };
 
+  useEffect(() => {
+    const token = localStorage.getItem('jwtToken');
+    if (token) {
+      fetchUsername(token);
+    }
+  }, []);
+
+  const fetchUsername = async (token) => {
+    try {
+      const response = await axios.get('/api/decode-token', {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
+      setUserName(response.data.username);
+    } catch (error) {
+      console.error('Error fetching username:', error.response.data.message);
+    }
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem('jwtToken'); 
+    window.location.href = '/login';
+  };
+
   return (
     <s.Container>
       <Navbar />
       <s.MainContent>
-        <s.Sidebar>
-          <s.LogoContainer>
-            <s.Logo src={LogoImage} alt="Website Logo" />
-          </s.LogoContainer>
-          <s.AdminInfo>
-            <s.Avatar src={AdminAvatar} alt="Admin Avatar" />
-            <s.AdminName>John Doe</s.AdminName>
-          </s.AdminInfo>
-          <s.MainMenu>
-            <s.MenuTitle>Main Menu</s.MenuTitle>
-            <s.StyledLink
-              to="/Admin"
-              onClick={() => handleItemClick("Account management")}
-            >
-              <s.SidebarItem selected={selectedItem === "Account management"}>
-                Account management
-              </s.SidebarItem>
-            </s.StyledLink>
-            <s.StyledLink
-              to="/Admin/Faculty"
-              onClick={() => handleItemClick("Faculty management")}
-            >
-              <s.SidebarItem selected={selectedItem === "Faculty management"}>
-                Faculty management
-              </s.SidebarItem>
-            </s.StyledLink>
-            <s.StyledLink
-              to="/system-settings"
-              onClick={() => handleItemClick("System settings")}
-            >
-              <s.SidebarItem selected={selectedItem === "System settings"}>
-                System settings
-              </s.SidebarItem>
-            </s.StyledLink>
-          </s.MainMenu>
-          <s.MainMenu>
-            <s.MenuTitle>More</s.MenuTitle>
-            <s.StyledLink
-              to="/Setting/Profile"
-              onClick={() => handleItemClick("profile")}
-            >
-              <s.SidebarItem selected={selectedItem === "profile"}>
-                Settings
-              </s.SidebarItem>
-            </s.StyledLink>
-          </s.MainMenu>
-          <s.LogoutButton>
-            <s.LogoutBtn>
-              <s.LogoutIcon />
-              Logout
-            </s.LogoutBtn>
-          </s.LogoutButton>
-        </s.Sidebar>
+      <Sidebar
+          selectedItem={selectedItem}
+          handleItemClick={handleItemClick}
+          userName={userName}
+          handleLogout={handleLogout}
+        />
         <s.Main>
           <s.AddUserContainer>
             <s.SquareContainer>

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import * as s from "../../../Style/Dashboard";
+import * as s from "../../../Style/Coordinator/Dashboard";
 import Navbar from "../../Navbar";
 import { Bar } from "react-chartjs-2";
 import Sidebar from "../Sidebar";

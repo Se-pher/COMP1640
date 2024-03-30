@@ -9,7 +9,7 @@ const ArticleCard = ({ article }) => {
   return (
     <s.ArticleCard>
       <Link to={`/articles/${article._id}`}> 
-        <s.ArticleImage src={article.avatarURL} alt={article.title} />
+        <s.ArticleImage src={article.imageURL} alt={article.title} />
       </Link>
       <s.ArticleInfo>
         <s.ArticleDate>
