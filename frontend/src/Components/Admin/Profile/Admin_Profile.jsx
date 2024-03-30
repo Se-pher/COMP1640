@@ -15,8 +15,6 @@ const Admin_Profile = () => {
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
 
-  // Hàm xử lý khi người dùng nhấn nút "Discard All"
-
 
   const handleSave = async () => {
     try {
@@ -42,7 +40,7 @@ const Admin_Profile = () => {
       // Handle error (e.g., display error message)
     }
   };
-  
+
   const fetchUserProfile = async () => {
     try {
       const token = localStorage.getItem("jwtToken");
@@ -51,16 +49,16 @@ const Admin_Profile = () => {
           Authorization: `Bearer ${token}`,
         },
       });
-  
+
       console.log("User profile data from backend:", response.data);
-  
+
       setUserProfile(response.data);
       setNewName(response.data.username);
     } catch (error) {
       console.error("Error fetching user profile:", error);
     }
   };
-  
+
   useEffect(() => {
     fetchUserProfile();
   }, []);
@@ -71,10 +69,10 @@ const Admin_Profile = () => {
     setCurrentPassword("");
     setNewPassword("");
   };
-  
+
   const handleLogout = () => {
-    localStorage.removeItem('jwtToken'); // Xóa JWT từ local storage
-    window.location.href = '/login'; // Chuyển hướng người dùng về trang đăng nhập
+    localStorage.removeItem("jwtToken"); 
+    window.location.href = "/login"; 
   };
   return (
     <s.Container>
@@ -150,10 +148,10 @@ const Admin_Profile = () => {
                   <s.UserInfoField>
                     <s.FieldLabel>Name</s.FieldLabel>
                     <s.FieldInput
-  placeholder={userProfile.name}
-  value={newName}
-  onChange={(e) => setNewName(e.target.value)}
-/>
+                      placeholder={userProfile.name}
+                      value={newName}
+                      onChange={(e) => setNewName(e.target.value)}
+                    />
                   </s.UserInfoField>
 
                   <s.UserInfoField>
@@ -166,13 +164,13 @@ const Admin_Profile = () => {
                   </s.UserInfoField>
 
                   <s.UserInfoField>
-                  <s.FieldLabel>Current Password</s.FieldLabel>
-                  <s.FieldInput
-                    placeholder="Enter Current Password" // Bạn có thể thay đổi placeholder này
-                    onChange={(e) => setCurrentPassword(e.target.value)}
-                    type="password"
-                  />
-                </s.UserInfoField>
+                    <s.FieldLabel>Current Password</s.FieldLabel>
+                    <s.FieldInput
+                      placeholder="Enter Current Password" 
+                      onChange={(e) => setCurrentPassword(e.target.value)}
+                      type="password"
+                    />
+                  </s.UserInfoField>
                   <s.UserInfoField>
                     <s.FieldLabel>Password</s.FieldLabel>
                     <s.FieldInput
