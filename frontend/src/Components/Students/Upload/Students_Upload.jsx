@@ -19,6 +19,29 @@ const Student_Upload = () => {
   const [imageFile, setImageFile] = useState(null);
   const [wordFile, setWordFile] = useState(null);
   const [uploadedFiles, setUploadedFiles] = useState([]);
+  const [facultyList, setFacultyList] = useState([]);
+
+  useEffect(() => {
+    fetchFaculties();
+  }, []);
+
+  const fetchFaculties = async () => {
+    try {
+      const response = await axios.get("/api/faculties");
+      setFacultyList(response.data);
+    } catch (error) {
+      console.error("Error fetching faculties:", error.response.data.message);
+    }
+  };
+
+  const isDeadlinePassed = (deadline) => {
+    const currentDate = new Date();
+    return new Date(deadline) < currentDate;
+  };
+
+  const handleFacultyChange = (event) => {
+    setFacultyName(event.target.value);
+  };
 
   const UploadDropzone = ({ onFileUpload, accept }) => {
     const { getRootProps, getInputProps, isDragActive } = useDropzone({
@@ -91,7 +114,6 @@ const Student_Upload = () => {
     const token = localStorage.getItem("jwtToken");
     if (token) {
       fetchUsername(token);
-      fetchUserData(token);
     }
   }, []);
 
@@ -105,23 +127,6 @@ const Student_Upload = () => {
       return response.data;
     } catch (error) {
       console.error("Error fetching username:", error.response.data.message);
-    }
-  };
-
-  const fetchUserData = async (token) => {
-    try {
-      const response = await axios.get("/api/decode-token", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      if (response.data) {
-        setFacultyName(response.data.facultyName);
-      } else {
-        console.error("Error: User data is null");
-      }
-    } catch (error) {
-      console.error("Error fetching user data:", error.response.data.message);
     }
   };
 
@@ -233,6 +238,26 @@ const Student_Upload = () => {
           <s.UploadContainer>
             <s.SquareContainer>
               <s.TitleHeader>Upload Articles</s.TitleHeader>
+              <s.InputWrapper>
+                <s.Label>Select Faculty:</s.Label>
+                <select value={facultyName} onChange={handleFacultyChange}>
+                  <option value="">Select Faculty</option>
+                  {facultyList.map((faculty) => (
+                    <option
+                      key={faculty._id}
+                      value={faculty.facultyName}
+                      disabled={isDeadlinePassed(faculty.facultyDeadline)}
+                    >
+                      {faculty.facultyName}{" "}
+                      {isDeadlinePassed(faculty.facultyDeadline) ? (
+                        <span style={{ color: "red" }}>Ended</span>
+                      ) : (
+                        <span style={{ color: "green" }}>Ongoing</span>
+                      )}
+                    </option>
+                  ))}
+                </select>
+              </s.InputWrapper>
               <s.InputWrapper>
                 <s.Label>Title:</s.Label>
                 <s.Input

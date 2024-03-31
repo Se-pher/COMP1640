@@ -158,6 +158,7 @@ app.post('/api/forgot-password', async (req, res) => {
 const facultySchema = new mongoose.Schema({
   facultyId: String,
   facultyName: String,
+  facultyDeadline: Date,
 });
 
 const Faculty = mongoose.model('Faculty', facultySchema);
@@ -172,10 +173,10 @@ app.get('/api/faculties', async (req, res) => {
 });
 
 app.post('/api/faculties', async (req, res) => {
-  const { facultyId, facultyName } = req.body;
+  const { facultyId, facultyName, facultyDeadline } = req.body;
 
   try {
-    const newFaculty = new Faculty({ facultyId, facultyName });
+    const newFaculty = new Faculty({ facultyId, facultyName, facultyDeadline });
     await newFaculty.save();
     res.status(201).json(newFaculty);
   } catch (err) {
@@ -185,12 +186,12 @@ app.post('/api/faculties', async (req, res) => {
 
 app.put('/api/faculties/:id', async (req, res) => {
   const { id } = req.params;
-  const { facultyId, facultyName } = req.body;
+  const { facultyId, facultyName, facultyDeadline } = req.body;
 
   try {
     const updatedFaculty = await Faculty.findByIdAndUpdate(
       id,
-      { facultyId, facultyName },
+      { facultyId, facultyName, facultyDeadline },
       { new: true }
     );
     res.json(updatedFaculty);
