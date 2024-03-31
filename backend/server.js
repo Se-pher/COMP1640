@@ -7,13 +7,14 @@ const app = express();
 const multer = require('multer');
 const upload = multer({ dest: 'uploads/' });
 const Article= require('./model/article');
+const bcrypt = require('bcrypt');
 app.use(cors());
 app.use(express.json());
 const jwt = require('jsonwebtoken');
 const SECRET_KEY = 'secretkey';
 mongoose.connect('mongodb+srv://COMP1640:COMP1640group5@cluster0.kgdq0tl.mongodb.net/COMP1640?retryWrites=true&w=majority', {
   useNewUrlParser: true,
-  useUnifiedTopology: true,
+  useUnifiedTopology: true, 
 })
   .then(() => console.log('MongoDB connected'))
   .catch((err) => console.log(err));
@@ -21,18 +22,36 @@ mongoose.connect('mongodb+srv://COMP1640:COMP1640group5@cluster0.kgdq0tl.mongodb
 
 //USER
 const userSchema = new mongoose.Schema({
-  username: String,
-  email: String,
-  password: String,
-  role: String,
-  facultyName: String,
+  username: {
+    type: String,
+    required: true, 
+  },
+  email: {
+    type: String,
+    required: true, 
+    unique: true, 
+  },
+  password: {
+    type: String,
+    required: true,
+  },
+  role: {
+    type: String,
+    required: true, 
+  },
+  facultyName: String, 
 });
 const User = mongoose.model('User', userSchema);
 app.post('/api/users', async (req, res) => {
   const { username, email, password, role, facultyName } = req.body;
 
   try {
-    const newUser = new User({ username, email, password, role, facultyName });
+    if (!username || !email || !password || !role) {
+      return res.status(400).json({ message: 'Missing required fields' });
+    }
+
+    const hashedPassword = await bcrypt.hash(password, 5);
+    const newUser = new User({ username, email, password: hashedPassword, role, facultyName });
     await newUser.save();
     res.status(201).json(newUser);
   } catch (err) {
@@ -96,6 +115,25 @@ app.put('/api/users/:id', async (req, res) => {
     res.status(400).json({ message: err.message });
   }
 });
+
+//Login 
+
+const verifyRole = (roles) => (req, res, next) => {
+  const token = req.headers.authorization?.split(' ')[1]; 
+  if (!token) {
+    return res.status(403).json({ message: 'No token provided!' });
+  }
+  try {
+    const decoded = jwt.verify(token, SECRET_KEY);
+    req.user = decoded;
+    if (!roles.includes(decoded.role)) {
+      return res.status(401).json({ message: 'Unauthorized!' });
+    }
+    next();
+  } catch (error) {
+    res.status(401).json({ message: 'Unauthorized!' });
+  }
+};
 
 app.post('/api/login', async (req, res) => {
   const { email, password } = req.body;
@@ -161,7 +199,6 @@ const facultySchema = new mongoose.Schema({
 });
 
 const Faculty = mongoose.model('Faculty', facultySchema);
-
 app.get('/api/faculties', async (req, res) => {
   try {
     const faculties = await Faculty.find();
@@ -239,7 +276,7 @@ app.get('/api/decode-token', async (req, res) => {
       return res.status(404).json({ message: 'User not found' });
     }
 
-    res.json({ username: user.username, facultyName: user.facultyName }); 
+    res.json({ username: user.username, facultyName: user.facultyName, userrole: user.role }); 
   } catch (err) {
     res.status(500).json({ message: 'Invalid token' });
   }
