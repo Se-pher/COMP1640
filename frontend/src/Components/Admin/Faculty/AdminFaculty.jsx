@@ -2,6 +2,7 @@ import React, { useState, useEffect  } from "react";
 import * as s from "../../../Style/Admin/Admin_faculty";
 import Sidebar from "../sidebar";
 import Navbar from "../../Navbar";
+import { format } from 'date-fns';
 import AddFacultyModal from "./AddFacultyModal";
 import EditFacultyModal from "./EditFacultyModal";
 import axios from 'axios';
@@ -112,6 +113,7 @@ const AdminFaculty = () => {
                     <tr>
                       <s.TableHeader>Faculty ID</s.TableHeader>
                       <s.TableHeader>Faculty Name</s.TableHeader>
+                      <s.TableHeader>Faculty Deadline</s.TableHeader>
                       <s.TableHeader>Action</s.TableHeader>
                     </tr>
                   </thead>
@@ -120,6 +122,7 @@ const AdminFaculty = () => {
                       <s.TableRow key={faculty._id}>
                         <s.TableCell>{faculty.facultyId}</s.TableCell>
                         <s.TableCell>{faculty.facultyName}</s.TableCell>
+                        <s.TableCell>{format(new Date(faculty.facultyDeadline), 'dd/MM/yyyy')}</s.TableCell>
                         <s.TableCell>
                           <s.EditIcon
                             onClick={() => handleEditFaculty(faculty)}
