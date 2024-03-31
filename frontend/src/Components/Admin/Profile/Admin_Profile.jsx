@@ -15,6 +15,7 @@ const Admin_Profile = () => {
   const [newPassword, setNewPassword] = useState("");
   const [userName, setUserName] = useState("");
 
+
   useEffect(() => {
     const token = localStorage.getItem("jwtToken");
     if (token) {
@@ -94,6 +95,7 @@ const Admin_Profile = () => {
     setNewPassword("");
   };
 
+
   return (
     <s.Container>
       <Navbar />
@@ -131,7 +133,8 @@ const Admin_Profile = () => {
                   <s.UserInfoField>
                     <s.FieldLabel>Current Password</s.FieldLabel>
                     <s.FieldInput
-                      placeholder="Enter Current Password" // Bạn có thể thay đổi placeholder này
+                      placeholder="Enter Current Password" 
+
                       onChange={(e) => setCurrentPassword(e.target.value)}
                       type="password"
                     />

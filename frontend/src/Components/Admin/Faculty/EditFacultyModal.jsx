@@ -1,15 +1,18 @@
 import React, { useState } from 'react';
 import * as s from '../../../Style/PopUp';
 import axios from 'axios';
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 
 const EditFacultyModal = ({ faculty, onClose, onUpdateFaculty }) => {
   const [facultyId, setFacultyId] = useState(faculty.facultyId);
   const [facultyName, setFacultyName] = useState(faculty.facultyName);
+  const [deadline, setDeadline] = useState(new Date(faculty.facultyDeadline));
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const updatedFaculty = { facultyId, facultyName };
+      const updatedFaculty = { facultyId, facultyName, facultyDeadline: deadline };
       const response = await axios.put(`/api/faculties/${faculty._id}`, updatedFaculty);
       onUpdateFaculty(response.data);
       onClose();
@@ -41,6 +44,14 @@ const EditFacultyModal = ({ faculty, onClose, onUpdateFaculty }) => {
                 type="text"
                 value={facultyName}
                 onChange={(e) => setFacultyName(e.target.value)}
+              />
+            </s.InputGroup>
+            <s.InputGroup>
+              <s.Label>Deadline</s.Label>
+              <DatePicker
+                selected={deadline}
+                onChange={(date) => setDeadline(date)}
+                dateFormat="dd/MM/yyyy"
               />
             </s.InputGroup>
             <s.ModalFooter>
