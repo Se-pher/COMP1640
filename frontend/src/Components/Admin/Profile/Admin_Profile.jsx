@@ -13,89 +13,61 @@ const Admin_Profile = () => {
   const [newEmail, setNewEmail] = useState("");
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
-  const [userName, setUserName] = useState("");
-
+  const [token, setToken] = useState("");
 
   useEffect(() => {
-    const token = localStorage.getItem("jwtToken");
-    if (token) {
-      fetchUsername(token);
-    }
+    const fetchProfile = async () => {
+      try {
+        const token = localStorage.getItem("jwtToken");
+        setToken(token); // Lấy token từ localStorage
+        const response = await axios.get("/api/user/profile", {
+          headers: {
+            Authorization: `Bearer ${token}`, // Gửi token trong tiêu đề 'Authorization'
+          },
+        });
+        setUserProfile(response.data);
+        setNewName(response.data.name);
+        setNewEmail(response.data.email);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    fetchProfile();
   }, []);
 
-  const fetchUsername = async (token) => {
+  const handleSave = async () => {
     try {
-      const response = await axios.get("/api/decode-token", {
-        headers: {
-          Authorization: `Bearer ${token}`,
+      const response = await axios.put(
+        "/api/user/profile",
+        {
+          name: newName,
+          email: newEmail,
+          password: newPassword,
         },
-      });
-      setUserName(response.data.username);
+        {
+          headers: {
+            Authorization: `Bearer ${token}`, // Gửi token trong tiêu đề 'Authorization'
+          },
+        }
+      );
+      setUserProfile(response.data);
+      setNewPassword("");
     } catch (error) {
-      console.error("Error fetching username:", error.response.data.message);
+      console.error(error);
     }
+  };
+
+  const handleDiscard = () => {
+    setNewName(userProfile.name);
+    setNewEmail(userProfile.email);
+    setNewPassword("");
   };
 
   const handleLogout = () => {
     localStorage.removeItem("jwtToken");
     window.location.href = "/login"; 
   };
-
-  const handleSave = async () => {
-    try {
-      const token = localStorage.getItem("jwtToken");
-      const response = await axios.put(
-        "/api/user/decode-update",
-        {
-          name: newName,
-          email: newEmail,
-          currentPassword: currentPassword,
-          newPassword: newPassword,
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-      console.log("Updated user profile:", response.data);
-      // Optionally update state or show a success message
-    } catch (error) {
-      console.error("Error updating user profile:", error);
-      // Handle error (e.g., display error message)
-    }
-  };
-
-  const fetchUserProfile = async () => {
-    try {
-      const token = localStorage.getItem("jwtToken");
-      const response = await axios.get("/api/decode-token", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
-      console.log("User profile data from backend:", response.data);
-
-      setUserProfile(response.data);
-      setNewName(response.data.username);
-    } catch (error) {
-      console.error("Error fetching user profile:", error);
-    }
-  };
-
-  useEffect(() => {
-    fetchUserProfile();
-  }, []);
-
-  const handleDiscard = () => {
-    setNewName(userProfile.name);
-    setNewEmail(userProfile.email);
-    setCurrentPassword("");
-    setNewPassword("");
-  };
-
-
   return (
     <s.Container>
       <Navbar />
@@ -103,7 +75,7 @@ const Admin_Profile = () => {
         <Sidebar
           selectedItem={selectedItem}
           handleItemClick={handleItemClick}
-          userName={userName}
+          userName={userProfile.username}
           handleLogout={handleLogout}
         />
         <s.Main>
@@ -115,7 +87,7 @@ const Admin_Profile = () => {
                   <s.UserInfoField>
                     <s.FieldLabel>Name</s.FieldLabel>
                     <s.FieldInput
-                      placeholder={userProfile.name}
+                      placeholder={userProfile.username}
                       value={newName}
                       onChange={(e) => setNewName(e.target.value)}
                     />
