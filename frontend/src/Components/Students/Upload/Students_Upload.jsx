@@ -6,22 +6,81 @@ import axios from "axios";
 // import Term from './Term';
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { useDropzone } from "react-dropzone";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faTrash } from '@fortawesome/free-solid-svg-icons';
 
 const Student_Upload = () => {
   const [selectedItem, setSelectedItem] = useState("Upload Articles");
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
-  const [userName, setUserName] = useState("");
+  const [userName] = useState("");
   const [facultyName, setFacultyName] = useState("");
   const [imageFile, setImageFile] = useState(null);
   const [wordFile, setWordFile] = useState(null);
+  const [uploadedFiles, setUploadedFiles] = useState([]);
 
-  const handleImageUpload = (e) => {
-    setImageFile(e.target.files[0]);
+  const UploadDropzone = ({ onFileUpload, accept }) => {
+    const { getRootProps, getInputProps, isDragActive } = useDropzone({
+      onDrop: (acceptedFiles) => {
+        if (acceptedFiles.length > 0) {
+          onFileUpload(acceptedFiles[0]);
+        }
+      },
+      accept,
+    });
+
+    return (
+      <s.DropzoneContainer {...getRootProps()}>
+        <input {...getInputProps()} />
+        {isDragActive ? (
+          <p>Drop the file here...</p>
+        ) : (
+          <p>Drag &amp; drop file here, or click to select file</p>
+        )}
+      </s.DropzoneContainer>
+    );
   };
 
-  const handleWordUpload = (e) => {
-    setWordFile(e.target.files[0]);
+  const UploadedFile = ({ file, onDelete }) => {
+    return (
+      <s.UploadedFileContainer>
+        <s.FileName>{file.file.name}</s.FileName>
+        {file.progress > 0 && file.progress < 100 && (
+          <s.ProgressBar>
+            <s.ProgressValue style={{ width: `${file.progress}%` }} />
+          </s.ProgressBar>
+        )}
+        {file.progress === 100 && <s.UploadedIcon>&#10003;</s.UploadedIcon>}
+        <s.DeleteButton onClick={() => onDelete(file)}>
+          <FontAwesomeIcon icon={faTrash} />
+        </s.DeleteButton>
+      </s.UploadedFileContainer>
+    );
+  };
+
+  const handleDeleteFile = (file) => {
+    setUploadedFiles((prevFiles) => prevFiles.filter((f) => f !== file));
+  };
+
+  const handleImageUpload = (acceptedFile) => {
+    if (acceptedFile) {
+      setImageFile(acceptedFile);
+      setUploadedFiles((prevFiles) => [
+        ...prevFiles,
+        { file: acceptedFile, type: "image", progress: 0 },
+      ]);
+    }
+  };
+
+  const handleWordUpload = (acceptedFile) => {
+    if (acceptedFile) {
+      setWordFile(acceptedFile);
+      setUploadedFiles((prevFiles) => [
+        ...prevFiles,
+        { file: acceptedFile, type: "word", progress: 0 },
+      ]);
+    }
   };
 
   const handleItemClick = (item) => {
@@ -74,23 +133,47 @@ const Student_Upload = () => {
   const handleUpload = async () => {
     try {
       const imageFormData = new FormData();
-      imageFormData.append('image', imageFile);
+      imageFormData.append("image", imageFile);
 
       const wordFileFormData = new FormData();
-      wordFileFormData.append('wordFile', wordFile);
+      wordFileFormData.append("wordFile", wordFile);
 
-      const imageResponse = await axios.post('/api/images', imageFormData, {
+      const imageResponse = await axios.post("/api/images", imageFormData, {
         headers: {
-          'Content-Type': 'multipart/form-data',
+          "Content-Type": "multipart/form-data",
+        },
+        onUploadProgress: (progressEvent) => {
+          const progress = Math.round(
+            (progressEvent.loaded / progressEvent.total) * 100
+          );
+          setUploadedFiles((prevFiles) =>
+            prevFiles.map((file) =>
+              file.type === "image" ? { ...file, progress } : file
+            )
+          );
         },
       });
       const imageURL = imageResponse.data.secure_url;
 
-      const wordFileResponse = await axios.post('/api/wordFiles', wordFileFormData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      });
+      const wordFileResponse = await axios.post(
+        "/api/wordFiles",
+        wordFileFormData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+          onUploadProgress: (progressEvent) => {
+            const progress = Math.round(
+              (progressEvent.loaded / progressEvent.total) * 100
+            );
+            setUploadedFiles((prevFiles) =>
+              prevFiles.map((file) =>
+                file.type === "word" ? { ...file, progress } : file
+              )
+            );
+          },
+        }
+      );
       const fileURL = wordFileResponse.data.fileURL;
 
       const token = localStorage.getItem("jwtToken");
@@ -103,15 +186,15 @@ const Student_Upload = () => {
           facultyName,
         };
 
-        const articleResponse = await axios.post('/api/articles', articleData);
+        const articleResponse = await axios.post("/api/articles", articleData);
 
-        console.log('Article uploaded successfully:', articleResponse.data);
-        setTitle('');
-        setDescription('');
+        console.log("Article uploaded successfully:", articleResponse.data);
+        setTitle("");
+        setDescription("");
         setImageFile(null);
         setWordFile(null);
 
-        toast.success('Article uploaded successfully!', {
+        toast.success("Article uploaded successfully!", {
           position: "top-right",
           autoClose: 5000,
           hideProgressBar: false,
@@ -122,9 +205,9 @@ const Student_Upload = () => {
         });
       }
     } catch (error) {
-      console.error('Error uploading article:', error);
+      console.error("Error uploading article:", error);
 
-      toast.error('Error uploading article', {
+      toast.error("Error uploading article", {
         position: "top-right",
         autoClose: 5000,
         hideProgressBar: false,
@@ -170,12 +253,31 @@ const Student_Upload = () => {
               </s.InputWrapper>
               <s.InputWrapper>
                 <s.Label>Upload Image:</s.Label>
-                <input type="file" onChange={handleImageUpload} />
+                <UploadDropzone
+                  onFileUpload={handleImageUpload}
+                  accept={{ "image/*": [] }}
+                />
               </s.InputWrapper>
               <s.InputWrapper>
                 <s.Label>Upload Word File:</s.Label>
-                <input type="file" onChange={handleWordUpload} />
+                <UploadDropzone
+                  onFileUpload={handleWordUpload}
+                  accept={{
+                    "application/msword": [".doc"],
+                    "application/vnd.openxmlformats-officedocument.wordprocessingml.document":
+                      [".docx"],
+                  }}
+                />
               </s.InputWrapper>
+              <s.UploadedFilesContainer>
+                {uploadedFiles.map((file, index) => (
+                  <UploadedFile
+                    key={index}
+                    file={file}
+                    onDelete={handleDeleteFile}
+                  />
+                ))}
+              </s.UploadedFilesContainer>
               <s.ButtonContainer>
                 <s.UploadArticlesButton onClick={handleUpload}>
                   Upload Articles

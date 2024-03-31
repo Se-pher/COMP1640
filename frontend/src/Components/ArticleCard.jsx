@@ -3,6 +3,8 @@ import React from 'react';
 import * as s from '../Style/Landing';
 import { Link } from 'react-router-dom';
 
+
+
 const ArticleCard = ({ article }) => {
   return (
     <s.ArticleCard>

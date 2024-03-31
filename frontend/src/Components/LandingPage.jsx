@@ -7,8 +7,6 @@ import axios from 'axios';
 const LandingPage = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const articlesPerPage = 9;
-  const indexOfLastArticle = currentPage * articlesPerPage;
-  const indexOfFirstArticle = indexOfLastArticle - articlesPerPage;
 
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);
