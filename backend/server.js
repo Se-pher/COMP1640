@@ -135,24 +135,35 @@ const verifyRole = (roles) => (req, res, next) => {
   }
 };
 
+
 app.post('/api/login', async (req, res) => {
   const { email, password } = req.body;
 
   try {
-    const user = await User.findOne({ email, password });
+    const user = await User.findOne({ email });
 
     if (!user) {
       return res.status(401).json({ message: 'Invalid email or password' });
     }
+
+    // So sánh mật khẩu đầu vào với mật khẩu đã mã hóa trong DB
+    const isMatch = await bcrypt.compare(password, user.password);
+
+    if (!isMatch) {
+      return res.status(401).json({ message: 'Invalid email or password' });
+    }
+
+    // Tạo token
     const token = jwt.sign({ userId: user._id, role: user.role }, SECRET_KEY, {
-      expiresIn: '1d', 
+      expiresIn: '1d',
     });
 
-    res.json({ user, token });
+    res.json({ user: { email: user.email, role: user.role }, token }); // Trả lại thông tin người dùng nhưng không bao gồm mật khẩu
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
 });
+
 
 function generateRandomPassword(length = 8) {
   const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
@@ -320,6 +331,58 @@ app.put('/api/user/decode-update', async (req, res) => {
     res.status(500).json({ message: 'Token không hợp lệ hoặc lỗi server' });
   }
 });
+
+
+
+//Profile
+app.get('/api/user/profile', async (req, res) => {
+  const token = req.headers.authorization.split(' ')[1]; // Lấy token từ tiêu đề 'Authorization'
+
+  try {
+
+    const decoded = jwt.verify(token, SECRET_KEY);
+
+    const user = await User.findById(decoded.userId);
+
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    res.json(user);
+  } catch (error) {
+    res.status(401).json({ message: 'Invalid token' });
+  }
+});
+
+app.put('/api/user/profile', async (req, res) => {
+  const token = req.headers.authorization.split(' ')[1]; // Lấy token từ tiêu đề 'Authorization'
+  const { name, email, password } = req.body;
+
+  try {
+    const decoded = jwt.verify(token, SECRET_KEY);
+    const user = await User.findById(decoded.userId);
+
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    // Cập nhật thông tin người dùng
+    if (name) user.name = name;
+    if (email) user.email = email;
+    if (password) {
+      // Mã hóa mật khẩu mới trước khi lưu vào cơ sở dữ liệu
+      const hashedPassword = await bcrypt.hash(password, 10);
+      user.password = hashedPassword;
+    }
+
+    await user.save();
+
+    res.json(user);
+  } catch (error) {
+    res.status(401).json({ message: 'Invalid token' });
+  }
+});
+
 
 const port = process.env.PORT || 5000;
 app.listen(port, () => {
