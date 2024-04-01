@@ -5,8 +5,6 @@ import Navbar from "../../Navbar";
 import AddUserModal from "./AddUserModal";
 import EditUserModal from "./EditUserModal";
 import DeleteUserModal from "./DeleteUserModal";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 import axios from 'axios';
 
 const Admin = () => {
@@ -15,7 +13,6 @@ const Admin = () => {
   const [showEditModal, setShowEditModal] = useState(false);
   const [deleteUserModalVisible, setDeleteUserModalVisible] = useState(false);
   const [userData, setUserData] = useState([]);
-  const [showPasswordState, setShowPasswordState] = useState({});
   const [userName, setUserName] = useState('');
   const [editedUser, setEditedUser] = useState(null);
   const [selectedUser, setSelectedUser] = useState(null);
@@ -25,24 +22,12 @@ const Admin = () => {
       try {
         const response = await axios.get('/api/users');
         setUserData(response.data);
-        const initialShowPasswordState = response.data.reduce((acc, user) => {
-          acc[user._id] = false;
-          return acc;
-        }, {});
-        setShowPasswordState(initialShowPasswordState);
       } catch (err) {
         console.error(err);
       }
     };
     fetchUsers();
   }, []);
-
-  const togglePasswordVisibility = (userId) => {
-    setShowPasswordState({
-      ...showPasswordState,
-      [userId]: !showPasswordState[userId],
-    });
-  };
 
   const handleItemClick = (item) => {
     setSelectedItem(item);
@@ -52,11 +37,10 @@ const Admin = () => {
     try {
       const response = await axios.post('/api/users', user);
       const addedUser = response.data;
-      setUserData([...userData, addedUser]); // Thêm người dùng mới vào trạng thái userData
-      closeModal(); // Đóng modal thêm người dùng
+      setUserData([...userData, addedUser]);
+      closeModal();
     } catch (err) {
       console.error("Failed to add user:", err.response.data.message);
-      // Bạn có thể thêm logic để hiển thị thông báo lỗi tại đây
     }
   };
   const handleEditUser = (user) => {
@@ -117,8 +101,8 @@ const Admin = () => {
   };
 
   const handleLogout = () => {
-    localStorage.removeItem('jwtToken'); // Xóa JWT từ local storage
-    window.location.href = '/login'; // Chuyển hướng người dùng về trang đăng nhập
+    localStorage.removeItem('jwtToken');
+    window.location.href = '/login'; 
   };
 
   return (
@@ -145,8 +129,6 @@ const Admin = () => {
                       <s.TableHeader>Name</s.TableHeader>
                       <s.TableHeader>Email</s.TableHeader>
                       <s.TableHeader>Role</s.TableHeader>
-                      <s.TableHeader>Password</s.TableHeader>
-                      <s.TableHeader>facultyName</s.TableHeader>
                       <s.TableHeader>Action</s.TableHeader>
                     </tr>
                   </thead>
@@ -157,31 +139,6 @@ const Admin = () => {
                         <s.TableCell>{user.username}</s.TableCell>
                         <s.TableCell>{user.email}</s.TableCell>
                         <s.TableCell>{user.role}</s.TableCell>
-                        <s.TableCell>
-                          {showPasswordState[user._id]
-                            ? user.password
-                            : "*".repeat(user.password.length)}
-                          {showPasswordState[user._id] ? (
-                            <FontAwesomeIcon
-                              icon={faEyeSlash}
-                              onClick={() => togglePasswordVisibility(user._id)}
-                              style={{
-                                marginLeft: "10px",
-                                marginBottom: "2px",
-                              }}
-                            />
-                          ) : (
-                            <FontAwesomeIcon
-                              icon={faEye}
-                              onClick={() => togglePasswordVisibility(user._id)}
-                              style={{
-                                marginLeft: "10px",
-                                marginBottom: "2px",
-                              }}
-                            />
-                          )}
-                        </s.TableCell>
-                        <s.TableCell>{user.facultyName}</s.TableCell>
                         <s.TableCell>
                           <s.EditIcon onClick={() => handleEditUser(user)} />
                           <s.DeleteIcon
