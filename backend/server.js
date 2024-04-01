@@ -39,7 +39,6 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true, 
   },
-  facultyName: String, 
 });
 const User = mongoose.model('User', userSchema);
 app.post('/api/users', async (req, res) => {
@@ -51,7 +50,7 @@ app.post('/api/users', async (req, res) => {
     }
 
     const hashedPassword = await bcrypt.hash(password, 5);
-    const newUser = new User({ username, email, password: hashedPassword, role, facultyName });
+    const newUser = new User({ username, email, password: hashedPassword, role });
     await newUser.save();
     res.status(201).json(newUser);
   } catch (err) {
@@ -70,7 +69,7 @@ app.get('/api/users', async (req, res) => {
 
 app.put('/api/users/:id', async (req, res) => {
   const { id } = req.params;
-  const { username, email, password, role, facultyName } = req.body;
+  const { username, email, password, role } = req.body;
 
   try {
     const updatedUser = await User.findByIdAndUpdate(
@@ -97,12 +96,12 @@ app.delete('/api/users/:id', async (req, res) => {
 
 app.put('/api/users/:id', async (req, res) => {
   const { id } = req.params;
-  const { username, email, password, role, facultyName } = req.body;
+  const { username, email, password, role } = req.body;
 
   try {
     const updatedUser = await User.findByIdAndUpdate(
       id,
-      { username, email, password, role, facultyName },
+      { username, email, password, role },
       { new: true }
     );
 
@@ -271,8 +270,32 @@ app.get('/api/articles', async (req, res) => {
   }
 });
 
-//TOKEN
+const verifyToken = (req, res, next) => {
+  const authHeader = req.headers['authorization'];
+  const token = authHeader && authHeader.split(' ')[1];
+  
+  if (!token) return res.sendStatus(401); // Không có token
+  
+  jwt.verify(token, SECRET_KEY, (err, user) => {
+    if (err) return res.sendStatus(403); // Token không hợp lệ
+    req.user = user; // Lưu thông tin giải mã vào req.user
+    next(); // Tiếp tục middleware tiếp theo
+  });
+};
+app.get('/api/user/articles', verifyToken, async (req, res) => {
+  try {
+    const userId = req.user.userId;
+    const articles = await Article.find({ userId });
+    res.json(articles);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
 
+
+
+
+//TOKEN
 app.get('/api/decode-token', async (req, res) => {
   if (!req.headers.authorization || !req.headers.authorization.startsWith('Bearer ')) {
     return res.status(401).json({ message: 'No token provided' });
@@ -288,7 +311,7 @@ app.get('/api/decode-token', async (req, res) => {
       return res.status(404).json({ message: 'User not found' });
     }
 
-    res.json({ username: user.username, facultyName: user.facultyName, userrole: user.role }); 
+    res.json({ username: user.username, userrole: user.role }); 
   } catch (err) {
     res.status(500).json({ message: 'Invalid token' });
   }
