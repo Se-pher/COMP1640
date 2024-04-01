@@ -7,13 +7,14 @@ const app = express();
 const multer = require('multer');
 const upload = multer({ dest: 'uploads/' });
 const Article= require('./model/article');
+const bcrypt = require('bcrypt');
 app.use(cors());
 app.use(express.json());
 const jwt = require('jsonwebtoken');
 const SECRET_KEY = 'secretkey';
 mongoose.connect('mongodb+srv://COMP1640:COMP1640group5@cluster0.kgdq0tl.mongodb.net/COMP1640?retryWrites=true&w=majority', {
   useNewUrlParser: true,
-  useUnifiedTopology: true,
+  useUnifiedTopology: true, 
 })
   .then(() => console.log('MongoDB connected'))
   .catch((err) => console.log(err));
@@ -21,18 +22,36 @@ mongoose.connect('mongodb+srv://COMP1640:COMP1640group5@cluster0.kgdq0tl.mongodb
 
 //USER
 const userSchema = new mongoose.Schema({
-  username: String,
-  email: String,
-  password: String,
-  role: String,
-  facultyName: String,
+  username: {
+    type: String,
+    required: true, 
+  },
+  email: {
+    type: String,
+    required: true, 
+    unique: true, 
+  },
+  password: {
+    type: String,
+    required: true,
+  },
+  role: {
+    type: String,
+    required: true, 
+  },
+  facultyName: String, 
 });
 const User = mongoose.model('User', userSchema);
 app.post('/api/users', async (req, res) => {
   const { username, email, password, role, facultyName } = req.body;
 
   try {
-    const newUser = new User({ username, email, password, role, facultyName });
+    if (!username || !email || !password || !role) {
+      return res.status(400).json({ message: 'Missing required fields' });
+    }
+
+    const hashedPassword = await bcrypt.hash(password, 5);
+    const newUser = new User({ username, email, password: hashedPassword, role, facultyName });
     await newUser.save();
     res.status(201).json(newUser);
   } catch (err) {
@@ -97,24 +116,54 @@ app.put('/api/users/:id', async (req, res) => {
   }
 });
 
+//Login 
+
+const verifyRole = (roles) => (req, res, next) => {
+  const token = req.headers.authorization?.split(' ')[1]; 
+  if (!token) {
+    return res.status(403).json({ message: 'No token provided!' });
+  }
+  try {
+    const decoded = jwt.verify(token, SECRET_KEY);
+    req.user = decoded;
+    if (!roles.includes(decoded.role)) {
+      return res.status(401).json({ message: 'Unauthorized!' });
+    }
+    next();
+  } catch (error) {
+    res.status(401).json({ message: 'Unauthorized!' });
+  }
+};
+
+
 app.post('/api/login', async (req, res) => {
   const { email, password } = req.body;
 
   try {
-    const user = await User.findOne({ email, password });
+    const user = await User.findOne({ email });
 
     if (!user) {
       return res.status(401).json({ message: 'Invalid email or password' });
     }
+
+    // So sánh mật khẩu đầu vào với mật khẩu đã mã hóa trong DB
+    const isMatch = await bcrypt.compare(password, user.password);
+
+    if (!isMatch) {
+      return res.status(401).json({ message: 'Invalid email or password' });
+    }
+
+    // Tạo token
     const token = jwt.sign({ userId: user._id, role: user.role }, SECRET_KEY, {
-      expiresIn: '1d', 
+      expiresIn: '1d',
     });
 
-    res.json({ user, token });
+    res.json({ user: { email: user.email, role: user.role }, token }); // Trả lại thông tin người dùng nhưng không bao gồm mật khẩu
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
 });
+
 
 function generateRandomPassword(length = 8) {
   const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
@@ -162,7 +211,6 @@ const facultySchema = new mongoose.Schema({
 });
 
 const Faculty = mongoose.model('Faculty', facultySchema);
-
 app.get('/api/faculties', async (req, res) => {
   try {
     const faculties = await Faculty.find();
@@ -240,7 +288,7 @@ app.get('/api/decode-token', async (req, res) => {
       return res.status(404).json({ message: 'User not found' });
     }
 
-    res.json({ username: user.username, facultyName: user.facultyName }); 
+    res.json({ username: user.username, facultyName: user.facultyName, userrole: user.role }); 
   } catch (err) {
     res.status(500).json({ message: 'Invalid token' });
   }
@@ -283,6 +331,58 @@ app.put('/api/user/decode-update', async (req, res) => {
     res.status(500).json({ message: 'Token không hợp lệ hoặc lỗi server' });
   }
 });
+
+
+
+//Profile
+app.get('/api/user/profile', async (req, res) => {
+  const token = req.headers.authorization.split(' ')[1]; // Lấy token từ tiêu đề 'Authorization'
+
+  try {
+
+    const decoded = jwt.verify(token, SECRET_KEY);
+
+    const user = await User.findById(decoded.userId);
+
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    res.json(user);
+  } catch (error) {
+    res.status(401).json({ message: 'Invalid token' });
+  }
+});
+
+app.put('/api/user/profile', async (req, res) => {
+  const token = req.headers.authorization.split(' ')[1]; // Lấy token từ tiêu đề 'Authorization'
+  const { name, email, password } = req.body;
+
+  try {
+    const decoded = jwt.verify(token, SECRET_KEY);
+    const user = await User.findById(decoded.userId);
+
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    // Cập nhật thông tin người dùng
+    if (name) user.name = name;
+    if (email) user.email = email;
+    if (password) {
+      // Mã hóa mật khẩu mới trước khi lưu vào cơ sở dữ liệu
+      const hashedPassword = await bcrypt.hash(password, 10);
+      user.password = hashedPassword;
+    }
+
+    await user.save();
+
+    res.json(user);
+  } catch (error) {
+    res.status(401).json({ message: 'Invalid token' });
+  }
+});
+
 
 const port = process.env.PORT || 5000;
 app.listen(port, () => {

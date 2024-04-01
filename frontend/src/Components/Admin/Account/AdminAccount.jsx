@@ -48,16 +48,17 @@ const Admin = () => {
     setSelectedItem(item);
   };
 
-  const handleAddUser = async (newUser) => {
+  const handleAddUser = async (user) => {
     try {
-      const response = await axios.post('/api/users', newUser);
+      const response = await axios.post('/api/users', user);
       const addedUser = response.data;
-      setUserData((prevUserData) => [...prevUserData, addedUser]);
-    } catch (error) {
-      console.error('Error adding user:', error);
+      setUserData([...userData, addedUser]); // Thêm người dùng mới vào trạng thái userData
+      closeModal(); // Đóng modal thêm người dùng
+    } catch (err) {
+      console.error("Failed to add user:", err.response.data.message);
+      // Bạn có thể thêm logic để hiển thị thông báo lỗi tại đây
     }
   };
-
   const handleEditUser = (user) => {
     setEditedUser(user);
     setShowEditModal(true);
