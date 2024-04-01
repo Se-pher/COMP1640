@@ -181,6 +181,19 @@ const Student_Upload = () => {
       );
       const fileURL = wordFileResponse.data.fileURL;
 
+      if (!title || !description) {
+        toast.error("Please enter title and description", {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
+        return;
+      }
+
       const token = localStorage.getItem("jwtToken");
       if (token) {
         const articleData = {
