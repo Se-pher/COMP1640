@@ -146,7 +146,6 @@ app.post('/api/login', async (req, res) => {
       return res.status(401).json({ message: 'Invalid email or password' });
     }
 
-    // So sánh mật khẩu đầu vào với mật khẩu đã mã hóa trong DB
     const isMatch = await bcrypt.compare(password, user.password);
 
     if (!isMatch) {
@@ -163,7 +162,6 @@ app.post('/api/login', async (req, res) => {
     res.status(500).json({ message: err.message });
   }
 });
-
 
 function generateRandomPassword(length = 8) {
   const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
@@ -186,7 +184,6 @@ app.post('/api/forgot-password', async (req, res) => {
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
     }
-
     const newPassword = generateRandomPassword();
     user.password = newPassword;
     await user.save();
@@ -366,8 +363,7 @@ app.put('/api/user/profile', async (req, res) => {
       return res.status(404).json({ message: 'User not found' });
     }
 
-    // Cập nhật thông tin người dùng
-    if (name) user.name = name;
+    if (name) user.username = name;
     if (email) user.email = email;
     if (password) {
       // Mã hóa mật khẩu mới trước khi lưu vào cơ sở dữ liệu
