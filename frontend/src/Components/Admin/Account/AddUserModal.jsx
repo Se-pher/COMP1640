@@ -23,11 +23,35 @@ const AddUserModal = ({ onClose, onAddUser }) => {
     }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    const newUser = { username, email, password, role };
-    onAddUser(newUser);
-    onClose();
+    let selectedFac = ""; 
+  
+    switch (role) {
+      case "Coordinator":
+        selectedFac = selectedFaculty; 
+        break;
+      case "admin":
+        selectedFac = "Admin"; 
+        break;
+      case "student":
+        selectedFac = "Student"; 
+        break;
+      case "Manager":
+        selectedFac = "Manager"; 
+        break;
+      default:
+        selectedFac = "";
+        break;
+    }
+  
+    try {
+      const newUser = { username, email, password, role, facultyName: selectedFac };
+      await axios.post("/api/users", newUser);
+      onClose();
+    } catch (error) {
+      console.error("Error adding user:", error.response.data.message);
+    }
   };
 
   return (
