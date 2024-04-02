@@ -9,8 +9,9 @@ const upload = multer({ dest: 'uploads/' });
 const Article= require('./model/article');
 const bcrypt = require('bcrypt');
 const allowedOrigins = ['http://localhost:3000', 'https://comp1640-p2.vercel.app/'];
-app.use(
-  cors({
+app.use(cors({
+  origin: ['http://localhost:3000', 'https://comp1640-p2.vercel.app'],
+  credentials: true,
     origin: function (origin, callback) {
       // Cho phép các yêu cầu đến từ các nguồn gốc nằm trong allowedOrigins
       if (!origin || allowedOrigins.includes(origin)) {
