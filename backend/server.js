@@ -8,7 +8,7 @@ const multer = require('multer');
 const upload = multer({ dest: 'uploads/' });
 const Article= require('./model/article');
 const bcrypt = require('bcrypt');
-const allowedOrigins = ['http://localhost:3000', 'https://comp1500-52r6.vercel.app/'];
+const allowedOrigins = ['http://localhost:3000', 'https://comp1640-p2.vercel.app/'];
 app.use(
   cors({
     origin: function (origin, callback) {
