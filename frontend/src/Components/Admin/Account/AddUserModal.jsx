@@ -1,11 +1,27 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import * as s from "../../../Style/PopUp";
+import axios from "axios";
 
 const AddUserModal = ({ onClose, onAddUser }) => {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [role, setRole] = useState("");
+  const [facultyList, setFacultyList] = useState([]);
+  const [selectedFaculty, setSelectedFaculty] = useState("");
+
+  useEffect(() => {
+    fetchFaculties();
+  }, []);
+
+  const fetchFaculties = async () => {
+    try {
+      const response = await axios.get("/api/faculties");
+      setFacultyList(response.data);
+    } catch (error) {
+      console.error("Error fetching faculties:", error.response.data.message);
+    }
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -57,6 +73,22 @@ const AddUserModal = ({ onClose, onAddUser }) => {
                 <option value="Manager">Manager</option>
               </s.Select>
             </s.InputGroup>
+            {role === "Coordinator" && (
+              <s.InputGroup>
+                <s.Label>Select Faculty</s.Label>
+                <s.Select
+                  value={selectedFaculty}
+                  onChange={(e) => setSelectedFaculty(e.target.value)}
+                >
+                  <option value="">Select a faculty</option>
+                  {facultyList.map((faculty) => (
+                    <option key={faculty._id} value={faculty.facultyName}>
+                      {faculty.facultyName}
+                    </option>
+                  ))}
+                </s.Select>
+              </s.InputGroup>
+            )}
             <s.ModalFooter>
               <s.Button type="submit">Add User</s.Button>
             </s.ModalFooter>
