@@ -8,6 +8,7 @@ const articleSchema = new mongoose.Schema(
     wordFileURL: String,
     createdAt: { type: Date, default: Date.now },
     facultyName: String,
+    userId: String,
   },
   { collection: 'Articles' },
   { versionKey: false }
