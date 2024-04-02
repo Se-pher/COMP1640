@@ -8,8 +8,13 @@ import { useParams } from "react-router-dom";
 
 const Student_Article_Details = () => {
   const { id } = useParams();
+  const [selectedItem, setSelectedItem] = useState("View Articles");
   const [article, setArticle] = useState(null);
   const [userName, setUserName] = useState("");
+
+  const handleItemClick = (item) => {
+    setSelectedItem(item);
+  };
 
   useEffect(() => {
     const fetchArticle = async () => {
@@ -54,7 +59,8 @@ const Student_Article_Details = () => {
       <Navbar />
       <s.MainContent>
         <Sidebar
-          selectedItem="View Article Details"
+          selectedItem={selectedItem}
+          handleItemClick={handleItemClick}
           userName={userName}
           handleLogout={handleLogout}
         />
