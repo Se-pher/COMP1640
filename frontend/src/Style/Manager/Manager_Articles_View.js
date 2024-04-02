@@ -156,3 +156,11 @@ export const ManagerCard = styled.div`
   flex-direction: column;
   width: 340px;
 `;
+
+export const SelectionCheckbox = styled.div`
+
+`;
+
+export const DownloadButton = styled.div`
+
+`;
