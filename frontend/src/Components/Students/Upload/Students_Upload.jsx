@@ -137,12 +137,26 @@ const Student_Upload = () => {
 
   const handleUpload = async () => {
     try {
+
+      if (!title || !description || !facultyName) {
+        toast.error("Please enter title, description, and select faculty", {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
+        return;
+      }
+      
       const imageFormData = new FormData();
       imageFormData.append("image", imageFile);
-
+  
       const wordFileFormData = new FormData();
       wordFileFormData.append("wordFile", wordFile);
-
+  
       const imageResponse = await axios.post("/api/images", imageFormData, {
         headers: {
           "Content-Type": "multipart/form-data",
@@ -159,7 +173,7 @@ const Student_Upload = () => {
         },
       });
       const imageURL = imageResponse.data.secure_url;
-
+  
       const wordFileResponse = await axios.post(
         "/api/wordFiles",
         wordFileFormData,
@@ -180,7 +194,7 @@ const Student_Upload = () => {
         }
       );
       const fileURL = wordFileResponse.data.fileURL;
-
+  
       if (!title || !description) {
         toast.error("Please enter title and description", {
           position: "top-right",
@@ -193,7 +207,7 @@ const Student_Upload = () => {
         });
         return;
       }
-
+  
       const token = localStorage.getItem("jwtToken");
       if (token) {
         const articleData = {
@@ -203,15 +217,19 @@ const Student_Upload = () => {
           wordFileURL: fileURL,
           facultyName,
         };
-
-        const articleResponse = await axios.post("/api/articles", articleData);
-
+  
+        const articleResponse = await axios.post("/api/articles", articleData, {
+          headers: {
+            Authorization: `Bearer ${token}`, 
+          },
+        });
+  
         console.log("Article uploaded successfully:", articleResponse.data);
         setTitle("");
         setDescription("");
         setImageFile(null);
         setWordFile(null);
-
+  
         toast.success("Article uploaded successfully!", {
           position: "top-right",
           autoClose: 5000,
@@ -224,7 +242,7 @@ const Student_Upload = () => {
       }
     } catch (error) {
       console.error("Error uploading article:", error);
-
+  
       toast.error("Error uploading article", {
         position: "top-right",
         autoClose: 5000,
@@ -236,6 +254,7 @@ const Student_Upload = () => {
       });
     }
   };
+  
 
   return (
     <s.Container>

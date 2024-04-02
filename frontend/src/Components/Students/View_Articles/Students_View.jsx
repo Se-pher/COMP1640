@@ -23,21 +23,23 @@ const Students_View = () => {
   };
 
   useEffect(() => {
-    const fetchArticles = async () => {
+    const fetchUserArticles = async () => {
       try {
-        const response = await axios.get("/api/articles");
+        const token = localStorage.getItem("jwtToken");
+        if (!token) return;
+        const response = await axios.get("/api/user/articles", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
         setArticles(response.data);
       } catch (error) {
         console.error("Error fetching articles:", error);
       }
     };
 
-    fetchArticles();
+    fetchUserArticles();
   }, []);
-
-  const handleItemClick = (item) => {
-    setSelectedItem(item);
-  };
 
   useEffect(() => {
     const token = localStorage.getItem("jwtToken");
@@ -59,6 +61,9 @@ const Students_View = () => {
     }
   };
 
+  const handleItemClick = (item) => {
+    setSelectedItem(item);
+  };
   const handleLogout = () => {
     localStorage.removeItem("jwtToken");
     window.location.href = "/login";
@@ -76,8 +81,8 @@ const Students_View = () => {
         <s.Main>
           <s.ArticlesContainer>
             <s.ArticleGrid>
-              {currentArticles.map((article) => (
-                <StudentsCard key={article._id} article={article} />
+              {currentArticles.map((articles) => (
+                <StudentsCard key={articles._id} article={articles} />
               ))}
             </s.ArticleGrid>
             <s.Pagination>
