@@ -8,6 +8,7 @@ import axios from "axios";
 const Manager_Articles_View = () => {
   const [articles, setArticles] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
+  const [selectedArticles, setSelectedArticles] = useState([]);
   const articlesPerPage = 6;
   const indexOfLastArticle = currentPage * articlesPerPage;
   const indexOfFirstArticle = indexOfLastArticle - articlesPerPage;
@@ -18,6 +19,16 @@ const Manager_Articles_View = () => {
 
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);
+  };
+
+  const handleArticleSelect = (article, isSelected) => {
+    if (isSelected) {
+      setSelectedArticles([...selectedArticles, article]);
+    } else {
+      setSelectedArticles(
+        selectedArticles.filter((a) => a._id !== article._id)
+      );
+    }
   };
 
   useEffect(() => {
@@ -42,7 +53,11 @@ const Manager_Articles_View = () => {
           <s.ArticlesContainer>
             <s.ArticleGrid>
               {currentArticles.map((article) => (
-                <ManagerCard key={article._id} article={article} />
+                <ManagerCard
+                  key={article._id}
+                  article={article}
+                  onSelect={handleArticleSelect}
+                />
               ))}
             </s.ArticleGrid>
             <s.Pagination>

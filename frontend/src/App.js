@@ -16,11 +16,16 @@ import CoordinatorArticlesDetails from "./Components/Coordinator/Articles/Coordi
 import StudentsView from "./Components/Students/View_Articles/Students_View";
 import StudentArticleDetails from "./Components/Students/View_Articles/Student_Article_Details";
 import ManagerArticlesView from "./Components/Manager/Articles/Manager_Articles_View";
+import DownloadedArticles from "./Components/Manager/DowloadZip/DownloadedArticles";
+
 import axios from 'axios';
+import { useState } from "react";
+
 
 axios.defaults.baseURL = 'http://localhost:5000';
 
 function App() {
+  const [selectedArticles, setSelectedArticles] = useState([]);
   return (
     <Router>
       <Routes>
@@ -39,6 +44,7 @@ function App() {
         <Route path="/student/View" element={<StudentsView />} />
         <Route path="/Student/View/article/:id" element={<StudentArticleDetails />} />
         <Route path="/Manager" element={<ManagerArticlesView />} />
+        <Route path="/Manager/DownloadedArticles" element={<DownloadedArticles selectedArticles={selectedArticles} />} />
       </Routes>
     </Router>
   );
