@@ -42,7 +42,7 @@ export const HighlightText = styled.span`
 
   @keyframes colorChange {
     0% { color: green; }
-    50% {color: pink;}
+    50% {color: yellow;}
     100% { color: #ff6347; }
   }
 `;
