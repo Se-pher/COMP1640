@@ -294,6 +294,28 @@ app.get('/api/decode-token', async (req, res) => {
   }
 });
 
+const verifyToken = (req, res, next) => {
+  const authHeader = req.headers['authorization'];
+  const token = authHeader && authHeader.split(' ')[1];
+
+  if (!token) return res.sendStatus(401); // Không có token
+
+  jwt.verify(token, SECRET_KEY, (err, user) => {
+    if (err) return res.sendStatus(403); // Token không hợp lệ
+    req.user = user; // Lưu thông tin giải mã vào req.user
+    next(); // Tiếp tục middleware tiếp theo
+  });
+};
+app.get('/api/user/articles', verifyToken, async (req, res) => {
+  try {
+    const userId = req.user.userId;
+    const articles = await Article.find({ userId });
+    res.json(articles);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
 
 app.put('/api/user/decode-update', async (req, res) => {
   const { username, email, currentPassword, newPassword } = req.body;
@@ -476,7 +498,12 @@ app.post('/api/wordFiles', upload.single('wordFile'), async (req, res) => {
       },
     });
 
-    const fileURL = `https://storage.googleapis.com/${bucket.name}/${wordFilePath}`;
+    const blob = bucket.file(wordFilePath);
+
+    const [fileURL] = await blob.getSignedUrl({
+      action: 'read',
+      expires: '03-17-2025',
+    });
 
     res.json({ fileURL });
   } catch (err) {
