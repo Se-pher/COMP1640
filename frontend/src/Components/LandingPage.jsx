@@ -11,6 +11,7 @@ const LandingPage = () => {
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);
   };
+
   const [articles, setArticles] = useState([]);
 
   useEffect(() => {
@@ -25,6 +26,11 @@ const LandingPage = () => {
 
     fetchArticles();
   }, []);
+
+  const startIndex = (currentPage - 1) * articlesPerPage;
+  const endIndex = startIndex + articlesPerPage;
+  const currentArticles = articles.slice(startIndex, endIndex);
+
   return (
     <s.Container>
       <s.Header>
@@ -38,9 +44,9 @@ const LandingPage = () => {
       <s.Section>
         <s.Title>Articles</s.Title>
         <s.ArticleGrid>
-        {articles.map(article => (
-        <ArticleCard key={article._id} article={article} />
-      ))}
+          {currentArticles.map(article => (
+            <ArticleCard key={article._id} article={article} />
+          ))}
         </s.ArticleGrid>
         <s.Pagination>
           {Array.from(

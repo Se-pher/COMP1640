@@ -137,6 +137,20 @@ const Student_Upload = () => {
 
   const handleUpload = async () => {
     try {
+
+      if (!title || !description || !facultyName) {
+        toast.error("Please enter title, description, and select faculty", {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
+        return;
+      }
+      
       const imageFormData = new FormData();
       imageFormData.append("image", imageFile);
   
