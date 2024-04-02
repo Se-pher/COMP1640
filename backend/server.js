@@ -495,7 +495,12 @@ app.post('/api/wordFiles', upload.single('wordFile'), async (req, res) => {
       },
     });
 
-    const fileURL = `https://storage.googleapis.com/${bucket.name}/${wordFilePath}`;
+    const blob = bucket.file(wordFilePath);
+
+    const [fileURL] = await blob.getSignedUrl({
+      action: 'read',
+      expires: '03-17-2025',
+    });
 
     res.json({ fileURL });
   } catch (err) {
