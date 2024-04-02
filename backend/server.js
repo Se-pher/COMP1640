@@ -8,22 +8,7 @@ const multer = require('multer');
 const upload = multer({ dest: 'uploads/' });
 const Article= require('./model/article');
 const bcrypt = require('bcrypt');
-const allowedOrigins = ['http://localhost:3000', 'https://comp1640-p2.vercel.app/'];
-app.use(cors({
-  origin: ['http://localhost:3000', 'https://comp1640-p2.vercel.app'],
-  credentials: true,
-    origin: function (origin, callback) {
-      // Cho phép các yêu cầu đến từ các nguồn gốc nằm trong allowedOrigins
-      if (!origin || allowedOrigins.includes(origin)) {
-        callback(null, true);
-      } else {
-        callback(new Error('Không được phép truy cập bởi chính sách CORS'));
-      }
-    },
-    credentials: true, // Cho phép gửi cookie qua lại giữa máy khách và máy chủ
-    methods: ['GET', 'POST', 'PUT', 'DELETE'], // Các phương thức HTTP được phép
-  })
-);
+app.use(cors());
 app.use(express.json());
 const jwt = require('jsonwebtoken');
 const SECRET_KEY = 'secretkey';
