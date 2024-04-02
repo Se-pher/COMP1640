@@ -1,7 +1,9 @@
-// Landing.js
+// Trong file style components (ví dụ: LandingStyles.js)
 import styled from "styled-components";
 
 export const Container = styled.div`
+  width: 100%;
+  margin: 0 auto;
 `;
 
 export const Header = styled.header`
@@ -14,15 +16,41 @@ export const Image = styled.img`
   object-fit: cover;
 `;
 
-export const TextContainer = styled.div`
+export const TypewriterContainer = styled.div`
   position: absolute;
   top: 50%;
-  left: 50%;
+  left: 23%;
   transform: translate(-50%, -50%);
-  text-align: center;
+  text-align: left;
   color: white;
   text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
 `;
+
+export const WelcomeText = styled.span`
+  font-size: 2rem;
+  margin-bottom: 0.5rem;
+`;
+
+export const HighlightText = styled.span`
+  font-size: 2rem;
+  display: inline-block;
+  color: #ff6347;
+  animation: colorChange 15s infinite;
+
+  @keyframes colorChange {
+    0% { color: green; }
+    50% {color: pink;}
+    100% { color: #ff6347; }
+  }
+`;
+
+export const Highlight = styled.span`
+
+`;
+
 
 export const Section = styled.section`
   padding: 2rem;
@@ -78,6 +106,7 @@ export const ArticleTitle = styled.h3`
     }
   }
 `;
+
 export const ArticleDescription = styled.p`
   font-size: 0.9rem;
   color: #666;
@@ -149,7 +178,6 @@ export const ArticleCount = styled.div`
   border-radius: 5px;
 `;
 
-
 export const Footer = styled.footer`
   background-color: #333;
   color: #fff;
@@ -174,4 +202,3 @@ export const FooterLink = styled.a`
   text-decoration: none;
   margin-bottom: 0.5rem;
 `;
-

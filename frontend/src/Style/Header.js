@@ -70,8 +70,7 @@ export const SearchContainer = styled.div`
 export const SearchBar = styled.input`
   padding: 0.5rem;
   border-radius: 5px;
-  margin-left: 10px;
-  width: 270px;
+  width: 300px;
 `;
 
 export const SignIn = styled.div`
@@ -81,17 +80,6 @@ export const SignIn = styled.div`
 `;
 
 export const SignInLink = styled(Link)`
-  text-decoration: none;
-  a {
-    padding: 3px 25px 3px 25px;
-    font-size: 15px;
-    text-decoration: none;
-    color: black;
-    font-weight: 500;
-  }
-`;
-
-export const SignUpLink = styled(Link)`
   text-decoration: none;
   a {
     padding: 3px 25px 3px 25px;
