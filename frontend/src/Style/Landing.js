@@ -30,8 +30,15 @@ export const TypewriterContainer = styled.div`
 `;
 
 export const WelcomeText = styled.span`
+  position: absolute;
+  top: 43%;
+  left: 18%;
+  transform: translate(-50%, -50%);
   font-size: 2rem;
   margin-bottom: 0.5rem;
+  color: white;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+
 `;
 
 export const HighlightText = styled.span`
@@ -41,9 +48,9 @@ export const HighlightText = styled.span`
   animation: colorChange 15s infinite;
 
   @keyframes colorChange {
-    0% { color: green; }
-    50% {color: yellow;}
-    100% { color: #ff6347; }
+    100% {color: #00F260;}
+    100% {color: #ff6347;}
+    100% {color: #0575E6;}
   }
 `;
 

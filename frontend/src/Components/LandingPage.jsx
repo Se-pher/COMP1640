@@ -36,14 +36,14 @@ const LandingPage = () => {
     <s.Container>
       <s.Header>
         <s.Image src={Mountain} alt="" />
+        <s.WelcomeText>Welcome to our website</s.WelcomeText>
         <s.TypewriterContainer>
-          <s.WelcomeText>Welcome to our website</s.WelcomeText>
           <s.HighlightText>
             <Typewriter
               words={[
-                " this is an interesting website",
-                " here are many good articles",
-                " these are handsome coders",
+                " This is an interesting website",
+                " Here are many good articles",
+                " These are handsome coders",
               ]}
               loop={0}
               cursor={false}
