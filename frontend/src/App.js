@@ -22,7 +22,7 @@ import axios from 'axios';
 import { useState } from "react";
 
 
-axios.defaults.baseURL = 'https://backend-9x8v9ud2c-tannguyen29s-projects.vercel.app';
+axios.defaults.baseURL = 'https://comp1660.vercel.app/';
 
 function App() {
   const [selectedArticles, setSelectedArticles] = useState([]);
