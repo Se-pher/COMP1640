@@ -414,17 +414,6 @@ app.listen(port, () => {
 const articlesRouter = require('./articles');
 app.use('/api/articles', articlesRouter);
 
-
-if (process.env.NODE_ENV === 'production') {
-  // Serve any static files
-  app.use(express.static(path.join(__dirname, 'build')));
-
-  // Điều hướng tất cả các yêu cầu khác đến tệp index.html
-  app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, 'build', 'index.html'));
-  });
-}
-
 app.get('/api/articles/:id', async (req, res) => {
   try {
     const article = await Article.findById(req.params.id);
