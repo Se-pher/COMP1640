@@ -1,7 +1,6 @@
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 
-
 export const StyledLink = styled(Link)`
   text-decoration: none;
 `;
@@ -19,7 +18,6 @@ export const MainContent = styled.div`
   margin-top: 20px;
 `;
 
-
 export const Main = styled.div`
   flex: 1;
   padding: 20px;
@@ -34,12 +32,70 @@ export const DashboardContainer = styled.div`
   align-items: center;
 `;
 
+export const ChartContainerWrapper = styled.div`
+  width: 100%;
+  max-width: -webkit-fill-available;
+  height: 300px;
+  background-color: white;
+  border-radius: 10px;
+  padding: 20px;
+  margin-bottom: 20px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+`;
 
 export const ChartContainer = styled.div`
-  width: 100%;
-  height: 300px;
+  width: 70%;
+  height: 320px;
   display: flex;
   justify-content: center;
+`;
+
+export const ViewModeButtons = styled.div`
+  display: flex;
+  justify-content: center;
+  width: 30%;
+  height: 30px;
+
+  button {
+    background-color: #f0f0f0;
+    border: none;
+    padding: 6px 12px;
+    margin-left: 8px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+
+    &.active {
+      background-color: #29325b;
+      color: white;
+    }
+  }
+`;
+
+export const LowerContainersWrapper = styled.div`
+  display: flex;
+  flex-direction: row;
+  gap: 15px;
+  width: 100%;
+`;
+
+export const DataContainerWrapper = styled.div`
+  width: 47%;
+  height: 280px;
+  background-color: white;
+  border-radius: 10px;
+  padding: 20px;
+`;
+
+export const FacultyCountsContainerWrapper = styled.div`
+  width: 48%;
+  height: 280px;
+  background-color: white;
+  border-radius: 10px;
+  padding: 20px;
 `;
 
 export const DataContainer = styled.div`
@@ -106,37 +162,4 @@ export const FacultyName = styled.span`
 
 export const FacultyCount = styled.span`
   color: #666;
-`;
-
-export const ChartContainerWrapper = styled.div`
-  width: 100%;
-  max-width: -webkit-fill-available;
-  height: 300px;
-  background-color: white;
-  border-radius: 10px;
-  padding: 20px;
-  margin-bottom: 20px;
-`;
-
-export const LowerContainersWrapper = styled.div`
-  display: flex;
-  flex-direction: row;
-  gap: 15px;
-  width: 100%;
-`;
-
-export const DataContainerWrapper = styled.div`
-  width: 47%;
-  height: 280px;
-  background-color: white;
-  border-radius: 10px;
-  padding: 20px;
-`;
-
-export const FacultyCountsContainerWrapper = styled.div`
-  width: 48%;
-  height: 280px;
-  background-color: white;
-  border-radius: 10px;
-  padding: 20px;
 `;
