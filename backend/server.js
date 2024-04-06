@@ -188,7 +188,9 @@ app.post('/api/forgot-password', async (req, res) => {
     }
 
     const newPassword = generateRandomPassword();
-    user.password = newPassword;
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+    user.password = hashedPassword; 
     await user.save();
 
     const subject = 'Reset Password';
