@@ -285,6 +285,15 @@ app.post('/api/articles', async (req, res) => {
   }
 });
 
+app.get('/api/articles', async (req, res) => {
+  try {
+    const articles = await Article.find();
+    res.json(articles);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
 //TOKEN
 
 app.get('/api/decode-token', async (req, res) => {
