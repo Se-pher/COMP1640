@@ -188,7 +188,9 @@ app.post('/api/forgot-password', async (req, res) => {
     }
 
     const newPassword = generateRandomPassword();
-    user.password = newPassword;
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+    user.password = hashedPassword; 
     await user.save();
 
     const subject = 'Reset Password';
@@ -262,6 +264,27 @@ app.delete('/api/faculties/:id', async (req, res) => {
 
 
 //ARTICLE
+app.post('/api/articles', async (req, res) => {
+  const { title, description, imageURL, wordFileURL, facultyName } = req.body;
+
+  try {
+    // Tạo bài viết mới
+    const newArticle = new Article({ title, description, imageURL, wordFileURL, facultyName });
+    await newArticle.save();
+
+    // Kiểm tra xem faculty của bài viết có khớp với faculty của user có role là coordinator hay không
+    const coordinatorUser = await User.findOne({ role: 'coordinator', facultyName });
+    if (coordinatorUser) {
+      // Gửi email thông báo tới coordinator
+      await sendEmail(coordinatorUser.email, 'New article uploaded', `A new article has been uploaded for the ${facultyName} faculty.`);
+    }
+
+    res.status(201).json(newArticle);
+  } catch (err) {
+    res.status(400).json({ message: err.message });
+  }
+});
+
 app.get('/api/articles', async (req, res) => {
   try {
     const articles = await Article.find();
@@ -291,6 +314,28 @@ app.get('/api/decode-token', async (req, res) => {
     res.json({ username: user.username, facultyName: user.facultyName, userrole: user.role });
   } catch (err) {
     res.status(500).json({ message: 'Invalid token' });
+  }
+});
+
+const verifyToken = (req, res, next) => {
+  const authHeader = req.headers['authorization'];
+  const token = authHeader && authHeader.split(' ')[1];
+
+  if (!token) return res.sendStatus(401); // Không có token
+
+  jwt.verify(token, SECRET_KEY, (err, user) => {
+    if (err) return res.sendStatus(403); // Token không hợp lệ
+    req.user = user; // Lưu thông tin giải mã vào req.user
+    next(); // Tiếp tục middleware tiếp theo
+  });
+};
+app.get('/api/user/articles', verifyToken, async (req, res) => {
+  try {
+    const userId = req.user.userId;
+    const articles = await Article.find({ userId });
+    res.json(articles);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
   }
 });
 
@@ -392,17 +437,6 @@ app.listen(port, () => {
 const articlesRouter = require('./articles');
 app.use('/api/articles', articlesRouter);
 
-
-if (process.env.NODE_ENV === 'production') {
-  // Serve any static files
-  app.use(express.static(path.join(__dirname, 'build')));
-
-  // Điều hướng tất cả các yêu cầu khác đến tệp index.html
-  app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, 'build', 'index.html'));
-  });
-}
-
 app.get('/api/articles/:id', async (req, res) => {
   try {
     const article = await Article.findById(req.params.id);
@@ -476,7 +510,12 @@ app.post('/api/wordFiles', upload.single('wordFile'), async (req, res) => {
       },
     });
 
-    const fileURL = `https://storage.googleapis.com/${bucket.name}/${wordFilePath}`;
+    const blob = bucket.file(wordFilePath);
+
+    const [fileURL] = await blob.getSignedUrl({
+      action: 'read',
+      expires: '03-17-2025',
+    });
 
     res.json({ fileURL });
   } catch (err) {

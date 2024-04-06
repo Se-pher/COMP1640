@@ -12,7 +12,6 @@ const Header = ({ children }) => {
           <s.Logo src={WebLogo} alt="Logo" />
           <s.Navigation>
             <Link to="/">Home</Link>
-            <Link to="/articles">Articles</Link>
             <Link to="/about">About</Link>
           </s.Navigation>
         </s.LeftContainer>
@@ -24,9 +23,6 @@ const Header = ({ children }) => {
             <s.SignInLink>
               <Link to="/login">Login</Link>
             </s.SignInLink>
-            <s.SignUpLink>
-              <Link to="/register">SignUp</Link>
-            </s.SignUpLink>
           </s.SignIn>
         </s.RightContainer>
       </s.HeaderContainer>

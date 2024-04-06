@@ -3,6 +3,7 @@ import * as s from "../Style/Landing";
 import React, { useState, useEffect } from 'react';
 import ArticleCard from './ArticleCard';
 import axios from 'axios';
+import { Typewriter, Cursor } from 'react-simple-typewriter';
 
 const LandingPage = () => {
   const [currentPage, setCurrentPage] = useState(1);
@@ -35,16 +36,32 @@ const LandingPage = () => {
     <s.Container>
       <s.Header>
         <s.Image src={Mountain} alt="" />
-        <s.TextContainer>
-          <h1>Welcome to My Blog</h1>
-          <p>Explore the Latest Articles</p>
-          <button>Explore</button>
-        </s.TextContainer>
+        <s.WelcomeText>Welcome to our website</s.WelcomeText>
+        <s.TypewriterContainer>
+          <s.HighlightText>
+            <Typewriter
+              words={[
+                " This is an interesting website",
+                " Here are many good articles",
+                " These are handsome coders",
+              ]}
+              loop={0}
+              cursor={false}
+              typeSpeed={100}
+              deleteSpeed={50}
+              delaySpeed={1000}
+              onType={(text, i) => <s.Highlight key={i}>{text}</s.Highlight>}
+            />
+            <span style={{ color: "red" }}>
+              <Cursor cursorStyle="|" />
+            </span>
+          </s.HighlightText>
+        </s.TypewriterContainer>
       </s.Header>
       <s.Section>
         <s.Title>Articles</s.Title>
         <s.ArticleGrid>
-          {currentArticles.map(article => (
+          {currentArticles.map((article) => (
             <ArticleCard key={article._id} article={article} />
           ))}
         </s.ArticleGrid>
