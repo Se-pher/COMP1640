@@ -28,7 +28,7 @@ const AddUserModal = ({ onClose, onAddUser }) => {
     let selectedFac = ""; 
   
     switch (role) {
-      case "Coordinator":
+      case "coordinator":
         selectedFac = selectedFaculty; 
         break;
       case "admin":
@@ -93,11 +93,11 @@ const AddUserModal = ({ onClose, onAddUser }) => {
                 <option value="">Select a role</option>
                 <option value="admin">Admin</option>
                 <option value="student">student</option>
-                <option value="Coordinator">Coordinator</option>
+                <option value="coordinator">Coordinator</option>
                 <option value="Manager">Manager</option>
               </s.Select>
             </s.InputGroup>
-            {role === "Coordinator" && (
+            {role === "coordinator" && (
               <s.InputGroup>
                 <s.Label>Select Faculty</s.Label>
                 <s.Select

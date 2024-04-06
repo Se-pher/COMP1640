@@ -264,12 +264,24 @@ app.delete('/api/faculties/:id', async (req, res) => {
 
 
 //ARTICLE
-app.get('/api/articles', async (req, res) => {
+app.post('/api/articles', async (req, res) => {
+  const { title, description, imageURL, wordFileURL, facultyName } = req.body;
+
   try {
-    const articles = await Article.find();
-    res.json(articles);
-  } catch (error) {
-    res.status(500).json({ message: error.message });
+    // Tạo bài viết mới
+    const newArticle = new Article({ title, description, imageURL, wordFileURL, facultyName });
+    await newArticle.save();
+
+    // Kiểm tra xem faculty của bài viết có khớp với faculty của user có role là coordinator hay không
+    const coordinatorUser = await User.findOne({ role: 'coordinator', facultyName });
+    if (coordinatorUser) {
+      // Gửi email thông báo tới coordinator
+      await sendEmail(coordinatorUser.email, 'New article uploaded', `A new article has been uploaded for the ${facultyName} faculty.`);
+    }
+
+    res.status(201).json(newArticle);
+  } catch (err) {
+    res.status(400).json({ message: err.message });
   }
 });
 
