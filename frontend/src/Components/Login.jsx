@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import * as s from "../Style/Login";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Img from "../Image/Login.png";
 import GoogleLogo from "../Image/google.png";
 import FBLogo from "../Image/facebook.png";
@@ -11,31 +11,30 @@ const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const navigate = useNavigate();
 
   const handleLogin = async () => {
     try {
       const response = await axios.post('/api/login', { email, password });
       const { user, token } = response.data;
       localStorage.setItem('jwtToken', token);
+      localStorage.setItem('userRole', user.role);
+
       if (user.role === 'student') {
-        window.location.href = '/student';
+        navigate('/student');
       } else if (user.role === 'admin') {
-        window.location.href = '/admin';
-      } else if(user.role === 'Manager'){
-        window.location.href = '/Manager';
-      } 
-      else if(user.role === 'Coordinator'){
-        window.location.href = '/coordinator';
-      }
-       
-      else {
+        navigate('/admin');
+      } else if (user.role === 'manager') {
+        navigate('/manager');
+      } else if (user.role === 'coordinator') {
+        navigate('/coordinator');
+      } else {
         setError('Invalid role');
       }
     } catch (error) {
       setError('Invalid email or password');
     }
   };
-  
 
   return (
     <s.Container>
@@ -46,21 +45,21 @@ const Login = () => {
         <s.Title>Login</s.Title>
         <s.InputWrapper>
           <s.Label>Email:</s.Label>
-          <s.Input 
-            name="email" 
-            placeholder="Input Email" 
+          <s.Input
+            name="email"
+            placeholder="Input Email"
             value={email}
-          onChange={(e) => setEmail(e.target.value)} 
+            onChange={(e) => setEmail(e.target.value)}
           />
         </s.InputWrapper>
         <s.InputWrapper>
           <s.Label>Password:</s.Label>
-          <s.Input 
-            name="password" 
-            type="password" 
-            placeholder="Input Password" 
-            value={password} 
-            onChange={(e) => setPassword(e.target.value)} 
+          <s.Input
+            name="password"
+            type="password"
+            placeholder="Input Password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
           />
         </s.InputWrapper>
         <s.ForgotPassword>
