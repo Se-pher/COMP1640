@@ -24,31 +24,32 @@ import DownloadedArticles from './Components/Manager/DowloadZip/DownloadedArticl
 import Error404 from './Components/Error404';
 import axios from 'axios';
 
-axios.defaults.baseURL = 'http://localhost:5000/';
+axios.defaults.baseURL = "http://localhost:5000/";
 
 function App() {
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<Header><Home /></Header>} />
+        <Route
+          path="/"
+          element={
+            <Header>
+              <Home />
+            </Header>
+          }
+        />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route
           path="/admin"
           element={
-            <ProtectedRoute
-              component={Admin}
-              allowedRoles={['admin']}
-            />
+            <ProtectedRoute component={Admin} allowedRoles={["admin"]} />
           }
         />
         <Route
           path="/student"
           element={
-            <ProtectedRoute
-              component={Students}
-              allowedRoles={['student']}
-            />
+            <ProtectedRoute component={Students} allowedRoles={["student"]} />
           }
         />
         <Route
@@ -56,7 +57,7 @@ function App() {
           element={
             <ProtectedRoute
               component={CoordinatorDashboard}
-              allowedRoles={['coordinator']}
+              allowedRoles={["coordinator"]}
             />
           }
         />
@@ -65,19 +66,23 @@ function App() {
           element={
             <ProtectedRoute
               component={ManagerArticlesView}
-              allowedRoles={['manager']}
+              allowedRoles={["manager"]}
             />
           }
         />
-        <Route path="/articles/:id" element={<Header><ArticleDetailPage /></Header>} />
+        <Route
+          path="/articles/:id"
+          element={
+            <Header>
+              <ArticleDetailPage />
+            </Header>
+          }
+        />
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route
           path="/admin/faculty"
           element={
-            <ProtectedRoute
-              component={AdminFaculty}
-              allowedRoles={['admin']}
-            />
+            <ProtectedRoute component={AdminFaculty} allowedRoles={["admin"]} />
           }
         />
         <Route
@@ -121,7 +126,7 @@ function App() {
           element={
             <ProtectedRoute
               component={CoordinatorArticles}
-              allowedRoles={['coordinator']}
+              allowedRoles={["coordinator"]}
             />
           }
         />
@@ -130,7 +135,7 @@ function App() {
           element={
             <ProtectedRoute
               component={CoordinatorArticlesDetails}
-              allowedRoles={['coordinator']}
+              allowedRoles={["coordinator"]}
             />
           }
         />
@@ -139,7 +144,7 @@ function App() {
           element={
             <ProtectedRoute
               component={StudentsView}
-              allowedRoles={['student']}
+              allowedRoles={["student"]}
             />
           }
         />
@@ -148,27 +153,13 @@ function App() {
           element={
             <ProtectedRoute
               component={StudentArticleDetails}
-              allowedRoles={['student']}
-            />
-          }
-        />
-        <Route
-          path="/manager/downloadedarticles"
-          element={
-            <ProtectedRoute
-              component={DownloadedArticles}
-              allowedRoles={['manager']}
+              allowedRoles={["student"]}
             />
           }
         />
         <Route
           path="*"
-          element={
-            <ProtectedRoute
-              component={Error404}
-              allowedRoles={[]}
-            />
-          }
+          element={<ProtectedRoute component={Error404} allowedRoles={[]} />}
         />
       </Routes>
     </Router>
