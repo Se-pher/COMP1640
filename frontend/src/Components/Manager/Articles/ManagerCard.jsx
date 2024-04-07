@@ -1,14 +1,19 @@
-import React, { useState } from 'react';
+import React from 'react';
 import * as s from '../../../Style/Manager/Manager_Articles_View';
 import { Link } from 'react-router-dom';
 
-const ManagerCard = ({ article, onSelect }) => {
-    const [isSelected, setIsSelected] = useState(false);
-  
-    const handleSelect = () => {
-      setIsSelected(!isSelected);
-      onSelect(article, !isSelected);
-    };
+const ManagerCard = ({ article, onSelect, isSelected }) => {
+  const handleSelect = () => {
+    onSelect(article, !isSelected);
+  };
+
+  const truncateDescription = (description, limit) => {
+    const words = description.split(' ');
+    if (words.length > limit) {
+      return words.slice(0, limit).join(' ') + '...';
+    }
+    return description;
+  };
 
   return (
     <s.ManagerCard>
@@ -19,8 +24,8 @@ const ManagerCard = ({ article, onSelect }) => {
         <s.ArticleDate>
           {new Date(article.createdAt).toLocaleDateString()} | {article.facultyName}
         </s.ArticleDate>
-        <s.ArticleTitle>{article.title}</s.ArticleTitle>
-        <s.ArticleDescription>{article.description}</s.ArticleDescription>
+        <s.ArticleTitle>{truncateDescription(article.title, 6)}</s.ArticleTitle>
+        <s.ArticleDescription>{truncateDescription(article.description, 14)}</s.ArticleDescription>
         <s.SelectionCheckbox>
         <input
           type="checkbox"
