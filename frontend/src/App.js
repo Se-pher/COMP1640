@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import Login from "./Components/Login";
 import Admin from "./Components/Admin/Account/AdminAccount";
@@ -17,7 +17,6 @@ import CoordinatorArticlesDetails from "./Components/Coordinator/Articles/Coordi
 import StudentsView from "./Components/Students/View_Articles/Students_View";
 import StudentArticleDetails from "./Components/Students/View_Articles/Student_Article_Details";
 import ManagerArticlesView from "./Components/Manager/Articles/Manager_Articles_View";
-import DownloadedArticles from "./Components/Manager/DowloadZip/DownloadedArticles";
 import Error404 from "./Components/Error404";
 import axios from "axios";
 
@@ -27,7 +26,14 @@ function App() {
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<Header><Home /></Header>}/>
+        <Route
+          path="/"
+          element={
+            <Header>
+              <Home />
+            </Header>
+          }
+        />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route
@@ -117,15 +123,6 @@ function App() {
             <ProtectedRoute
               component={StudentArticleDetails}
               allowedRoles={["student"]}
-            />
-          }
-        />
-        <Route
-          path="/manager/downloadedarticles"
-          element={
-            <ProtectedRoute
-              component={DownloadedArticles}
-              allowedRoles={["manager"]}
             />
           }
         />

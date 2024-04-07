@@ -1,4 +1,3 @@
-// Trong file style components (ví dụ: LandingStyles.js)
 import styled from "styled-components";
 
 export const Container = styled.div`
@@ -16,6 +15,9 @@ export const Image = styled.img`
   object-fit: cover;
 `;
 
+export const Highlight = styled.span`
+`;
+
 export const TypewriterContainer = styled.div`
   position: absolute;
   top: 50%;
@@ -27,6 +29,12 @@ export const TypewriterContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-items: flex-start;
+
+  @media only screen and (max-width: 768px) {
+    left: 50%;
+    transform: translateX(-50%);
+    text-align: center;
+  }
 `;
 
 export const WelcomeText = styled.span`
@@ -39,6 +47,11 @@ export const WelcomeText = styled.span`
   color: white;
   text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
 
+  @media only screen and (max-width: 768px) {
+    top: 30%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
 `;
 
 export const HighlightText = styled.span`
@@ -54,11 +67,6 @@ export const HighlightText = styled.span`
   }
 `;
 
-export const Highlight = styled.span`
-
-`;
-
-
 export const Section = styled.section`
   padding: 2rem;
 `;
@@ -70,9 +78,13 @@ export const Title = styled.h2`
 
 export const ArticleGrid = styled.div`
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(1, 1fr);
   grid-gap: 2rem;
   margin-bottom: 2rem;
+
+  @media only screen and (min-width: 768px) {
+    grid-template-columns: repeat(3, 1fr);
+  }
 `;
 
 export const ArticleCard = styled.div`
@@ -163,6 +175,12 @@ export const Sidebar = styled.div`
   align-items: center;
   width: 40%;
   justify-content: space-between;
+
+  @media only screen and (max-width: 768px) {
+    width: 100%;
+    flex-direction: column;
+    align-items: flex-start;
+  }
 `;
 
 export const SidebarImageContainer = styled.div`
@@ -191,6 +209,7 @@ export const Footer = styled.footer`
   padding: 2rem;
   display: flex;
   justify-content: space-between;
+  flex-wrap: wrap;
 `;
 
 export const FooterIcon = styled.img`
