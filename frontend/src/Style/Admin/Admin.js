@@ -22,18 +22,6 @@ export const MainContent = styled.div`
   margin-top: 20px;
 `;
 
-export const Sidebar = styled.div`
-  width: 200px;
-  background-color: #29325b;
-  padding: 20px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  border-radius: 15px;
-  margin-left: 20px;
-  margin-bottom: 22px;
-`;
-
 export const LogoContainer = styled.div`
   margin-bottom: 20px;
 `;
