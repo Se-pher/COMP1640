@@ -3,7 +3,8 @@ import * as s from "../../../Style/Profile";
 import Sidebar from "../sidebar";
 import Navbar from "../../Navbar";
 import axios from "axios";
-const Admin_Profile = () => {
+
+const Student_Profile = () => {
   const [selectedItem, setSelectedItem] = useState("profile");
   const handleItemClick = (item) => {
     setSelectedItem(item);
@@ -66,8 +67,9 @@ const Admin_Profile = () => {
 
   const handleLogout = () => {
     localStorage.removeItem("jwtToken");
-    window.location.href = "/login"; 
+    window.location.href = "/login";
   };
+
   return (
     <s.Container>
       <Navbar />
@@ -105,14 +107,14 @@ const Admin_Profile = () => {
                   <s.UserInfoField>
                     <s.FieldLabel>Current Password</s.FieldLabel>
                     <s.FieldInput
-                      placeholder="Enter Current Password" 
-                      value={newName}
+                      placeholder="Enter Current Password"
+                      value={currentPassword}
                       onChange={(e) => setCurrentPassword(e.target.value)}
                       type="password"
                     />
                   </s.UserInfoField>
                   <s.UserInfoField>
-                    <s.FieldLabel>Password</s.FieldLabel>
+                    <s.FieldLabel>New Password</s.FieldLabel>
                     <s.FieldInput
                       placeholder="********"
                       value={newPassword}
@@ -140,4 +142,4 @@ const Admin_Profile = () => {
   );
 };
 
-export default Admin_Profile;
+export default Student_Profile;

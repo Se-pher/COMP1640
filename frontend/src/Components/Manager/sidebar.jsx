@@ -35,7 +35,7 @@ const Sidebar = ({ selectedItem, handleItemClick, userName, handleLogout }) => {
       <s.MainMenu>
         <s.MenuTitle>More</s.MenuTitle>
         <s.StyledLink
-          to="/Setting/Profile"
+          to="/manager/setting/profile"
           onClick={() => handleItemClick("profile")}
         >
           <s.SidebarItem selected={selectedItem === "profile"}>

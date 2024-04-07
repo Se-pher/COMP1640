@@ -1,4 +1,3 @@
-// ArticleCard Component
 import React from 'react';
 import * as s from '../Style/Landing';
 import { Link } from 'react-router-dom';
