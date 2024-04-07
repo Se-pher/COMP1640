@@ -23,14 +23,6 @@ const Sidebar = ({ selectedItem, handleItemClick, userName, handleLogout }) => {
           View Articles
           </s.SidebarItem>
         </s.StyledLink>
-        <s.StyledLink
-          to="/Manager/DownloadedArticles"
-          onClick={() => handleItemClick("Download Articles")}
-        >
-          <s.SidebarItem selected={selectedItem === "Download Articles"}>
-          Download Articles
-          </s.SidebarItem>
-        </s.StyledLink>
       </s.MainMenu>
       <s.MainMenu>
         <s.MenuTitle>More</s.MenuTitle>
