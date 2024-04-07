@@ -20,7 +20,6 @@ import StudentsView from './Components/Students/View_Articles/Students_View';
 import StudentArticleDetails from './Components/Students/View_Articles/Student_Article_Details';
 import ManagerArticlesView from './Components/Manager/Articles/Manager_Articles_View';
 import Manager_Profile from './Components/Manager/Profile/Manager_Profile';
-import DownloadedArticles from './Components/Manager/DowloadZip/DownloadedArticles';
 import Error404 from './Components/Error404';
 import axios from 'axios';
 
