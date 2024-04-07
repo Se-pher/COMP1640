@@ -172,7 +172,7 @@ function generateRandomPassword(length = 8) {
   for (let i = 0; i < length; i++) {
     const randomIndex = Math.floor(Math.random() * characters.length);
     password += characters.charAt(randomIndex);
-  }
+  }``
 
   return password;
 }
@@ -381,7 +381,7 @@ app.put('/api/user/decode-update', async (req, res) => {
 
 //Profile
 app.get('/api/user/profile', async (req, res) => {
-  const token = req.headers.authorization.split(' ')[1]; // Lấy token từ tiêu đề 'Authorization'
+  const token = req.headers.authorization.split(' ')[1]; 
 
   try {
 
@@ -400,7 +400,7 @@ app.get('/api/user/profile', async (req, res) => {
 });
 
 app.put('/api/user/profile', async (req, res) => {
-  const token = req.headers.authorization.split(' ')[1]; // Lấy token từ tiêu đề 'Authorization'
+  const token = req.headers.authorization.split(' ')[1]; 
   const { name, email, password } = req.body;
 
   try {
@@ -411,11 +411,9 @@ app.put('/api/user/profile', async (req, res) => {
       return res.status(404).json({ message: 'User not found' });
     }
 
-    // Cập nhật thông tin người dùng
-    if (name) user.name = name;
+    if (name) user.username = name;
     if (email) user.email = email;
     if (password) {
-      // Mã hóa mật khẩu mới trước khi lưu vào cơ sở dữ liệu
       const hashedPassword = await bcrypt.hash(password, 10);
       user.password = hashedPassword;
     }
@@ -443,11 +441,22 @@ app.get('/api/articles/:id', async (req, res) => {
     if (!article) {
       return res.status(404).json({ message: 'Article not found' });
     }
-    res.json(article);
+    const user = await User.findById(article.userId);
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+    const response = {
+      article: article,
+      username: user.username
+    };
+
+    res.json(response);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 });
+
+
 
 const admin = require('firebase-admin');
 
