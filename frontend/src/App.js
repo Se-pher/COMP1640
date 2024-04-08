@@ -24,13 +24,13 @@ import DownloadedArticles from "./Components/Manager/DowloadZip/DownloadedArticl
 import Error404 from "./Components/Error404";
 import axios from "axios";
 
+
 axios.defaults.baseURL = "http://localhost:5000/";
 
 function App() {
   return (
     <Router>
-      <Routes>
-        
+      <Routes>        
         <Route
           path="/home"
           element={
@@ -39,7 +39,6 @@ function App() {
             </Header>
           }
         />
-        <Route path="/" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route
           path="/admin"
@@ -152,15 +151,6 @@ function App() {
             <ProtectedRoute
               component={StudentArticleDetails}
               allowedRoles={["student"]}
-            />
-          }
-        />
-        <Route
-          path="/manager/downloadedarticles"
-          element={
-            <ProtectedRoute
-              component={DownloadedArticles}
-              allowedRoles={["manager"]}
             />
           }
         />
