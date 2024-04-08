@@ -61,6 +61,7 @@ const EditUserModal = ({ user, onClose, onUpdateUser }) => {
                 <option value="student">Student</option>
                 <option value="Coordinator">Coordinator</option>
                 <option value="Manager">Manager</option>
+                <option value="Guest">Manager</option>
               </s.Select>
             </s.InputGroup>
             <s.ModalFooter>
