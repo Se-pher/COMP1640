@@ -43,28 +43,51 @@ const Coordinator_Dashboard = () => {
     { id: 2, title: "Post 2", author: "Jane Smith" },
     { id: 3, title: "Post 3", author: "Bob Johnson" },
   ]);
-
+  
   const [facultyCounts] = useState([
     { faculty: "Faculty of Arts", count: 25 },
     { faculty: "Faculty of Science", count: 32 },
     { faculty: "Faculty of Engineering", count: 18 },
   ]);
+
+  const generateMonthlyData = () => {
+    const monthData = [];
+    for (let i = 1; i <= 30; i++) {
+      monthData.push({ day: `Day ${i}`, value: Math.floor(Math.random() * 50) });
+    }
+    return monthData;
+  };
+
+  const generateYearlyData = () => {
+    const yearlyData = [];
+    for (let i = 1; i <= 12; i++) {
+      yearlyData.push({ month: `Month ${i}`, value: Math.floor(Math.random() * 500) });
+    }
+    return yearlyData;
+  };
+
+  const [viewMode, setViewMode] = useState("week");
+
+  const handleChangeViewMode = (mode) => {
+    setViewMode(mode);
+  };
+
   return (
     <s.Container>
       <Navbar />
       <s.MainContent>
-      <Sidebar selectedItem={selectedItem} handleItemClick={handleItemClick} />
+        <Sidebar selectedItem={selectedItem} handleItemClick={handleItemClick} />
         <s.Main>
           <s.DashboardContainer>
-            <s.ChartContainerWrapper>
+          <s.ChartContainerWrapper>
               <s.ChartContainer>
                 <Bar
                   data={{
-                    labels: chartData.map((data) => data.day),
+                    labels: viewMode === "week" ? chartData.map((data) => data.day) : viewMode === "month" ? generateMonthlyData().map((data) => data.day) : generateYearlyData().map((data) => data.month),
                     datasets: [
                       {
                         label: "Number of Posts",
-                        data: chartData.map((data) => data.value),
+                        data: viewMode === "week" ? chartData.map((data) => data.value) : viewMode === "month" ? generateMonthlyData().map((data) => data.value) : generateYearlyData().map((data) => data.value),
                         backgroundColor: "rgba(75,192,192,0.6)",
                       },
                     ],
@@ -82,6 +105,11 @@ const Coordinator_Dashboard = () => {
                   }}
                 />
               </s.ChartContainer>
+              <s.ViewModeButtons>
+                    <button onClick={() => handleChangeViewMode("week")}>Week</button>
+                    <button onClick={() => handleChangeViewMode("month")}>Month</button>
+                    <button onClick={() => handleChangeViewMode("year")}>Year</button>
+                </s.ViewModeButtons>
             </s.ChartContainerWrapper>
             <s.LowerContainersWrapper>
               <s.DataContainerWrapper>
