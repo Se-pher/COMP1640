@@ -21,7 +21,7 @@ const Header = ({ children }) => {
         <s.RightContainer>
           <s.SignIn>
             <s.SignInLink>
-              <Link to="/login">Login</Link>
+              <Link to="/">Logout</Link>
             </s.SignInLink>
           </s.SignIn>
         </s.RightContainer>
