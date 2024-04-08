@@ -28,6 +28,9 @@ const Login = () => {
         navigate('/manager');
       } else if (user.role === 'coordinator') {
         navigate('/coordinator');
+      } else if (user.role === 'Guest') {
+        navigate('/home');
+        
       } else {
         setError('Invalid role');
       }

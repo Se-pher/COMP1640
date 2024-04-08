@@ -51,7 +51,7 @@ const Student_Article_Details = () => {
 
   const handleLogout = () => {
     localStorage.removeItem("jwtToken");
-    window.location.href = "/login";
+    window.location.href = "/";
   };
 
   return (

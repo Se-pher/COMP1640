@@ -40,6 +40,9 @@ const AddUserModal = ({ onClose, onAddUser }) => {
       case "Manager":
         selectedFac = "Manager"; 
         break;
+        case "Guest":
+          selectedFac = selectedFaculty; 
+          break;
       default:
         selectedFac = "";
         break;
@@ -95,9 +98,10 @@ const AddUserModal = ({ onClose, onAddUser }) => {
                 <option value="student">student</option>
                 <option value="Coordinator">Coordinator</option>
                 <option value="Manager">Manager</option>
+                <option value="Guest">Guest</option>
               </s.Select>
             </s.InputGroup>
-            {role === "Coordinator" && (
+            {(role === "Coordinator" || role === "Guest") && (
               <s.InputGroup>
                 <s.Label>Select Faculty</s.Label>
                 <s.Select

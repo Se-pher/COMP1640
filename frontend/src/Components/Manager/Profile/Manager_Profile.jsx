@@ -69,7 +69,7 @@ const Manager_Profile = () => {
 
   const handleLogout = () => {
     localStorage.removeItem("jwtToken");
-    window.location.href = "/login";
+    window.location.href = "/";
   };
 
   return (
@@ -88,7 +88,52 @@ const Manager_Profile = () => {
               <s.ProfileContainer>
                 <s.ProfileHeader>Manager Profile</s.ProfileHeader>
                 <s.UserInfoSection>
-                  {/* Form fields */}
+                  <s.UserInfoField>
+                    <s.FieldLabel>Name</s.FieldLabel>
+                    <s.FieldInput
+                      placeholder={userProfile.username}
+                      value={newName}
+                      onChange={(e) => setNewName(e.target.value)}
+                    />
+                  </s.UserInfoField>
+
+                  <s.UserInfoField>
+                    <s.FieldLabel>Email</s.FieldLabel>
+                    <s.FieldInput
+                      placeholder={userProfile.email}
+                      value={newEmail}
+                      onChange={(e) => setNewEmail(e.target.value)}
+                    />
+                  </s.UserInfoField>
+
+                  <s.UserInfoField>
+                    <s.FieldLabel>Current Password</s.FieldLabel>
+                    <s.FieldInput
+                      placeholder="Enter Current Password"
+                      value={newName}
+                      onChange={(e) => setCurrentPassword(e.target.value)}
+                      type="password"
+                    />
+                  </s.UserInfoField>
+                  <s.UserInfoField>
+                    <s.FieldLabel>Password</s.FieldLabel>
+                    <s.FieldInput
+                      placeholder="********"
+                      value={newPassword}
+                      onChange={(e) => setNewPassword(e.target.value)}
+                      type="password"
+                    />
+                  </s.UserInfoField>
+
+                  {(newName !== userProfile.name ||
+                    newEmail !== userProfile.email ||
+                    newPassword !== "") && (
+                    <s.DiscardButton onClick={handleDiscard}>
+                      Discard All
+                    </s.DiscardButton>
+                  )}
+
+                  <s.SaveButton onClick={handleSave}>Save</s.SaveButton>
                 </s.UserInfoSection>
               </s.ProfileContainer>
             </s.SquareContainer>
