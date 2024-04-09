@@ -272,7 +272,7 @@ const Student_Upload = () => {
               <s.TitleHeader>Upload Articles</s.TitleHeader>
               <s.InputWrapper>
                 <s.Label>Select Faculty:</s.Label>
-                <select value={facultyName} onChange={handleFacultyChange}>
+                <s.setFaculty value={facultyName} onChange={handleFacultyChange}>
                   <option value="">Select Faculty</option>
                   {facultyList.map((faculty) => (
                     <option
@@ -288,7 +288,7 @@ const Student_Upload = () => {
                       )}
                     </option>
                   ))}
-                </select>
+                </s.setFaculty>
               </s.InputWrapper>
               <s.InputWrapper>
                 <s.Label>Title:</s.Label>
