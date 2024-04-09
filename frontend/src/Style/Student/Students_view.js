@@ -68,27 +68,17 @@ export const ArticleCard = styled.div`
   height: 250px;
 
   @media (max-width: 768px) {
-    height: auto;
+    width:100px;
   }
 `;
 
 export const Pagination = styled.div`
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
   display: flex;
   justify-content: center;
-  ${props =>
-    props.isMobile
-      ? `
-        position: relative;
-        bottom: auto;
-        left: auto;
-        transform: none;
-      `
-      : `
-        position: fixed;
-        bottom: 20px;
-        left: 50%;
-        transform: translateX(-50%);
-      `}
 
   button {
     background-color: #f2f2f2;
@@ -111,6 +101,7 @@ export const Pagination = styled.div`
     @media (max-width: 768px) {
       font-size: 0.8rem;
       padding: 0.3rem 0.8rem;
+      position: relative;
     }
   }
 `;
