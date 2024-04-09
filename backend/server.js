@@ -140,12 +140,24 @@ app.post('/api/login', async (req, res) => {
       expiresIn: '1d',
     });
 
-    res.json({ user: { email: user.email, role: user.role }, token }); // Trả lại thông tin người dùng nhưng không bao gồm mật khẩu
+    res.json({ user: { email: user.email, role: user.role }, token }); 
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
 });
 
+const verifyToken = (req, res, next) => {
+  const authHeader = req.headers['authorization'];
+  const token = authHeader && authHeader.split(' ')[1];
+
+  if (!token) return res.sendStatus(401); // Không có token
+
+  jwt.verify(token, SECRET_KEY, (err, user) => {
+    if (err) return res.sendStatus(403); // Token không hợp lệ
+    req.user = user; // Lưu thông tin giải mã vào req.user
+    next(); // Tiếp tục middleware tiếp theo
+  });
+};
 
 function generateRandomPassword(length = 8) {
   const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
@@ -246,12 +258,15 @@ app.delete('/api/faculties/:id', async (req, res) => {
 
 
 //ARTICLE
-app.post('/api/articles', async (req, res) => {
+app.post('/api/articles', verifyToken, async (req, res) => {
   const { title, description, imageURL, wordFileURL, facultyName } = req.body;
 
   try {
-    // Tạo bài viết mới
-    const newArticle = new Article({ title, description, imageURL, wordFileURL, facultyName });
+    // Lấy userId từ thông tin người dùng được giải mã từ token
+    const userId = req.user.userId;
+
+    // Tạo bài viết mới với userId đã xác định
+    const newArticle = new Article({ title, description, imageURL, wordFileURL, facultyName, userId });
     await newArticle.save();
 
     // Kiểm tra xem faculty của bài viết có khớp với faculty của user có role là coordinator hay không
@@ -299,18 +314,6 @@ app.get('/api/decode-token', async (req, res) => {
   }
 });
 
-const verifyToken = (req, res, next) => {
-  const authHeader = req.headers['authorization'];
-  const token = authHeader && authHeader.split(' ')[1];
-
-  if (!token) return res.sendStatus(401); // Không có token
-
-  jwt.verify(token, SECRET_KEY, (err, user) => {
-    if (err) return res.sendStatus(403); // Token không hợp lệ
-    req.user = user; // Lưu thông tin giải mã vào req.user
-    next(); // Tiếp tục middleware tiếp theo
-  });
-};
 app.get('/api/user/articles', verifyToken, async (req, res) => {
   try {
     const userId = req.user.userId;
