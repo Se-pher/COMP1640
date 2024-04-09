@@ -14,6 +14,7 @@ export const NavbarContainer = styled.div`
     @media (max-width: 768px) {
       margin-left: 5rem;
       width:320px;
+      position:absolute;
     }
 `;
 

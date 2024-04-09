@@ -1,6 +1,4 @@
 import styled from 'styled-components';
-import { faRightFromBracket } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Link } from 'react-router-dom';
 
 export const StyledLink = styled(Link)`
@@ -97,14 +95,17 @@ export const Pagination = styled.div`
       background-color: #ccc;
       cursor: not-allowed;
     }
+  }
 
-    @media (max-width: 768px) {
+  @media (max-width: 768px) {
+    position: relative;
+    div {
       font-size: 0.8rem;
       padding: 0.3rem 0.8rem;
-      position: relative;
     }
   }
 `;
+
 
 export const ArticleImage = styled.img`
   width: 100%;
