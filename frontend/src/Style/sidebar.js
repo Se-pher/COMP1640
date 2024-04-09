@@ -128,6 +128,7 @@ export const SidebarItem = styled.div`
   cursor: pointer;
   color: #fff;
   border-radius: 10px;
+  margin-bottom: 10px;
   background-color: ${({ selected }) => (selected ? '#FFFFFF33' : 'initial')};
   &:hover {
     background-color: #e0e0e0;

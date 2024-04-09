@@ -38,6 +38,7 @@ function App() {
             </Header>
           }
         />
+        <Route path="/" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route
           path="/admin"
