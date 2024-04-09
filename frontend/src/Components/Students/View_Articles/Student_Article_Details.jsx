@@ -21,33 +21,15 @@ const Student_Article_Details = () => {
       try {
         const { data } = await axios.get(`/api/articles/${id}`);
         console.log("Fetched article data:", data);
-        setArticle(data);
+        
+        setArticle(data.article); 
+        setUserName(data.username); 
       } catch (error) {
         console.error("Error fetching article:", error);
       }
     };
     fetchArticle();
   }, [id]);
-
-  useEffect(() => {
-    const token = localStorage.getItem("jwtToken");
-    if (token) {
-      fetchUsername(token);
-    }
-  }, []);
-
-  const fetchUsername = async (token) => {
-    try {
-      const response = await axios.get("/api/decode-token", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      setUserName(response.data.username);
-    } catch (error) {
-      console.error("Error fetching username:", error.response.data.message);
-    }
-  };
 
   const handleLogout = () => {
     localStorage.removeItem("jwtToken");
@@ -61,21 +43,16 @@ const Student_Article_Details = () => {
         <Sidebar
           selectedItem={selectedItem}
           handleItemClick={handleItemClick}
-          userName={userName}
+          userName={userName} 
           handleLogout={handleLogout}
         />
         <s.Main>
           {article && (
             <s.ArticleContainer>
-              {article && article.wordFileURL ? (
+              {article.wordFileURL ? (
                 <DocViewer
                   pluginRenderers={DocViewerRenderers}
-                  documents={[
-                    {
-                      uri: article.wordFileURL,
-                      fileType: "docx",
-                    },
-                  ]}
+                  documents={[{ uri: article.wordFileURL, fileType: "docx" }]}
                   style={{ height: "600px" }}
                 />
               ) : (
