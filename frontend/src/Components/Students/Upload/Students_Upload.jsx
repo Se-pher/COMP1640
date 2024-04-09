@@ -270,9 +270,9 @@ const Student_Upload = () => {
           <s.UploadContainer>
             <s.SquareContainer>
               <s.TitleHeader>Upload Articles</s.TitleHeader>
-              <s.setFacultyList>
+              <s.InputWrapper>
                 <s.Label>Select Faculty:</s.Label>
-                <s.setFaculty value={facultyName} onChange={handleFacultyChange}>
+                <select value={facultyName} onChange={handleFacultyChange}>
                   <option value="">Select Faculty</option>
                   {facultyList.map((faculty) => (
                     <option
@@ -288,8 +288,8 @@ const Student_Upload = () => {
                       )}
                     </option>
                   ))}
-                </s.setFaculty>
-              </s.setFacultyList>
+                </select>
+              </s.InputWrapper>
               <s.InputWrapper>
                 <s.Label>Title:</s.Label>
                 <s.Input
