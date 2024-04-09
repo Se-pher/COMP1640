@@ -97,7 +97,7 @@ const AddUserModal = ({ onClose, onAddUser }) => {
                 <option value="admin">Admin</option>
                 <option value="student">student</option>
 
-                <option value="Coordinator">Coordinator</option>
+                <option value="coordinator">Coordinator</option>
                 <option value="Manager">Manager</option>
                 <option value="Guest">Guest</option>
               </s.Select>
