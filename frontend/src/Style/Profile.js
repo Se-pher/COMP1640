@@ -19,6 +19,7 @@ export const MainContent = styled.div`
   display: flex;
   flex: 1;
   margin-top: 20px;
+  overflow-x:auto;
 `;
 
 export const Sidebar = styled.div`

@@ -20,57 +20,7 @@ export const MainContent = styled.div`
   display: flex;
   flex: 1;
   margin-top: 20px;
-`;
-
-export const LogoContainer = styled.div`
-  margin-bottom: 20px;
-`;
-
-export const Logo = styled.img`
-  width: 100px;
-  height: auto;
-`;
-
-export const AdminInfo = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  margin-bottom: 20px;
-`;
-
-export const Avatar = styled.img`
-  width: 80px;
-  height: 80px;
-  border-radius: 50%;
-  margin-bottom: 10px;
-`;
-
-export const AdminName = styled.span`
-  color: #fff;
-  font-weight: bold;
-`;
-
-export const MainMenu = styled.div`
-  width: 100%;
-  margin-bottom: 20px;
-`;
-
-export const MenuTitle = styled.h3`
-  color: #fff;
-  font-size: 18px;
-  margin-bottom: 10px;
-`;
-
-export const SidebarItem = styled.div`
-  padding: 9px;
-  cursor: pointer;
-  color: #fff;
-  border-radius: 10px;
-  background-color: ${({ selected }) => (selected ? '#FFFFFF33' : 'initial')};
-  &:hover {
-    background-color: #e0e0e0;
-    color: #29325b;
-  }
+  overflow-x:auto;
 `;
 
 export const Main = styled.div`
@@ -165,31 +115,4 @@ export const DeleteIcon = styled(FontAwesomeIcon).attrs({
 })`
   color: black;
   cursor:pointer;
-`;
-
-export const LogoutButton = styled.div`
-  margin-top: 100px;
-  display: flex;
-  justify-content: center;
-`;
-
-export const LogoutBtn = styled.button`
-  background-color: #F6793E;
-  color: #fff;
-  border: none;
-  font-size: 16px;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 10px;
-  border-radius: 5px;
-  transition: background-color 0.3s ease;
-  width: 150px;
-`;
-
-export const LogoutIcon = styled(FontAwesomeIcon).attrs({
-  icon: faRightFromBracket,
-})`
-  margin-right: 5px;
 `;

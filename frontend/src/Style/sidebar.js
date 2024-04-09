@@ -30,7 +30,7 @@ export const MobileSidebar = styled.div`
   display: none;
 
   @media only screen and (max-width: 768px) {
-    display: block;
+    display: contents;
     position: fixed;
     top: 0;
     left: 0;

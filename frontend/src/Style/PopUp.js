@@ -18,6 +18,10 @@ export const ModalContent = styled.div`
   border: 1px solid #888;
   width: 30%;
   border-radius: 15px;
+  @media (max-width: 768px) {
+    width: 65%;
+    margin-top: 200px;
+  }
 `;
 
 export const ModalHeader = styled.div`
