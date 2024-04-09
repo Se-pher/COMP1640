@@ -78,7 +78,7 @@ export const MenuIconContainer = styled.div`
   background-color: #fff;
   padding: 10px;
   border-radius: 50%;
-  position: fixed;
+  position: absolute;
   top: 20px;
   left: 20px;
   z-index: 1001;
