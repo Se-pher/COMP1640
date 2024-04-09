@@ -132,7 +132,7 @@ const Student_Upload = () => {
 
   const handleLogout = () => {
     localStorage.removeItem("jwtToken");
-    window.location.href = "/login";
+    window.location.href = "/";
   };
 
   const handleUpload = async () => {
@@ -210,12 +210,16 @@ const Student_Upload = () => {
   
       const token = localStorage.getItem("jwtToken");
       if (token) {
+        // Lấy userId từ localStorage
+        const userId = localStorage.getItem("userId");
+
         const articleData = {
           title,
           description,
           imageURL,
           wordFileURL: fileURL,
           facultyName,
+          userId, // Thêm userId vào dữ liệu bài viết
         };
   
         const articleResponse = await axios.post("/api/articles", articleData, {
@@ -254,6 +258,7 @@ const Student_Upload = () => {
       });
     }
   };
+
   
 
   return (
