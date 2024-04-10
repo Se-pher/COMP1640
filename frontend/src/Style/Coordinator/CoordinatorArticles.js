@@ -1,8 +1,5 @@
 import styled from 'styled-components';
-import { faRightFromBracket } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Link } from 'react-router-dom';
-
 
 export const StyledLink = styled(Link)`
   text-decoration: none;
@@ -13,12 +10,21 @@ export const Container = styled.div`
   flex-direction: column;
   height: 100vh;
   background-color: #EAEBEF;
+
+  @media (max-width: 768px) {
+    height: auto;
+  }
 `;
 
 export const MainContent = styled.div`
   display: flex;
   flex: 1;
   margin-top: 20px;
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+    margin-top: 0;
+  }
 `;
 
 export const Main = styled.div`
@@ -26,6 +32,12 @@ export const Main = styled.div`
   padding: 20px;
   margin-right: 20px;
   margin-top: 50px;
+
+  @media (max-width: 768px) {
+    margin-right: 0;
+    margin-top: 20px;
+    padding: 10px;
+  }
 `;
 
 export const ArticlesContainer = styled.div`
@@ -33,33 +45,10 @@ export const ArticlesContainer = styled.div`
   flex-direction: column;
   width: 100%;
   align-items: center;
-`;
 
-export const LogoutButton = styled.div`
-  margin-top: 100px;
-  display: flex;
-  justify-content: center;
-`;
-
-export const LogoutBtn = styled.button`
-  background-color: #F6793E;
-  color: #fff;
-  border: none;
-  font-size: 16px;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 10px;
-  border-radius: 5px;
-  transition: background-color 0.3s ease;
-  width: 150px;
-`;
-
-export const LogoutIcon = styled(FontAwesomeIcon).attrs({
-  icon: faRightFromBracket,
-})`
-  margin-right: 5px;
+  @media (max-width: 768px) {
+    align-items: flex-start;
+  }
 `;
 
 export const ArticleGrid = styled.div`
@@ -67,6 +56,11 @@ export const ArticleGrid = styled.div`
   grid-template-columns: repeat(3, 1fr);
   grid-gap: 2rem;
   margin-bottom: 2rem;
+
+  @media (max-width: 768px) {
+    grid-template-columns: repeat(1, 1fr);
+    margin-top:60px;
+  }
 `;
 
 export const ArticleCard = styled.div`
@@ -75,13 +69,17 @@ export const ArticleCard = styled.div`
   border-radius: 4px;
   overflow: hidden;
   height: 250px;
+
+  @media (max-width: 768px) {
+    height: auto;
+  }
 `;
 
 export const Pagination = styled.div`
-  position: fixed; 
-  bottom: 20px; 
-  left: 50%; 
-  transform: translateX(30%); 
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
   display: flex;
   justify-content: center;
 
@@ -101,6 +99,14 @@ export const Pagination = styled.div`
     &:disabled {
       background-color: #ccc;
       cursor: not-allowed;
+    }
+  }
+
+  @media (max-width: 768px) {
+    position: relative;
+    div {
+      font-size: 0.8rem;
+      padding: 0.3rem 0.8rem;
     }
   }
 `;
@@ -134,17 +140,6 @@ export const ArticleDescription = styled.p`
   margin-bottom: 1rem;
 `;
 
-export const ArticleAuthor = styled.div`
-  display: flex;
-  align-items: center;
-`;
-
-export const AuthorAvatar = styled.img`
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  margin-right: 0.5rem;
-`;
 
 export const CoordinatorArticleCard = styled.div`
   background-color: #fff;
@@ -155,4 +150,7 @@ export const CoordinatorArticleCard = styled.div`
   display: flex;
   flex-direction: column;
 
+  @media (max-width: 768px) {
+    height: auto;
+  }
 `;
