@@ -44,13 +44,13 @@ function App() {
         <Route
           path="/admin"
           element={
-            <ProtectedRoute component={Admin} allowedRoles={["admin"]} />
+            <ProtectedRoute component={Admin} allowedRoles={["Admin"]} />
           }
         />
         <Route
           path="/student"
           element={
-            <ProtectedRoute component={Students} allowedRoles={["student"]} />
+            <ProtectedRoute component={Students} allowedRoles={["Student"]} />
           }
         />
         <Route
@@ -58,7 +58,7 @@ function App() {
           element={
             <ProtectedRoute
               component={CoordinatorDashboard}
-              allowedRoles={["coordinator"]}
+              allowedRoles={["Coordinator"]}
             />
           }
         />
@@ -67,7 +67,7 @@ function App() {
           element={
             <ProtectedRoute
               component={ManagerArticlesView}
-              allowedRoles={["manager"]}
+              allowedRoles={["Manager"]}
             />
           }
         />
@@ -83,13 +83,13 @@ function App() {
         <Route
           path="/admin/faculty"
           element={
-            <ProtectedRoute component={AdminFaculty} allowedRoles={["admin"]} />
+            <ProtectedRoute component={AdminFaculty} allowedRoles={["Admin"]} />
           }
         />
         <Route
           path="/setting/profile"
           element={
-            <ProtectedRoute component={AdminProfile} allowedRoles={["admin"]} />
+            <ProtectedRoute component={AdminProfile} allowedRoles={["Admin"]} />
           }
         />
         <Route
@@ -97,7 +97,7 @@ function App() {
           element={
             <ProtectedRoute
               component={Coordinator_Profile}
-              allowedRoles={["coordinator"]}
+              allowedRoles={["Coordinator"]}
             />
           }
         />
@@ -106,7 +106,7 @@ function App() {
           element={
             <ProtectedRoute
               component={Student_Profile}
-              allowedRoles={["student"]}
+              allowedRoles={["Student"]}
             />
           }
         />
@@ -115,7 +115,7 @@ function App() {
           element={
             <ProtectedRoute
               component={Manager_Profile}
-              allowedRoles={["manager"]}
+              allowedRoles={["Manager"]}
             />
           }
         />
@@ -124,7 +124,7 @@ function App() {
           element={
             <ProtectedRoute
               component={CoordinatorArticles}
-              allowedRoles={["coordinator"]}
+              allowedRoles={["Coordinator"]}
             />
           }
         />
@@ -133,7 +133,7 @@ function App() {
           element={
             <ProtectedRoute
               component={CoordinatorArticlesDetails}
-              allowedRoles={["coordinator"]}
+              allowedRoles={["Coordinator"]}
             />
           }
         />
@@ -142,7 +142,7 @@ function App() {
           element={
             <ProtectedRoute
               component={StudentsView}
-              allowedRoles={["student"]}
+              allowedRoles={["Student"]}
             />
           }
         />
@@ -151,7 +151,7 @@ function App() {
           element={
             <ProtectedRoute
               component={StudentArticleDetails}
-              allowedRoles={["student"]}
+              allowedRoles={["Student"]}
             />
           }
         />
