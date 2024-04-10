@@ -22,7 +22,7 @@ const Manager_Profile = () => {
         const token = localStorage.getItem("jwtToken");
         setToken(token); // Store token from localStorage
         // Update the API endpoint if necessary to match the manager's profile endpoint
-        const response = await axios.get("/api/manager/profile", {
+        const response = await axios.get("/api/user/profile", {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -42,7 +42,7 @@ const Manager_Profile = () => {
     try {
       // Ensure the API endpoint is correct for updating a manager's profile
       const response = await axios.put(
-        "/api/manager/profile",
+        "/api/user/profile",
         {
           name: newName,
           email: newEmail,
@@ -68,9 +68,11 @@ const Manager_Profile = () => {
   };
 
   const handleLogout = () => {
-    localStorage.removeItem("jwtToken");
+    console.log("Logging out..."); // Thêm dòng này để ghi thông điệp vào console
+    localStorage.removeItem('jwtToken'); 
     window.location.href = "/";
   };
+  
 
   return (
     <s.Container>
