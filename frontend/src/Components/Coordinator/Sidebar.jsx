@@ -23,7 +23,7 @@ const Sidebar = ({ selectedItem, handleItemClick, userName, handleLogout }) => {
           </s.LogoContainer>
           <s.AdminInfo>
             <s.Avatar src={AdminAvatar} alt="Admin Avatar" />
-            <s.AdminName>John Doe</s.AdminName>
+            <s.AdminName>{userName}</s.AdminName>
           </s.AdminInfo>
           <s.MainMenu>
             <s.MenuTitle>Main Menu</s.MenuTitle>
@@ -43,14 +43,6 @@ const Sidebar = ({ selectedItem, handleItemClick, userName, handleLogout }) => {
                 Articles
               </s.SidebarItem>
             </s.StyledLink>
-            <s.StyledLink
-              to="/system-settings"
-              onClick={() => handleItemClick("Export Report")}
-            >
-              <s.SidebarItem selected={selectedItem === "Export Report"}>
-                Export Report
-              </s.SidebarItem>
-            </s.StyledLink>
           </s.MainMenu>
           <s.MainMenu>
             <s.MenuTitle>More</s.MenuTitle>
@@ -63,7 +55,7 @@ const Sidebar = ({ selectedItem, handleItemClick, userName, handleLogout }) => {
               </s.SidebarItem>
             </s.StyledLink>
           </s.MainMenu>
-          <s.LogoutButton>
+          <s.LogoutButton onClick={handleLogout}>
             <s.LogoutBtn>
               <s.LogoutIcon />
               Logout
@@ -109,14 +101,6 @@ const Sidebar = ({ selectedItem, handleItemClick, userName, handleLogout }) => {
             >
               <s.SidebarItem selected={selectedItem === "Articles"}>
                 Articles
-              </s.SidebarItem>
-            </s.StyledLink>
-            <s.StyledLink
-              to="/system-settings"
-              onClick={() => handleItemClick("Export Report")}
-            >
-              <s.SidebarItem selected={selectedItem === "Export Report"}>
-                Export Report
               </s.SidebarItem>
             </s.StyledLink>
           </s.MainMenu>
