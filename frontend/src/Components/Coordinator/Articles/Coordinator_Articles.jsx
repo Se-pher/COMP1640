@@ -11,6 +11,7 @@ const Coordinator_Articles = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const articlesPerPage = 6;
   const [facultyName, setFacultyName] = useState("");
+  const [userName, setUserName] = useState("");
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -46,6 +47,26 @@ const Coordinator_Articles = () => {
   const handleItemClick = (item) => {
     setSelectedItem(item);
   };
+
+  useEffect(() => {
+    const token = localStorage.getItem("jwtToken");
+    if (token) {
+      fetchUsername(token);
+    }
+  }, []);
+
+  const fetchUsername = async (token) => {
+    try {
+      const response = await axios.get("/api/decode-token", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      setUserName(response.data.username);
+    } catch (error) {
+      console.error("Error fetching username:", error.response.data.message);
+    }
+  };
   
   const indexOfLastArticle = currentPage * articlesPerPage;
   const indexOfFirstArticle = indexOfLastArticle - articlesPerPage;
@@ -57,11 +78,21 @@ const Coordinator_Articles = () => {
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);
   };
+
+  const handleLogout = () => {
+    localStorage.removeItem("jwtToken");
+    window.location.href = "/";
+  };
   return (
     <s.Container>
       <Navbar />
       <s.MainContent>
-      <Sidebar selectedItem={selectedItem} handleItemClick={handleItemClick} />
+      <Sidebar
+          selectedItem={selectedItem}
+          handleItemClick={handleItemClick}
+          userName={userName}
+          handleLogout={handleLogout}
+        />
         <s.Main>
           <s.ArticlesContainer>
             <s.ArticleGrid>
