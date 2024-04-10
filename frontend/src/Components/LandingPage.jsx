@@ -18,6 +18,24 @@ const LandingPage = () => {
   useEffect(() => {
     const fetchArticles = async () => {
       try {
+        const token = localStorage.getItem("jwtToken"); // Lấy token từ localStorage
+        const response = await axios.get('/api/articlesFaculty', {
+          headers: {
+            Authorization: `Bearer ${token}`, // Gửi token trong tiêu đề 'Authorization'
+          },
+        });
+        setArticles(response.data);
+      } catch (error) {
+        console.error('Error fetching articles:', error);
+      }
+    };
+  
+    fetchArticles();
+  }, []);
+  
+  useEffect(() => {
+    const fetchArticles = async () => {
+      try {
         const response = await axios.get('/api/articles');
         setArticles(response.data);
       } catch (error) {

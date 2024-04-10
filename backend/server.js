@@ -118,24 +118,6 @@ app.put('/api/users/:id', async (req, res) => {
 
 //Login 
 
-const verifyRole = (roles) => (req, res, next) => {
-  const token = req.headers.authorization?.split(' ')[1];
-  if (!token) {
-    return res.status(403).json({ message: 'No token provided!' });
-  }
-  try {
-    const decoded = jwt.verify(token, SECRET_KEY);
-    req.user = decoded;
-    if (!roles.includes(decoded.role)) {
-      return res.status(401).json({ message: 'Unauthorized!' });
-    }
-    next();
-  } catch (error) {
-    res.status(401).json({ message: 'Unauthorized!' });
-  }
-};
-
-
 app.post('/api/login', async (req, res) => {
   const { email, password } = req.body;
 
@@ -158,12 +140,24 @@ app.post('/api/login', async (req, res) => {
       expiresIn: '1d',
     });
 
-    res.json({ user: { email: user.email, role: user.role }, token }); // Trả lại thông tin người dùng nhưng không bao gồm mật khẩu
+    res.json({ user: { email: user.email, role: user.role }, token }); 
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
 });
 
+const verifyToken = (req, res, next) => {
+  const authHeader = req.headers['authorization'];
+  const token = authHeader && authHeader.split(' ')[1];
+
+  if (!token) return res.sendStatus(401); // Không có token
+
+  jwt.verify(token, SECRET_KEY, (err, user) => {
+    if (err) return res.sendStatus(403); // Token không hợp lệ
+    req.user = user; // Lưu thông tin giải mã vào req.user
+    next(); // Tiếp tục middleware tiếp theo
+  });
+};
 
 function generateRandomPassword(length = 8) {
   const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
@@ -264,12 +258,15 @@ app.delete('/api/faculties/:id', async (req, res) => {
 
 
 //ARTICLE
-app.post('/api/articles', async (req, res) => {
+app.post('/api/articles', verifyToken, async (req, res) => {
   const { title, description, imageURL, wordFileURL, facultyName } = req.body;
 
   try {
-    // Tạo bài viết mới
-    const newArticle = new Article({ title, description, imageURL, wordFileURL, facultyName });
+    // Lấy userId từ thông tin người dùng được giải mã từ token
+    const userId = req.user.userId;
+
+    // Tạo bài viết mới với userId đã xác định
+    const newArticle = new Article({ title, description, imageURL, wordFileURL, facultyName, userId });
     await newArticle.save();
 
     // Kiểm tra xem faculty của bài viết có khớp với faculty của user có role là coordinator hay không
@@ -317,18 +314,6 @@ app.get('/api/decode-token', async (req, res) => {
   }
 });
 
-const verifyToken = (req, res, next) => {
-  const authHeader = req.headers['authorization'];
-  const token = authHeader && authHeader.split(' ')[1];
-
-  if (!token) return res.sendStatus(401); // Không có token
-
-  jwt.verify(token, SECRET_KEY, (err, user) => {
-    if (err) return res.sendStatus(403); // Token không hợp lệ
-    req.user = user; // Lưu thông tin giải mã vào req.user
-    next(); // Tiếp tục middleware tiếp theo
-  });
-};
 app.get('/api/user/articles', verifyToken, async (req, res) => {
   try {
     const userId = req.user.userId;
@@ -445,17 +430,27 @@ app.get('/api/articles/:id', async (req, res) => {
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
     }
-    const response = {
-      article: article,
-      username: user.username
-    };
-
-    res.json(response);
+    res.json({ article, username: user.username });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 });
 
+app.get('/api/articlesFaculty', verifyToken, async (req, res) => {
+  try {
+    const userId = req.user.userId; // Lấy userId từ req.user được thêm bởi middleware verifyToken
+    const user = await User.findById(userId); // Lấy thông tin user dựa trên userId từ token
+    if (!user) return res.status(404).json({ message: "User not found" });
+
+    const facultyName = user.facultyName; // Lấy facultyName từ thông tin user
+
+    const articles = await Article.find({ facultyName: facultyName }); // Lấy danh sách bài báo dựa trên facultyName
+    res.json(articles);
+  } catch (error) {
+    console.error('Error fetching articles:', error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+});
 
 
 const admin = require('firebase-admin');

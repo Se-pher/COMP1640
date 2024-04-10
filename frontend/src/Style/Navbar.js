@@ -6,10 +6,16 @@ export const NavbarContainer = styled.div`
     align-items: center;
     color: black;
     padding: 10px;
-    width: 1100px;
+    width: 100%;
+    max-width: -webkit-fill-available;
     margin-left: 17rem;
     position: fixed;
     margin-top: 20px;
+    @media (max-width: 768px) {
+      margin-left: 5rem;
+      width:320px;
+      position:absolute;
+    }
 `;
 
 export const LeftSection = styled.div`
@@ -36,12 +42,18 @@ export const SearchBar = styled.div`
   border-radius: 10px;
   background-color: #fff;
   margin-right: 20px;
+  @media (max-width: 768px) {
+      width:100px;
+    }
 `;
 
 export const SearchInput = styled.input`
   border: none;
   outline: none;
   flex: 1;
+  @media (max-width: 768px) {
+      width:75px;
+    }
 `;
 
 export const SearchIcon = styled.img`
@@ -59,6 +71,9 @@ export const NotificationItem = styled.div`
   border-radius: 50%;
   background-color: #fff;
   cursor: pointer;
+  @media (max-width: 768px) {
+    margin-right:10px;
+  }
 `;
 
 export const NotificationIcon = styled.img`
@@ -69,6 +84,9 @@ export const NotificationIcon = styled.img`
 export const UserGreeting = styled.span`
   font-size: 18px;
   font-weight: bold;
+  @media (max-width: 768px) {
+    font-size: 13px;
+  }
 `;
 
 export const WelcomeMessage = styled.span`

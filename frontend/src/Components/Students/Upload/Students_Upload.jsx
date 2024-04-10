@@ -132,7 +132,7 @@ const Student_Upload = () => {
 
   const handleLogout = () => {
     localStorage.removeItem("jwtToken");
-    window.location.href = "/login";
+    window.location.href = "/";
   };
 
   const handleUpload = async () => {
@@ -210,12 +210,16 @@ const Student_Upload = () => {
   
       const token = localStorage.getItem("jwtToken");
       if (token) {
+        // Lấy userId từ localStorage
+        const userId = localStorage.getItem("userId");
+
         const articleData = {
           title,
           description,
           imageURL,
           wordFileURL: fileURL,
           facultyName,
+          userId, // Thêm userId vào dữ liệu bài viết
         };
   
         const articleResponse = await axios.post("/api/articles", articleData, {
@@ -254,6 +258,7 @@ const Student_Upload = () => {
       });
     }
   };
+
   
 
   return (
@@ -272,7 +277,7 @@ const Student_Upload = () => {
               <s.TitleHeader>Upload Articles</s.TitleHeader>
               <s.InputWrapper>
                 <s.Label>Select Faculty:</s.Label>
-                <select value={facultyName} onChange={handleFacultyChange}>
+                <s.setFaculty value={facultyName} onChange={handleFacultyChange}>
                   <option value="">Select Faculty</option>
                   {facultyList.map((faculty) => (
                     <option
@@ -288,7 +293,7 @@ const Student_Upload = () => {
                       )}
                     </option>
                   ))}
-                </select>
+                </s.setFaculty>
               </s.InputWrapper>
               <s.InputWrapper>
                 <s.Label>Title:</s.Label>

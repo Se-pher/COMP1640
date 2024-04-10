@@ -16,6 +16,8 @@ export const MainContent = styled.div`
   display: flex;
   flex: 1;
   margin-top: 20px;
+  overflow-x:auto;
+
 `;
 
 export const Main = styled.div`
@@ -45,6 +47,11 @@ export const SquareContainer = styled.div`
   padding-bottom: 20px;
   max-width: -webkit-fill-available;
   overflow: auto;
+  @media (max-width: 768px) {
+    position: fixed;
+    margin-left: 20px;
+    height: 750px;
+  }
 `;
 
 export const TitleHeader = styled.div`
@@ -58,6 +65,18 @@ export const InputWrapper = styled.div`
   align-items: flex-start;
 `;
 
+export const setFacultyList = styled.div`
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+`;
+
+export const setFaculty= styled.select`
+padding: 3px;
+    border-radius: 5px;
+    width: 150px;
+`;
+
 export const Label = styled.label`
     margin-bottom: 10px;
 `;
@@ -68,6 +87,9 @@ export const Input = styled.input`
   border-radius: 5px;
   border: 1px solid #ccc;
   padding: 5px;
+  @media (max-width: 768px) {
+    width: 350px;
+  }
 `;
 
 export const TextArea = styled.textarea`
@@ -77,6 +99,9 @@ export const TextArea = styled.textarea`
   border: 1px solid #ccc;
   padding: 5px;
   resize: vertical;
+  @media (max-width: 768px) {
+    width: 350px;
+  }
 `;
 
 export const ButtonContainer = styled.div`
@@ -121,6 +146,9 @@ export const DropzoneContainer = styled.div`
 
   p {
     margin: 0;
+  }
+  @media (max-width: 768px) {
+    width: 300px;
   }
 `;
 
