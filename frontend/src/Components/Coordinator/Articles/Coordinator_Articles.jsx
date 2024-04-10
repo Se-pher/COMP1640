@@ -21,8 +21,6 @@ const Coordinator_Articles = () => {
             Authorization: `Bearer ${token}`, 
           },
         });
-        const facultyName = response.data.facultyName;
-        console.log("Faculty Name:", facultyName); 
         setFacultyName(response.data.facultyName); 
         fetchArticles(response.data.facultyName); 
       } catch (error) {
@@ -31,7 +29,7 @@ const Coordinator_Articles = () => {
     };
 
     fetchProfile();
-  }, []);
+  }, );
 
   const fetchArticles = async () => {
     try {
