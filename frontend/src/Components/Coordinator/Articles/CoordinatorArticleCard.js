@@ -6,11 +6,11 @@ const CoordinatorArticleCard = ({ article }) => {
   return (
     <s.CoordinatorArticleCard>
       <Link to={`/Coordinator/Articles/${article.id}`}>
-        <s.ArticleImage src={article.imageUrl} alt={article.title} />
+        <s.ArticleImage src={article.imageURL} alt={article.title} />
       </Link>
       <s.ArticleInfo>
         <s.ArticleDate>
-          {article.date} | {article.faculty}
+        {new Date(article.createdAt).toLocaleDateString()} | {article.facultyName} 
         </s.ArticleDate>
         <s.ArticleTitle>{article.title}</s.ArticleTitle>
         <s.ArticleDescription>{article.description}</s.ArticleDescription>
