@@ -55,7 +55,7 @@ const Sidebar = ({ selectedItem, handleItemClick, userName, handleLogout }) => {
               </s.SidebarItem>
             </s.StyledLink>
           </s.MainMenu>
-          <s.LogoutButton>
+          <s.LogoutButton onClick={handleLogout}>
             <s.LogoutBtn>
               <s.LogoutIcon />
               Logout
