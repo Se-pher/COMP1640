@@ -13,7 +13,6 @@ const Sidebar = ({ selectedItem, handleItemClick, userName, handleLogout }) => {
     setShowMobileSidebar(!showMobileSidebar);
     setShowMenuIcon(!showMenuIcon);
   };
-
   return (
     <>
       <s.DesktopSidebar>
