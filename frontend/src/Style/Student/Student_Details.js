@@ -30,3 +30,7 @@ export const ArticleContainer = styled.div`
     height:auto;
   }
 `;
+
+export const EditButton = styled.button`
+
+`;

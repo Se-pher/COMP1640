@@ -49,6 +49,7 @@ const Student_Article_Details = () => {
         <s.Main>
           {article && (
             <s.ArticleContainer>
+              <s.EditButton>Edit</s.EditButton>
               {article.wordFileURL ? (
                 <DocViewer
                   pluginRenderers={DocViewerRenderers}
