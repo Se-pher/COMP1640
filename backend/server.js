@@ -268,7 +268,7 @@ app.post('/api/articles', verifyToken, async (req, res) => {
     await newArticle.save();
 
     // Tìm tất cả người dùng có role là 'coordinator' và có facultyName là 'IT'
-    const coordinators = await User.find({ role: 'coordinator', facultyName: 'IT' });
+    const coordinators = await User.find({ role: 'coordinator', facultyName});
 
     // Gửi email thông báo tới tất cả các coordinator
     for (const coordinator of coordinators) {
