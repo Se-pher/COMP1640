@@ -112,7 +112,7 @@ const Manager_Profile = () => {
                     <s.FieldLabel>Current Password</s.FieldLabel>
                     <s.FieldInput
                       placeholder="Enter Current Password"
-                      value={newName}
+                      value={currentPassword}
                       onChange={(e) => setCurrentPassword(e.target.value)}
                       type="password"
                     />

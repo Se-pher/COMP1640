@@ -15,7 +15,7 @@ const ProtectedRoute = ({ component: Component, allowedRoles, ...rest }) => {
       ) : token ? (
         <Error404 />
       ) : (
-        <Navigate to="/login" state={{ from: location }} replace />
+        <Navigate to="/" state={{ from: location }} replace />
       )}
     </>
   );

@@ -3,7 +3,7 @@ import * as s from '../../Style/sidebar';
 import LogoImage from '../../Image/web.png';
 import AdminAvatar from '../../Image/facebook.png';
 
-const Sidebar = ({ selectedItem, handleItemClick }) => {
+const Sidebar = ({ selectedItem, handleItemClick, handleLogout }) => {
   return (
     <s.Sidebar>
       <s.LogoContainer>
@@ -51,7 +51,7 @@ const Sidebar = ({ selectedItem, handleItemClick }) => {
           </s.SidebarItem>
         </s.StyledLink>
       </s.MainMenu>
-      <s.LogoutButton>
+      <s.LogoutButton onClick={handleLogout}>
         <s.LogoutBtn>
           <s.LogoutIcon />
           Logout

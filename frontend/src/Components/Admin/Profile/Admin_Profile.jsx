@@ -66,7 +66,7 @@ const Admin_Profile = () => {
 
   const handleLogout = () => {
     localStorage.removeItem("jwtToken");
-    window.location.href = "/"; 
+    window.location.href = "/login"; 
   };
   return (
     <s.Container>
