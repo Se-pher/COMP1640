@@ -20,13 +20,13 @@ const Login = () => {
       localStorage.setItem('jwtToken', token);
       localStorage.setItem('userRole', user.role);
 
-      if (user.role === 'student') {
+      if (user.role === 'Student') {
         navigate('/student');
-      } else if (user.role === 'admin') {
+      } else if (user.role === 'Admin') {
         navigate('/admin');
-      } else if (user.role === 'manager') {
+      } else if (user.role === 'Manager') {
         navigate('/manager');
-      } else if (user.role === 'coordinator') {
+      } else if (user.role === 'Coordinator') {
         navigate('/coordinator');
       } else if (user.role === 'Guest') {
         navigate('/home');

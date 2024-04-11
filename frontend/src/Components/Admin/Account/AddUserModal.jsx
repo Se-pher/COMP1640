@@ -28,16 +28,16 @@ const AddUserModal = ({ onClose, onAddUser }) => {
     let selectedFac = ""; 
   
     switch (role) {
-      case "coordinator":
+      case "Coordinator":
         selectedFac = selectedFaculty; 
         break;
-      case "admin":
+      case "Admin":
         selectedFac = "Admin"; 
         break;
-      case "student":
+      case "Student":
         selectedFac = "Student"; 
         break;
-      case "manager":
+      case "Manager":
         selectedFac = "Manager"; 
         break;
         case "Guest":
@@ -94,10 +94,10 @@ const AddUserModal = ({ onClose, onAddUser }) => {
               <s.Label>Role</s.Label>
               <s.Select value={role} onChange={(e) => setRole(e.target.value)}>
                 <option value="">Select a role</option>
-                <option value="admin">Admin</option>
-                <option value="student">student</option>
+                <option value="Admin">Admin</option>
+                <option value="Student">student</option>
 
-                <option value="coordinator">Coordinator</option>
+                <option value="Coordinator">Coordinator</option>
                 <option value="Manager">Manager</option>
                 <option value="Guest">Guest</option>
               </s.Select>
