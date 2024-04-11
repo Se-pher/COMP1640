@@ -6,7 +6,6 @@ import Students from "./Components/Students/Upload/Students_Upload";
 import CoordinatorDashboard from "./Components/Coordinator/Dashboard/Coordinator_Dashboard";
 import ProtectedRoute from "./ProtectedRoute";
 import Home from "./Components/LandingPage";
-import Register from "./Components/Register";
 import Header from "./Components/Header";
 import ForgotPassword from "./Components/ForgotPassword";
 import AdminFaculty from "./Components/Admin/Faculty/AdminFaculty";
@@ -40,9 +39,7 @@ function App() {
           }
         />
         <Route path="/" element={<Login />} />
-        
-        <Route path="/register" element={<Register />} />
-        <Route
+                <Route
           path="/admin"
           element={
             <ProtectedRoute component={Admin} allowedRoles={["Admin"]} />
