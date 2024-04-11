@@ -6,7 +6,6 @@ import Students from "./Components/Students/Upload/Students_Upload";
 import CoordinatorDashboard from "./Components/Coordinator/Dashboard/Coordinator_Dashboard";
 import ProtectedRoute from "./ProtectedRoute";
 import Home from "./Components/LandingPage";
-import Register from "./Components/Register";
 import Header from "./Components/Header";
 import ForgotPassword from "./Components/ForgotPassword";
 import AdminFaculty from "./Components/Admin/Faculty/AdminFaculty";
@@ -18,6 +17,7 @@ import Coordinator_Profile from "./Components/Coordinator/Profile/Coordinator_Pr
 import Student_Profile from "./Components/Students/Profile/Student_Profile";
 import StudentsView from "./Components/Students/View_Articles/Students_View";
 import StudentArticleDetails from "./Components/Students/View_Articles/Student_Article_Details";
+import StudentEditArticle from "./Components/Students/Edit/EditArticle";
 import ManagerArticlesView from "./Components/Manager/Articles/Manager_Articles_View";
 import Manager_Profile from "./Components/Manager/Profile/Manager_Profile";
 import ManagerArticleDetails from "./Components/Manager/Articles/Manager_Article_Details";
@@ -40,9 +40,7 @@ function App() {
           }
         />
         <Route path="/" element={<Login />} />
-        
-        <Route path="/register" element={<Register />} />
-        <Route
+                <Route
           path="/admin"
           element={
             <ProtectedRoute component={Admin} allowedRoles={["Admin"]} />
@@ -161,6 +159,15 @@ function App() {
           element={
             <ProtectedRoute
               component={StudentArticleDetails}
+              allowedRoles={["Student"]}
+            />
+          }
+        />
+        <Route
+          path="/student/edit/article/:id"
+          element={
+            <ProtectedRoute
+              component={StudentEditArticle}
               allowedRoles={["Student"]}
             />
           }

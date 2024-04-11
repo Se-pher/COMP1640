@@ -27,6 +27,11 @@ export const HeaderContainer = styled.div`
   right: 0;
   background-color: White;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1), 0 4px 8px rgba(0, 0, 0, 0.2);
+  @media (max-width: 768px) {
+    width: 90%;
+    margin-right: 1%;
+    left: unset;
+  }
 `;
 
 export const LeftContainer = styled.div`
@@ -34,6 +39,10 @@ export const LeftContainer = styled.div`
   align-items: center;
   gap: 25px;
   margin-left: 1rem;
+  @media (max-width: 768px) {
+    margin-left: unset;
+    gap: unset;
+  }
 `;
 
 export const RightContainer = styled.div`
@@ -60,6 +69,9 @@ export const Navigation = styled.div`
     transition: color 0.3s;
     font-weight: 500;
   }
+  @media (max-width: 768px) {
+    gap: 8px;
+  }
 `;
 
 export const SearchContainer = styled.div`
@@ -71,6 +83,10 @@ export const SearchBar = styled.input`
   padding: 0.5rem;
   border-radius: 5px;
   width: 300px;
+  @media (max-width: 768px) {
+    width: 100px;
+    margin-left: 6px;
+  }
 `;
 
 export const SignIn = styled.div`
@@ -89,5 +105,8 @@ export const SignInLink = styled(Link)`
     color: black;
     font-weight: 500;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1), 0 4px 8px rgba(0, 0, 0, 0.2);
+  }
+  @media (max-width: 768px) {
+    margin-left: 7px;
   }
 `;
