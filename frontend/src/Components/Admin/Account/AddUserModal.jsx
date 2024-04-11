@@ -102,7 +102,7 @@ const AddUserModal = ({ onClose, onAddUser }) => {
                 <option value="Guest">Guest</option>
               </s.Select>
             </s.InputGroup>
-            {(role === "coordinator" || role === "Guest") && (
+            {(role === "Coordinator" || role === "Guest") && (
               <s.InputGroup>
                 <s.Label>Select Faculty</s.Label>
                 <s.Select

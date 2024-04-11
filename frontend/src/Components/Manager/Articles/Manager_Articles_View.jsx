@@ -80,11 +80,18 @@ const Manager_Articles_View = () => {
     fetchArticles();
   }, []);
 
+  const handleLogout = () => {
+    console.log("Logging out..."); // Thêm dòng này để ghi thông điệp vào console
+    localStorage.removeItem('jwtToken'); 
+    window.location.href = "/";
+  };
   return (
     <s.Container>
       <Navbar />
       <s.MainContent>
-        <Sidebar selectedItem="View Articles" />
+        <Sidebar 
+        selectedItem="View Articles"
+        handleLogout={handleLogout}/>
         <s.Main>
           <s.ArticlesContainer>
             <s.ArticleGrid>
