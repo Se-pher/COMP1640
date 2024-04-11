@@ -5,6 +5,11 @@ export const Container = styled.div`
   align-items: center;
   justify-content: center;
   margin-top: 7rem;
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+    margin-top: 2rem;
+  }
 `;
 
 export const ImageContainer = styled.div`
@@ -24,6 +29,10 @@ export const LoginContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
+
+  @media (max-width: 768px) {
+    margin-top: 2rem;
+  }
 `;
 
 export const Title = styled.h1`
@@ -48,15 +57,17 @@ export const Input = styled.input`
   width: 350px;
   border-radius: 10px;
   transition: all 0.2s ease-in-out;
-
   &:hover {
     box-shadow: 0;
-    border-color: #F6793E;
+    border-color: #f6793e;
   }
-
   &:focus {
     outline: none;
-    border-color: #F6793E;
+    border-color: #f6793e;
+  }
+
+  @media (max-width: 768px) {
+    width: 300px;
   }
 `;
 
@@ -66,89 +77,34 @@ export const ButtonWrapper = styled.div`
 `;
 
 export const button = styled.button`
-   width: 200px;
-    padding: 0.5rem;
-    border-radius: 13px;
-    background-color: #F6793E;
-    color: White;
-    border: none;
-`
+  width: 200px;
+  padding: 0.5rem;
+  border-radius: 13px;
+  background-color: #f6793e;
+  color: White;
+  border: none;
+
+  @media (max-width: 768px) {
+    width: 200px;
+  }
+`;
 
 export const ForgotPassword = styled.div`
   margin-left: 225px;
-
   a {
     text-decoration: none;
     color: #000000;
     transition: color 0.3s;
   }
-
   a:hover {
-    color: #F6793E;
+    color: #f6793e;
     text-decoration: underline;
   }
-
-  a:visited{
-    color: #F6793E;
-  }
-`;
-
-export const Divider = styled.div`
-  display: flex;
-  align-items: center;
-  margin: 1rem 0;
-  width: 350px;
-
-  &::before,
-  &::after {
-    content: "";
-    flex: 1;
-    height: 1px;
-    background-color: black;
+  a:visited {
+    color: #f6793e;
   }
 
-  &::before {
-    margin-right: 1rem;
-  }
-
-  &::after {
-    margin-left: 1rem;
-  }
-`;
-
-export const DividerText = styled.span`
-  font-size: 0.9rem;
-  color: black;
-`;
-
-export const SocialButtonWrapper = styled.div`
-  display: flex;
-  justify-content: center;
-  margin-top: 1rem;
-`;
-
-export const SocialLoginImg = styled.img`
-  width: 55px;
-  height: 55px;
-  margin: 0 0.5rem;
-  cursor: pointer;
-`;
-
-export const SignUpLink = styled.div`
-  margin-top: 10px;
-
-  a {
-    text-decoration: none;
-    color: #000000;
-    transition: color 0.3s;
-  }
-
-  a:hover {
-    color: #F6793E;
-    text-decoration: underline;
-  }
-  
-  a:visited{
-    color: #F6793E;
+  @media (max-width: 768px) {
+    margin-left: 0;
   }
 `;

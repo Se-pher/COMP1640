@@ -8,6 +8,7 @@ const multer = require('multer');
 const upload = multer({ dest: 'uploads/' });
 const Article = require('./model/article');
 const bcrypt = require('bcrypt');
+const Feedback = require('./model/feedback');
 app.use(cors());
 app.use(express.json());
 const jwt = require('jsonwebtoken');
@@ -520,5 +521,27 @@ app.post('/api/wordFiles', upload.single('wordFile'), async (req, res) => {
   } catch (err) {
     console.error(err);
     res.status(500).json({ err: 'Something went wrong' });
+  }
+});
+
+
+//Feedback
+app.get('/api/feedbacks/:articleId', async (req, res) => {
+  try {
+    const feedbacks = await Feedback.find({ articleId: req.params.articleId });
+    res.json({ feedbacks });
+  } catch (error) {
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+app.post('/api/feedbacks', async (req, res) => {
+  try {
+    const { comment, articleId } = req.body;
+    const newFeedback = new Feedback({ comment, articleId });
+    await newFeedback.save();
+    res.status(201).json({ message: 'Feedback created successfully' });
+  } catch (error) {
+    res.status(500).json({ error: 'Internal server error' });
   }
 });

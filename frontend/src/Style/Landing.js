@@ -13,6 +13,9 @@ export const Image = styled.img`
   width: 100%;
   max-height: 600px;
   object-fit: cover;
+  @media (max-width: 768px) {
+    width:100%;
+  }
 `;
 
 export const Highlight = styled.span`
@@ -31,9 +34,12 @@ export const TypewriterContainer = styled.div`
   align-items: flex-start;
 
   @media only screen and (max-width: 768px) {
-    left: 50%;
+    left: 42%;
     transform: translateX(-50%);
-    text-align: center;
+    text-align: left;
+    top: 62%;
+    font-size: 20px;
+    padding: 0px;
   }
 `;
 
@@ -48,9 +54,10 @@ export const WelcomeText = styled.span`
   text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
 
   @media only screen and (max-width: 768px) {
-    top: 30%;
-    left: 50%;
+    top: 57%;
+    left: 36%;
     transform: translate(-50%, -50%);
+    font-size: 24px;
   }
 `;
 
@@ -64,6 +71,9 @@ export const HighlightText = styled.span`
     100% {color: #00F260;}
     100% {color: #ff6347;}
     100% {color: #0575E6;}
+  }
+  @media only screen and (max-width: 768px) {
+    font-size: 24px;
   }
 `;
 
