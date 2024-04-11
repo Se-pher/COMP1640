@@ -5,6 +5,7 @@ import Navbar from "../../Navbar";
 import * as s from "../../../Style/Student/Student_Details";
 import DocViewer, { DocViewerRenderers } from "@cyntler/react-doc-viewer";
 import { useParams } from "react-router-dom";
+import { Link } from 'react-router-dom';
 
 const Student_Article_Details = () => {
   const { id } = useParams();
@@ -21,9 +22,9 @@ const Student_Article_Details = () => {
       try {
         const { data } = await axios.get(`/api/articles/${id}`);
         console.log("Fetched article data:", data);
-        
-        setArticle(data.article); 
-        setUserName(data.username); 
+
+        setArticle(data.article);
+        setUserName(data.username);
       } catch (error) {
         console.error("Error fetching article:", error);
       }
@@ -43,13 +44,17 @@ const Student_Article_Details = () => {
         <Sidebar
           selectedItem={selectedItem}
           handleItemClick={handleItemClick}
-          userName={userName} 
+          userName={userName}
           handleLogout={handleLogout}
         />
         <s.Main>
           {article && (
             <s.ArticleContainer>
-              <s.EditButton>Edit</s.EditButton>
+              <s.EditButton>
+                <Link to={`/Student/Edit/${id}`} className="edit-button">
+                  Edit
+                </Link>
+              </s.EditButton>
               {article.wordFileURL ? (
                 <DocViewer
                   pluginRenderers={DocViewerRenderers}
