@@ -1,39 +1,37 @@
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom'; 
+import { useNavigate , useParams } from 'react-router-dom';
 import axios from 'axios';
 
 const EditArticle = () => {
   const { id } = useParams(); 
-  const [article, setArticle] = useState({});
-  const [loading, setLoading] = useState(true);
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
-  const [content, setContent] = useState('');
+  const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
 
+  const fetchArticle = async () => {
+    try {
+      const response = await axios.get(`/api/articles/${id}`); 
+      const { title, description } = response.data;
+      setTitle(title);
+      setDescription(description);
+      setLoading(false);
+    } catch (error) {
+      console.error('Error fetching article:', error.response.data.message);
+    }
+  };
+  
   useEffect(() => {
-    const fetchArticle = async () => {
-      try {
-        const response = await axios.get(`/api/articles/${id}`);
-        const { title, description, content } = response.data;
-        setTitle(title);
-        setDescription(description);
-        setContent(content);
-        setLoading(false);
-      } catch (error) {
-        console.error('Error fetching article:', error);
-      }
-    };
-
     fetchArticle();
-  }, [id]); 
+  }, []);
   
   const handleUpdate = async () => {
     try {
-      const updatedArticle = { title, description, content };
-      await axios.put(`/api/articles/${id}`, updatedArticle);
+      await axios.put(`/api/articles/${id}`, { title, description });
       console.log('Article updated successfully');
+      navigate.push(`/articles/${id}`);
     } catch (error) {
-      console.error('Error updating article:', error);
+      console.error('Error updating article:', error.response.data.message);
     }
   };
 
@@ -41,14 +39,24 @@ const EditArticle = () => {
 
   return (
     <div>
-      <h2>Edit Article</h2>
-      <label>Title:</label>
-      <input type="text" value={title} onChange={(e) => setTitle(e.target.value)} />
-      <label>Description:</label>
-      <input type="text" value={description} onChange={(e) => setDescription(e.target.value)} />
-      <label>Content:</label>
-      <textarea value={content} onChange={(e) => setContent(e.target.value)}></textarea>
-      <button onClick={handleUpdate}>Update Article</button>
+      {loading ? (
+        <p>Loading...</p>
+      ) : (
+        <form onSubmit={handleUpdate}>
+          <label>Title</label>
+          <input
+            type="text"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+          />
+          <label>Description</label>
+          <textarea
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+          />
+          <button type="submit">Update Article</button>
+        </form>
+      )}
     </div>
   );
 };

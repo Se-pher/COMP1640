@@ -1,3 +1,4 @@
+// frontend
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import Sidebar from "../Sidebar";
@@ -11,7 +12,9 @@ const Coordinator_Articles_Details = () => {
   const [selectedItem, setSelectedItem] = useState("Articles");
   const [article, setArticle] = useState(null);
   const [userName, setUserName] = useState("");
-
+  const [feedbacks, setFeedbacks] = useState([]);
+  const [newFeedback, setNewFeedback] = useState("");
+  
   const handleItemClick = (item) => {
     setSelectedItem(item);
   };
@@ -36,6 +39,35 @@ const Coordinator_Articles_Details = () => {
     window.location.href = "/";
   };
 
+  useEffect(() => {
+    const fetchFeedbacks = async () => {
+      try {
+        const response = await axios.get(`/api/feedbacks/${id}`);
+        setFeedbacks(response.data.feedbacks);
+      } catch (error) {
+        console.error("Error fetching feedbacks:", error);
+      }
+    };
+
+    fetchFeedbacks();
+  }, [id]);
+
+  const handleNewFeedbackSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      await axios.post('/api/feedbacks', {
+        comment: newFeedback,
+        articleId: id,
+      });
+      // Sau khi gửi phản hồi mới thành công, cần cập nhật lại danh sách phản hồi
+      const response = await axios.get(`/api/feedbacks/${id}`);
+      setFeedbacks(response.data.feedbacks);
+      setNewFeedback('');
+    } catch (error) {
+      console.error('Error submitting feedback:', error);
+    }
+  };
+
   return (
     <s.Container>
       <Navbar />
@@ -58,6 +90,26 @@ const Coordinator_Articles_Details = () => {
               ) : (
                 <p>Không tìm thấy tệp word.</p>
               )}
+
+              {/* Form nhập phản hồi mới */}
+              <form onSubmit={handleNewFeedbackSubmit}>
+                <textarea
+                  value={newFeedback}
+                  onChange={(e) => setNewFeedback(e.target.value)}
+                  placeholder="Nhập phản hồi của bạn..."
+                />
+                <button type="submit">Gửi phản hồi</button>
+              </form>
+
+              {/* Hiển thị danh sách phản hồi */}
+              <div>
+                <h2>Phản hồi</h2>
+                <ul>
+                  {feedbacks.map((feedback, index) => (
+                    <li key={index}>{feedback.comment}</li>
+                  ))}
+                </ul>
+              </div>
             </s.ArticleContainer>
           )}
         </s.Main>

@@ -5,30 +5,40 @@ import Navbar from "../../Navbar";
 import * as s from "../../../Style/Student/Student_Details";
 import DocViewer, { DocViewerRenderers } from "@cyntler/react-doc-viewer";
 import { useParams } from "react-router-dom";
+import { Link } from 'react-router-dom';
 
 const Student_Article_Details = () => {
   const { id } = useParams();
   const [selectedItem, setSelectedItem] = useState("View Articles");
   const [article, setArticle] = useState(null);
   const [userName, setUserName] = useState("");
-
+  const [feedbacks, setFeedbacks] = useState([]);
   const handleItemClick = (item) => {
     setSelectedItem(item);
   };
 
+  const fetchArticle = async () => {
+    try {
+      const response = await axios.get(`/api/articles/${id}`);
+      setArticle(response.data.article);
+      setUserName(response.data.username);
+    } catch (error) {
+      console.error("Error fetching article:", error);
+    }
+  };
+
+  const fetchFeedbacks = async () => {
+    try {
+      const response = await axios.get(`/api/feedbacks/${id}`);
+      setFeedbacks(response.data.feedbacks);
+    } catch (error) {
+      console.error("Error fetching feedbacks:", error);
+    }
+  };
+
   useEffect(() => {
-    const fetchArticle = async () => {
-      try {
-        const { data } = await axios.get(`/api/articles/${id}`);
-        console.log("Fetched article data:", data);
-        
-        setArticle(data.article); 
-        setUserName(data.username); 
-      } catch (error) {
-        console.error("Error fetching article:", error);
-      }
-    };
     fetchArticle();
+    fetchFeedbacks();
   }, [id]);
 
   const handleLogout = () => {
@@ -43,13 +53,17 @@ const Student_Article_Details = () => {
         <Sidebar
           selectedItem={selectedItem}
           handleItemClick={handleItemClick}
-          userName={userName} 
+          userName={userName}
           handleLogout={handleLogout}
         />
         <s.Main>
           {article && (
             <s.ArticleContainer>
-              <s.EditButton>Edit</s.EditButton>
+              <s.EditButton>
+                <Link to={`/Student/Edit/${id}`} className="edit-button">
+                  Edit
+                </Link>
+              </s.EditButton>
               {article.wordFileURL ? (
                 <DocViewer
                   pluginRenderers={DocViewerRenderers}
@@ -59,6 +73,14 @@ const Student_Article_Details = () => {
               ) : (
                 <p>Không tìm thấy tệp word.</p>
               )}
+              <div>
+                <h2>Feedbacks</h2>
+                <ul>
+                  {feedbacks.map((feedback, index) => (
+                    <li key={index}>{feedback.comment}</li>
+                  ))}
+                </ul>
+              </div>
             </s.ArticleContainer>
           )}
         </s.Main>
