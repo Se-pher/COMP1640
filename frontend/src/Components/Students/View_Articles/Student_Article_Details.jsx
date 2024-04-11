@@ -11,24 +11,33 @@ const Student_Article_Details = () => {
   const [selectedItem, setSelectedItem] = useState("View Articles");
   const [article, setArticle] = useState(null);
   const [userName, setUserName] = useState("");
-
+  const [feedbacks, setFeedbacks] = useState([]);
   const handleItemClick = (item) => {
     setSelectedItem(item);
   };
 
+  const fetchArticle = async () => {
+    try {
+      const response = await axios.get(`/api/articles/${id}`);
+      setArticle(response.data.article);
+      setUserName(response.data.username);
+    } catch (error) {
+      console.error("Error fetching article:", error);
+    }
+  };
+
+  const fetchFeedbacks = async () => {
+    try {
+      const response = await axios.get(`/api/feedbacks/${id}`);
+      setFeedbacks(response.data.feedbacks);
+    } catch (error) {
+      console.error("Error fetching feedbacks:", error);
+    }
+  };
+
   useEffect(() => {
-    const fetchArticle = async () => {
-      try {
-        const { data } = await axios.get(`/api/articles/${id}`);
-        console.log("Fetched article data:", data);
-        
-        setArticle(data.article); 
-        setUserName(data.username); 
-      } catch (error) {
-        console.error("Error fetching article:", error);
-      }
-    };
     fetchArticle();
+    fetchFeedbacks();
   }, [id]);
 
   const handleLogout = () => {
@@ -59,6 +68,14 @@ const Student_Article_Details = () => {
               ) : (
                 <p>Không tìm thấy tệp word.</p>
               )}
+              <div>
+                <h2>Feedbacks</h2>
+                <ul>
+                  {feedbacks.map((feedback, index) => (
+                    <li key={index}>{feedback.comment}</li>
+                  ))}
+                </ul>
+              </div>
             </s.ArticleContainer>
           )}
         </s.Main>
