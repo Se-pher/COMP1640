@@ -261,16 +261,12 @@ app.delete('/api/faculties/:id', async (req, res) => {
 app.post('/api/articles', verifyToken, async (req, res) => {
   const { title, description, imageURL, wordFileURL, facultyName } = req.body;
   try {
-    // Lấy userId từ thông tin người dùng được giải mã từ token
     const userId = req.user.userId;
-    // Tạo bài viết mới với userId đã xác định
     const newArticle = new Article({ title, description, imageURL, wordFileURL, facultyName, userId });
     await newArticle.save();
 
-    // Tìm tất cả người dùng có role là 'coordinator' và có facultyName là 'IT'
     const coordinators = await User.find({ role: 'coordinator', facultyName});
 
-    // Gửi email thông báo tới tất cả các coordinator
     for (const coordinator of coordinators) {
       await sendEmail(coordinator.email, 'New article uploaded', `A new article has been uploaded for the ${facultyName} faculty.`);
     }

@@ -1,98 +1,65 @@
-import React, { useState } from "react";
-import * as s from "../../../Style/Coordinator/Coordinator_A_Detail";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 import Sidebar from "../Sidebar";
 import Navbar from "../../Navbar";
-import { articles } from "../../data";
+import * as s from "../../../Style/Student/Student_Details";
+import DocViewer, { DocViewerRenderers } from "@cyntler/react-doc-viewer";
 import { useParams } from "react-router-dom";
-import FeedbackPopup from "./FeedbackPopup";
 
 const Coordinator_Articles_Details = () => {
+  const { id } = useParams();
   const [selectedItem, setSelectedItem] = useState("Articles");
+  const [article, setArticle] = useState(null);
+  const [userName, setUserName] = useState("");
+
   const handleItemClick = (item) => {
     setSelectedItem(item);
   };
 
-  const [isPopupOpen, setIsPopupOpen] = useState(false);
-  const [selectedOption, setSelectedOption] = useState("");
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  useEffect(() => {
+    const fetchArticle = async () => {
+      try {
+        const { data } = await axios.get(`/api/articles/${id}`);
+        console.log("Fetched article data:", data);
 
-  const handleOptionSelect = (option) => {
-    setSelectedOption(option);
-    setIsPopupOpen(true);
+        setArticle(data.article);
+        setUserName(data.username);
+      } catch (error) {
+        console.error("Error fetching article:", error);
+      }
+    };
+    fetchArticle();
+  }, [id]);
+
+  const handleLogout = () => {
+    localStorage.removeItem("jwtToken");
+    window.location.href = "/";
   };
 
-  const handleSubmitFeedback = (feedback) => {
-    console.log(`Feedback for ${selectedOption}: ${feedback}`);
-  };
-
-  const toggleDropdown = () => {
-    setIsDropdownOpen(!isDropdownOpen);
-  };
-
-  const { id } = useParams();
-  const article = articles.find((article) => article.id === parseInt(id));
-
-  if (!article) {
-    return <div>Article not found</div>;
-  }
   return (
     <s.Container>
       <Navbar />
       <s.MainContent>
-      <Sidebar selectedItem={selectedItem} handleItemClick={handleItemClick} />
+        <Sidebar
+          selectedItem={selectedItem}
+          handleItemClick={handleItemClick}
+          userName={userName}
+          handleLogout={handleLogout}
+        />
         <s.Main>
-          <s.ArticlesContainer>
-            <s.SquareContainer>
-              <s.ActionsContainer>
-                <s.ApprovalDropdown>
-                  <s.DropdownButton onClick={toggleDropdown}>
-                    Choose option <s.DropdownIcon />
-                  </s.DropdownButton>
-                  {isDropdownOpen && (
-                    <s.DropdownMenu>
-                      <s.DropdownOption
-                        onClick={() => handleOptionSelect("Approved")}
-                      >
-                        Approved
-                      </s.DropdownOption>
-                      <s.DropdownOption
-                        onClick={() => handleOptionSelect("Rejected")}
-                      >
-                        Rejected
-                      </s.DropdownOption>
-                    </s.DropdownMenu>
-                  )}
-                </s.ApprovalDropdown>
-              </s.ActionsContainer>
-              <FeedbackPopup
-                isOpen={isPopupOpen}
-                onClose={() => setIsPopupOpen(false)}
-                onSubmit={handleSubmitFeedback}
-              />
-              <s.ArticleHeader>
-                <s.ArticleTitle>{article.title}</s.ArticleTitle>
-              </s.ArticleHeader>
-              <s.ArticleContent>
-                <s.ArticleDetails>
-                  <s.ArticleDescription>
-                    {article.description}
-                  </s.ArticleDescription>
-                  <s.Divider />
-                  <s.ArticleMetadata>
-                    <s.ArticleDate>{article.date}</s.ArticleDate>
-                    <s.ArticleAuthor>
-                      <s.AuthorAvatar
-                        src={article.authorAvatar}
-                        alt={article.author}
-                      />
-                      <span>{article.author}</span>
-                    </s.ArticleAuthor>
-                  </s.ArticleMetadata>
-                </s.ArticleDetails>
-                <s.ArticleImage src={article.imageUrl} alt={article.title} />
-              </s.ArticleContent>
-            </s.SquareContainer>
-          </s.ArticlesContainer>
+          {article && (
+            <s.ArticleContainer>
+              {article.wordFileURL ? (
+                <DocViewer
+                  pluginRenderers={DocViewerRenderers}
+                  documents={[{ uri: article.wordFileURL, fileType: "docx" }]}
+                  style={{ height: "600px" }}
+                />
+              ) : (
+                <p>Không tìm thấy tệp word.</p>
+              )}
+            </s.ArticleContainer>
+          )}
         </s.Main>
       </s.MainContent>
     </s.Container>
