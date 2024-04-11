@@ -265,7 +265,7 @@ app.post('/api/articles', verifyToken, async (req, res) => {
     const newArticle = new Article({ title, description, imageURL, wordFileURL, facultyName, userId });
     await newArticle.save();
 
-    const coordinators = await User.find({ role: 'coordinator', facultyName});
+    const coordinators = await User.find({ role: 'Coordinator', facultyName});
 
     for (const coordinator of coordinators) {
       await sendEmail(coordinator.email, 'New article uploaded', `A new article has been uploaded for the ${facultyName} faculty.`);
