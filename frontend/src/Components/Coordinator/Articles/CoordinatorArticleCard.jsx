@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom';
 const CoordinatorArticleCard = ({ article }) => {
   return (
     <s.CoordinatorArticleCard>
-      <Link to={`/Coordinator/Articles/${article.id}`}>
+      <Link to={`/Coordinator/article/${article._id}`}>
         <s.ArticleImage src={article.imageURL} alt={article.title} />
       </Link>
       <s.ArticleInfo>
