@@ -17,7 +17,7 @@ const ManagerCard = ({ article, onSelect, isSelected }) => {
 
   return (
     <s.ManagerCard>
-      <Link to={`/Manager/Article/${article._id}`}>
+      <Link to={`/Manager/article/${article._id}`}>
         <s.ArticleImage src={article.imageURL} alt={article.title} />
       </Link>
       <s.ArticleInfo>
