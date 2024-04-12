@@ -23,7 +23,7 @@ const EditArticle = () => {
   
   useEffect(() => {
     fetchArticle();
-  }, []);
+  });
   
   const handleUpdate = async () => {
     try {

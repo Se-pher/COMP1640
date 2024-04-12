@@ -2,9 +2,6 @@ import React, { useState } from "react";
 import * as s from "../Style/Login";
 import { Link, useNavigate } from "react-router-dom";
 import Img from "../Image/Login.png";
-import GoogleLogo from "../Image/google.png";
-import FBLogo from "../Image/facebook.png";
-import GithubLogo from "../Image/github.png";
 import axios from 'axios';
 
 const Login = () => {
