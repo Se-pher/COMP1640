@@ -537,8 +537,8 @@ app.get('/api/feedbacks/:articleId', async (req, res) => {
 
 app.post('/api/feedbacks', async (req, res) => {
   try {
-    const { comment, articleId } = req.body;
-    const newFeedback = new Feedback({ comment, articleId });
+    const { comment, articleId, username } = req.body;
+    const newFeedback = new Feedback({ comment, articleId, username });
     await newFeedback.save();
     res.status(201).json({ message: 'Feedback created successfully' });
   } catch (error) {

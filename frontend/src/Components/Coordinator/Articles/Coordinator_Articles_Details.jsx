@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import Sidebar from "../Sidebar";
 import Navbar from "../../Navbar";
-import * as s from "../../../Style/Student/Student_Details";
+import * as s from "../../../Style/Coordinator/Coordinator_A_Detail";
 import DocViewer, { DocViewerRenderers } from "@cyntler/react-doc-viewer";
 import { useParams } from "react-router-dom";
 
@@ -24,7 +24,6 @@ const Coordinator_Articles_Details = () => {
       try {
         const { data } = await axios.get(`/api/articles/${id}`);
         console.log("Fetched article data:", data);
-
         setArticle(data.article);
         setUserName(data.username);
       } catch (error) {
@@ -48,23 +47,22 @@ const Coordinator_Articles_Details = () => {
         console.error("Error fetching feedbacks:", error);
       }
     };
-
+  
     fetchFeedbacks();
   }, [id]);
 
   const handleNewFeedbackSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post('/api/feedbacks', {
+      await axios.post("/api/feedbacks", {
         comment: newFeedback,
         articleId: id,
       });
-      // Sau khi gửi phản hồi mới thành công, cần cập nhật lại danh sách phản hồi
       const response = await axios.get(`/api/feedbacks/${id}`);
       setFeedbacks(response.data.feedbacks);
-      setNewFeedback('');
+      setNewFeedback("");
     } catch (error) {
-      console.error('Error submitting feedback:', error);
+      console.error("Error submitting feedback:", error);
     }
   };
 
@@ -95,11 +93,9 @@ const Coordinator_Articles_Details = () => {
                   style={{ height: "600px" }}
                 />
               ) : (
-                <p>Không tìm thấy tệp word.</p>
+                <p>Word file not found.</p>
               )}
-
-              {/* Form nhập phản hồi mới */}
-              <form onSubmit={handleNewFeedbackSubmit}>
+              <s.FeedbackForm onSubmit={handleNewFeedbackSubmit}>
                 <textarea
                   value={newFeedback}
                   onChange={(e) => setNewFeedback(e.target.value)}
@@ -113,17 +109,15 @@ const Coordinator_Articles_Details = () => {
                     <span>Gửi Phản Hồi</span>
                   )}
                 </button>
-              </form>
-
-              {/* Hiển thị danh sách phản hồi */}
-              <div>
-                <h2>Phản hồi</h2>
+              </s.FeedbackForm>
+              <s.FeedbackContainer>
+                <h2>Feedback</h2>
                 <ul>
                   {feedbacks.map((feedback, index) => (
                     <li key={index}>{feedback.comment}</li>
                   ))}
                 </ul>
-              </div>
+              </s.FeedbackContainer>
             </s.ArticleContainer>
           )}
         </s.Main>
