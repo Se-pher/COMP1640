@@ -14,7 +14,7 @@ const Coordinator_Articles_Details = () => {
   const [userName, setUserName] = useState("");
   const [feedbacks, setFeedbacks] = useState([]);
   const [newFeedback, setNewFeedback] = useState("");
-  
+
   const handleItemClick = (item) => {
     setSelectedItem(item);
   };
@@ -68,6 +68,13 @@ const Coordinator_Articles_Details = () => {
     }
   };
 
+  const canCreateFeedback = (createdAt) => {
+    const submissionDate = new Date(createdAt);
+    const dayCheck = new Date();
+    dayCheck.setDate(dayCheck.getDate() - 14);
+    return submissionDate <= dayCheck;
+  };
+
   return (
     <s.Container>
       <Navbar />
@@ -97,8 +104,15 @@ const Coordinator_Articles_Details = () => {
                   value={newFeedback}
                   onChange={(e) => setNewFeedback(e.target.value)}
                   placeholder="Nhập phản hồi của bạn..."
+                  disabled={canCreateFeedback(article.createdAt)}
                 />
-                <button type="submit">Gửi phản hồi</button>
+                <button type="submit" disabled={canCreateFeedback(article.createdAt)} >
+                  {canCreateFeedback(article.createdAt) ? (
+                    <span>Không thể gửi</span>
+                  ) : (
+                    <span>Gửi Phản Hồi</span>
+                  )}
+                </button>
               </form>
 
               {/* Hiển thị danh sách phản hồi */}
