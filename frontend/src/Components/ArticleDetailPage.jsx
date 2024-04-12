@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import * as s from '../Style/ArticleDetail';
 import { useParams } from 'react-router-dom';
+import DocViewer, { DocViewerRenderers } from "@cyntler/react-doc-viewer";
 
 const ArticleDetailPage = () => {
   const [article, setArticle] = useState(null);
@@ -35,8 +36,17 @@ const ArticleDetailPage = () => {
       <s.ArticleDetails>
         <s.ArticleTitle>{article.title}</s.ArticleTitle>
         <s.ArticleDate>{new Date(article.createdAt).toLocaleDateString()}</s.ArticleDate>
-        <s.ArticleAuthor>{username}</s.ArticleAuthor> {/* Sử dụng thông tin về người dùng để hiển thị tên người dùng */}
+        <s.ArticleAuthor>{username}</s.ArticleAuthor>
         <s.ArticleDescription>{article.description}</s.ArticleDescription>
+        {article.wordFileURL ? (
+          <DocViewer
+            pluginRenderers={DocViewerRenderers}
+            documents={[{ uri: article.wordFileURL, fileType: "docx" }]}
+            style={{ height: "600px" }}
+          />
+        ) : (
+          <p>Word file not found.</p>
+        )}
       </s.ArticleDetails>
     </s.Container>
   );
