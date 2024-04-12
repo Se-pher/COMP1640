@@ -66,6 +66,13 @@ const Coordinator_Articles_Details = () => {
     }
   };
 
+  const canCreateFeedback = (createdAt) => {
+    const submissionDate = new Date(createdAt);
+    const dayCheck = new Date();
+    dayCheck.setDate(dayCheck.getDate() - 14);
+    return submissionDate <= dayCheck;
+  };
+
   return (
     <s.Container>
       <Navbar />
@@ -92,9 +99,16 @@ const Coordinator_Articles_Details = () => {
                 <textarea
                   value={newFeedback}
                   onChange={(e) => setNewFeedback(e.target.value)}
-                  placeholder="Enter your feedback..."
+                  placeholder="Nhập phản hồi của bạn..."
+                  disabled={canCreateFeedback(article.createdAt)}
                 />
-                <button type="submit">Send Feedback</button>
+                <button type="submit" disabled={canCreateFeedback(article.createdAt)} >
+                  {canCreateFeedback(article.createdAt) ? (
+                    <span>Không thể gửi</span>
+                  ) : (
+                    <span>Gửi Phản Hồi</span>
+                  )}
+                </button>
               </s.FeedbackForm>
               <s.FeedbackContainer>
                 <h2>Feedback</h2>
