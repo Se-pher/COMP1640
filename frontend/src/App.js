@@ -30,7 +30,7 @@ axios.defaults.baseURL = "http://localhost:5000/";
 function App() {
   return (
     <Router>
-      <Routes>        
+      <Routes>
         <Route
           path="/home"
           element={
@@ -40,7 +40,7 @@ function App() {
           }
         />
         <Route path="/" element={<Login />} />
-                <Route
+        <Route
           path="/admin"
           element={
             <ProtectedRoute component={Admin} allowedRoles={["Admin"]} />
