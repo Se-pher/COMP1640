@@ -8,6 +8,7 @@ const multer = require('multer');
 const upload = multer({ dest: 'uploads/' });
 const Article = require('./model/article');
 const bcrypt = require('bcrypt');
+const User = require('./model/user');
 const Feedback = require('./model/feedback');
 app.use(cors());
 app.use(express.json());
@@ -20,29 +21,6 @@ mongoose.connect('mongodb+srv://COMP1640:COMP1640group5@cluster0.kgdq0tl.mongodb
   .then(() => console.log('MongoDB connected'))
   .catch((err) => console.log(err));
 
-
-//USER
-const userSchema = new mongoose.Schema({
-  username: {
-    type: String,
-    required: true,
-  },
-  email: {
-    type: String,
-    required: true,
-    unique: true,
-  },
-  password: {
-    type: String,
-    required: true,
-  },
-  role: {
-    type: String,
-    required: true,
-  },
-  facultyName: String,
-});
-const User = mongoose.model('User', userSchema);
 app.post('/api/users', async (req, res) => {
   const { username, email, password, role, facultyName } = req.body;
 
@@ -128,15 +106,11 @@ app.post('/api/login', async (req, res) => {
     if (!user) {
       return res.status(401).json({ message: 'Invalid email or password' });
     }
-
-    // So sánh mật khẩu đầu vào với mật khẩu đã mã hóa trong DB
     const isMatch = await bcrypt.compare(password, user.password);
 
     if (!isMatch) {
       return res.status(401).json({ message: 'Invalid email or password' });
     }
-
-    // Tạo token
     const token = jwt.sign({ userId: user._id, role: user.role }, SECRET_KEY, {
       expiresIn: '1d',
     });
@@ -151,12 +125,12 @@ const verifyToken = (req, res, next) => {
   const authHeader = req.headers['authorization'];
   const token = authHeader && authHeader.split(' ')[1];
 
-  if (!token) return res.sendStatus(401); // Không có token
+  if (!token) return res.sendStatus(401);
 
   jwt.verify(token, SECRET_KEY, (err, user) => {
-    if (err) return res.sendStatus(403); // Token không hợp lệ
-    req.user = user; // Lưu thông tin giải mã vào req.user
-    next(); // Tiếp tục middleware tiếp theo
+    if (err) return res.sendStatus(403);
+    req.user = user; 
+    next(); 
   });
 };
 
@@ -286,6 +260,23 @@ app.get('/api/articles', async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 });
+
+app.put('/api/articles/:id/public', async (req, res) => {
+  const { id } = req.params;
+  try {
+    const article = await Article.findById(id);
+    if (!article) {
+      return res.status(404).json({ message: 'Article not found' });
+    }
+    const newStatus = article.status === 'public' ? 'lock' : 'public';
+    
+    const updatedArticle = await Article.findByIdAndUpdate(id, { status: newStatus }, { new: true });
+    res.json(updatedArticle);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
 
 //TOKEN
 
@@ -426,7 +417,7 @@ app.get('/api/articles/:id', async (req, res) => {
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
     }
-    res.json({ article, username: user.username });
+    res.json({ article, username: user.username, status: article.status });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -434,19 +425,19 @@ app.get('/api/articles/:id', async (req, res) => {
 
 app.get('/api/articlesFaculty', verifyToken, async (req, res) => {
   try {
-    const userId = req.user.userId; // Lấy userId từ req.user được thêm bởi middleware verifyToken
-    const user = await User.findById(userId); // Lấy thông tin user dựa trên userId từ token
+    const userId = req.user.userId; 
+    const user = await User.findById(userId); 
     if (!user) return res.status(404).json({ message: "User not found" });
 
-    const facultyName = user.facultyName; // Lấy facultyName từ thông tin user
-
-    const articles = await Article.find({ facultyName: facultyName }); // Lấy danh sách bài báo dựa trên facultyName
+    const facultyName = user.facultyName; 
+    const articles = await Article.find({ facultyName: facultyName, status: 'public' }); 
     res.json(articles);
   } catch (error) {
     console.error('Error fetching articles:', error);
     res.status(500).json({ message: 'Internal server error' });
   }
 });
+
 
 
 const admin = require('firebase-admin');
@@ -537,8 +528,8 @@ app.get('/api/feedbacks/:articleId', async (req, res) => {
 
 app.post('/api/feedbacks', async (req, res) => {
   try {
-    const { comment, articleId } = req.body;
-    const newFeedback = new Feedback({ comment, articleId });
+    const { comment, articleId, username } = req.body;
+    const newFeedback = new Feedback({ comment, articleId, username });
     await newFeedback.save();
     res.status(201).json({ message: 'Feedback created successfully' });
   } catch (error) {

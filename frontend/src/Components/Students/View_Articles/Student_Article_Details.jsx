@@ -5,7 +5,7 @@ import Navbar from "../../Navbar";
 import * as s from "../../../Style/Student/Student_Details";
 import DocViewer, { DocViewerRenderers } from "@cyntler/react-doc-viewer";
 import { useParams } from "react-router-dom";
-import { Link } from 'react-router-dom';
+import { Link } from "react-router-dom";
 
 const Student_Article_Details = () => {
   const { id } = useParams();
@@ -13,30 +13,32 @@ const Student_Article_Details = () => {
   const [article, setArticle] = useState(null);
   const [userName, setUserName] = useState("");
   const [feedbacks, setFeedbacks] = useState([]);
+  const [status, setStatus] = useState("");
   const handleItemClick = (item) => {
     setSelectedItem(item);
   };
 
-  const fetchArticle = async () => {
-    try {
-      const response = await axios.get(`/api/articles/${id}`);
-      setArticle(response.data.article);
-      setUserName(response.data.username);
-    } catch (error) {
-      console.error("Error fetching article:", error);
-    }
-  };
-
-  const fetchFeedbacks = async () => {
-    try {
-      const response = await axios.get(`/api/feedbacks/${id}`);
-      setFeedbacks(response.data.feedbacks);
-    } catch (error) {
-      console.error("Error fetching feedbacks:", error);
-    }
-  };
-
   useEffect(() => {
+    const fetchArticle = async () => {
+      try {
+        const response = await axios.get(`/api/articles/${id}`);
+        setArticle(response.data.article);
+        setUserName(response.data.username);
+        setStatus(response.data.status);
+      } catch (error) {
+        console.error("Error fetching article:", error);
+      }
+    };
+
+    const fetchFeedbacks = async () => {
+      try {
+        const response = await axios.get(`/api/feedbacks/${id}`);
+        setFeedbacks(response.data.feedbacks);
+      } catch (error) {
+        console.error("Error fetching feedbacks:", error);
+      }
+    };
+
     fetchArticle();
     fetchFeedbacks();
   }, [id]);
@@ -64,6 +66,7 @@ const Student_Article_Details = () => {
                   Edit
                 </Link>
               </s.EditButton>
+              <p>Status: {status}</p>
               {article.wordFileURL ? (
                 <DocViewer
                   pluginRenderers={DocViewerRenderers}
@@ -71,16 +74,23 @@ const Student_Article_Details = () => {
                   style={{ height: "600px" }}
                 />
               ) : (
-                <p>Không tìm thấy tệp word.</p>
+                <p>Word file not found.</p>
               )}
-              <div>
-                <h2>Feedbacks</h2>
+              <s.FeedbackContainer>
+                <h2>Feedback</h2>
                 <ul>
                   {feedbacks.map((feedback, index) => (
-                    <li key={index}>{feedback.comment}</li>
+                    <li key={index}>
+                      <div>
+                        <span>
+                          {new Date(feedback.createdAt).toLocaleString()}
+                        </span>
+                      </div>
+                      <p>{feedback.comment}</p>
+                    </li>
                   ))}
                 </ul>
-              </div>
+              </s.FeedbackContainer>
             </s.ArticleContainer>
           )}
         </s.Main>

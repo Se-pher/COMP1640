@@ -9,6 +9,7 @@ const articleSchema = new mongoose.Schema(
     createdAt: { type: Date, default: Date.now },
     facultyName: String,
     userId: String,
+    status: { type: String, default: 'lock' }
   },
   { collection: 'Articles' },
   { versionKey: false }
