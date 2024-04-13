@@ -8,6 +8,7 @@ const multer = require('multer');
 const upload = multer({ dest: 'uploads/' });
 const Article = require('./model/article');
 const bcrypt = require('bcrypt');
+const User = require('./model/user');
 const Feedback = require('./model/feedback');
 app.use(cors());
 app.use(express.json());
@@ -20,29 +21,6 @@ mongoose.connect('mongodb+srv://COMP1640:COMP1640group5@cluster0.kgdq0tl.mongodb
   .then(() => console.log('MongoDB connected'))
   .catch((err) => console.log(err));
 
-
-//USER
-const userSchema = new mongoose.Schema({
-  username: {
-    type: String,
-    required: true,
-  },
-  email: {
-    type: String,
-    required: true,
-    unique: true,
-  },
-  password: {
-    type: String,
-    required: true,
-  },
-  role: {
-    type: String,
-    required: true,
-  },
-  facultyName: String,
-});
-const User = mongoose.model('User', userSchema);
 app.post('/api/users', async (req, res) => {
   const { username, email, password, role, facultyName } = req.body;
 
@@ -128,15 +106,11 @@ app.post('/api/login', async (req, res) => {
     if (!user) {
       return res.status(401).json({ message: 'Invalid email or password' });
     }
-
-    // So sánh mật khẩu đầu vào với mật khẩu đã mã hóa trong DB
     const isMatch = await bcrypt.compare(password, user.password);
 
     if (!isMatch) {
       return res.status(401).json({ message: 'Invalid email or password' });
     }
-
-    // Tạo token
     const token = jwt.sign({ userId: user._id, role: user.role }, SECRET_KEY, {
       expiresIn: '1d',
     });
@@ -151,12 +125,12 @@ const verifyToken = (req, res, next) => {
   const authHeader = req.headers['authorization'];
   const token = authHeader && authHeader.split(' ')[1];
 
-  if (!token) return res.sendStatus(401); // Không có token
+  if (!token) return res.sendStatus(401);
 
   jwt.verify(token, SECRET_KEY, (err, user) => {
-    if (err) return res.sendStatus(403); // Token không hợp lệ
-    req.user = user; // Lưu thông tin giải mã vào req.user
-    next(); // Tiếp tục middleware tiếp theo
+    if (err) return res.sendStatus(403);
+    req.user = user; 
+    next(); 
   });
 };
 
@@ -280,7 +254,7 @@ app.post('/api/articles', verifyToken, async (req, res) => {
 
 app.get('/api/articles', async (req, res) => {
   try {
-    const articles = await Article.find({ status: 'lock' }); // Lọc các bài báo có status là 'lock'
+    const articles = await Article.find();
     res.json(articles);
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -290,12 +264,19 @@ app.get('/api/articles', async (req, res) => {
 app.put('/api/articles/:id/public', async (req, res) => {
   const { id } = req.params;
   try {
-    const updatedArticle = await Article.findByIdAndUpdate(id, { status: 'public' }, { new: true });
+    const article = await Article.findById(id);
+    if (!article) {
+      return res.status(404).json({ message: 'Article not found' });
+    }
+    const newStatus = article.status === 'public' ? 'lock' : 'public';
+    
+    const updatedArticle = await Article.findByIdAndUpdate(id, { status: newStatus }, { new: true });
     res.json(updatedArticle);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 });
+
 
 //TOKEN
 
@@ -436,7 +417,7 @@ app.get('/api/articles/:id', async (req, res) => {
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
     }
-    res.json({ article, username: user.username });
+    res.json({ article, username: user.username, status: article.status });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }

@@ -13,6 +13,7 @@ const Student_Article_Details = () => {
   const [article, setArticle] = useState(null);
   const [userName, setUserName] = useState("");
   const [feedbacks, setFeedbacks] = useState([]);
+  const [status, setStatus] = useState("");
   const handleItemClick = (item) => {
     setSelectedItem(item);
   };
@@ -23,6 +24,7 @@ const Student_Article_Details = () => {
         const response = await axios.get(`/api/articles/${id}`);
         setArticle(response.data.article);
         setUserName(response.data.username);
+        setStatus(response.data.status);
       } catch (error) {
         console.error("Error fetching article:", error);
       }
@@ -64,6 +66,7 @@ const Student_Article_Details = () => {
                   Edit
                 </Link>
               </s.EditButton>
+              <p>Status: {status}</p>
               {article.wordFileURL ? (
                 <DocViewer
                   pluginRenderers={DocViewerRenderers}
