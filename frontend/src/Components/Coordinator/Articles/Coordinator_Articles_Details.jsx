@@ -23,7 +23,6 @@ const Coordinator_Articles_Details = () => {
     const fetchArticle = async () => {
       try {
         const { data } = await axios.get(`/api/articles/${id}`);
-        console.log("Fetched article data:", data);
         setArticle(data.article);
         setUserName(data.username);
       } catch (error) {
@@ -47,7 +46,7 @@ const Coordinator_Articles_Details = () => {
         console.error("Error fetching feedbacks:", error);
       }
     };
-  
+
     fetchFeedbacks();
   }, [id]);
 
@@ -63,6 +62,16 @@ const Coordinator_Articles_Details = () => {
       setNewFeedback("");
     } catch (error) {
       console.error("Error submitting feedback:", error);
+    }
+  };
+
+  const handlePublicButtonClick = async () => {
+    try {
+      await axios.put(`/api/articles/${id}/public`);
+      const { data } = await axios.get(`/api/articles/${id}`);
+      setArticle(data.article);
+    } catch (error) {
+      console.error("Error updating article status:", error);
     }
   };
 
@@ -102,7 +111,10 @@ const Coordinator_Articles_Details = () => {
                   placeholder="Nhập phản hồi của bạn..."
                   disabled={canCreateFeedback(article.createdAt)}
                 />
-                <button type="submit" disabled={canCreateFeedback(article.createdAt)} >
+                <button
+                  type="submit"
+                  disabled={canCreateFeedback(article.createdAt)}
+                >
                   {canCreateFeedback(article.createdAt) ? (
                     <span>Không thể gửi</span>
                   ) : (
@@ -118,6 +130,9 @@ const Coordinator_Articles_Details = () => {
                   ))}
                 </ul>
               </s.FeedbackContainer>
+              <button onClick={handlePublicButtonClick}>
+                {article.status === "public" ? "Lock" : "Public"}
+              </button>
             </s.ArticleContainer>
           )}
         </s.Main>

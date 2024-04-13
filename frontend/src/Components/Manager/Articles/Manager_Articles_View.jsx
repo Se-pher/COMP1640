@@ -9,6 +9,7 @@ import { saveAs } from "file-saver";
 
 const Manager_Articles_View = () => {
   const [articles, setArticles] = useState([]);
+  const [faculties, setFaculties] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedArticles, setSelectedArticles] = useState([]);
   const articlesPerPage = 6;
@@ -23,15 +24,26 @@ const Manager_Articles_View = () => {
     setCurrentPage(pageNumber);
   };
 
+  const isArticleWithinDeadline = (article) => {
+    const faculty = faculties.find((f) => f.facultyName === article.facultyName);
+    const deadline = new Date(faculty.facultyDeadline);
+    const currentDate = new Date();
+    return currentDate > deadline;
+  };
+
   const handleArticleSelect = (article, isSelected) => {
-    if (isSelected) {
-      setSelectedArticles([...selectedArticles, article]);
-    } else {
-      setSelectedArticles(
+    const isDeadlinePassed = isArticleWithinDeadline(article);
+    if (isDeadlinePassed) {
+      if (isSelected) {
+        setSelectedArticles([...selectedArticles, article]);
+      } else {
+        setSelectedArticles(
         selectedArticles.filter((a) => a._id !== article._id)
       );
     }
-
+  } else {
+    console.log("Cannot select article: Deadline has not passed.");
+  }
     console.log("Selected articles:", selectedArticles);
   };
 
@@ -72,6 +84,9 @@ const Manager_Articles_View = () => {
       try {
         const response = await axios.get("/api/articles");
         setArticles(response.data);
+
+        const facultiesResponse = await axios.get("/api/faculties");
+        setFaculties(facultiesResponse.data);
       } catch (error) {
         console.error("Error fetching articles:", error);
       }
@@ -85,6 +100,7 @@ const Manager_Articles_View = () => {
     localStorage.removeItem('jwtToken'); 
     window.location.href = "/";
   };
+
   return (
     <s.Container>
       <Navbar />
@@ -121,7 +137,7 @@ const Manager_Articles_View = () => {
               )}
             </s.Pagination>
           </s.ArticlesContainer>
-          <s.DownloadButton onClick={handleDownloadSelectedArticles}>
+          <s.DownloadButton onClick={handleDownloadSelectedArticles} >
             Download Selected Articles
           </s.DownloadButton>
         </s.Main>
