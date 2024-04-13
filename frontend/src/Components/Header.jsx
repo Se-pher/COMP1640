@@ -11,7 +11,7 @@ const Header = ({ children }) => {
         <s.LeftContainer>
           <s.Logo src={WebLogo} alt="Logo" />
           <s.Navigation>
-            <Link to="/">Home</Link>
+            <Link to="/home">Home</Link>
             <Link to="/about">About</Link>
           </s.Navigation>
         </s.LeftContainer>

@@ -280,8 +280,18 @@ app.post('/api/articles', verifyToken, async (req, res) => {
 
 app.get('/api/articles', async (req, res) => {
   try {
-    const articles = await Article.find();
+    const articles = await Article.find({ status: 'lock' }); // Lọc các bài báo có status là 'lock'
     res.json(articles);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+app.put('/api/articles/:id/public', async (req, res) => {
+  const { id } = req.params;
+  try {
+    const updatedArticle = await Article.findByIdAndUpdate(id, { status: 'public' }, { new: true });
+    res.json(updatedArticle);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -434,19 +444,19 @@ app.get('/api/articles/:id', async (req, res) => {
 
 app.get('/api/articlesFaculty', verifyToken, async (req, res) => {
   try {
-    const userId = req.user.userId; // Lấy userId từ req.user được thêm bởi middleware verifyToken
-    const user = await User.findById(userId); // Lấy thông tin user dựa trên userId từ token
+    const userId = req.user.userId; 
+    const user = await User.findById(userId); 
     if (!user) return res.status(404).json({ message: "User not found" });
 
-    const facultyName = user.facultyName; // Lấy facultyName từ thông tin user
-
-    const articles = await Article.find({ facultyName: facultyName }); // Lấy danh sách bài báo dựa trên facultyName
+    const facultyName = user.facultyName; 
+    const articles = await Article.find({ facultyName: facultyName, status: 'public' }); 
     res.json(articles);
   } catch (error) {
     console.error('Error fetching articles:', error);
     res.status(500).json({ message: 'Internal server error' });
   }
 });
+
 
 
 const admin = require('firebase-admin');

@@ -23,7 +23,6 @@ const Coordinator_Articles_Details = () => {
     const fetchArticle = async () => {
       try {
         const { data } = await axios.get(`/api/articles/${id}`);
-        console.log("Fetched article data:", data);
         setArticle(data.article);
         setUserName(data.username);
       } catch (error) {
@@ -63,6 +62,17 @@ const Coordinator_Articles_Details = () => {
       setNewFeedback("");
     } catch (error) {
       console.error("Error submitting feedback:", error);
+    }
+  };
+
+  const handlePublicButtonClick = async () => {
+    try {
+      await axios.put(`/api/articles/${id}/public`);
+      // Refresh the article after updating its status
+      const { data } = await axios.get(`/api/articles/${id}`);
+      setArticle(data.article);
+    } catch (error) {
+      console.error("Error updating article status:", error);
     }
   };
 
@@ -118,6 +128,7 @@ const Coordinator_Articles_Details = () => {
                   ))}
                 </ul>
               </s.FeedbackContainer>
+              <button onClick={handlePublicButtonClick}>Public</button>
             </s.ArticleContainer>
           )}
         </s.Main>
