@@ -32,13 +32,13 @@ const AddUserModal = ({ onClose, onAddUser }) => {
         selectedFac = selectedFaculty; 
         break;
       case "Admin":
-        selectedFac = "Admin"; 
+        selectedFac = ""; 
         break;
       case "Student":
-        selectedFac = "Student"; 
+        selectedFac = ""; 
         break;
       case "Manager":
-        selectedFac = "Manager"; 
+        selectedFac = ""; 
         break;
         case "Guest":
           selectedFac = selectedFaculty; 
