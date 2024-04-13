@@ -9,12 +9,12 @@ const verifyToken = (req, res, next) => {
   const authHeader = req.headers['authorization'];
   const token = authHeader && authHeader.split(' ')[1];
   
-  if (!token) return res.sendStatus(401); // Không có token
+  if (!token) return res.sendStatus(401); 
   
   jwt.verify(token, SECRET_KEY, (err, user) => {
-    if (err) return res.sendStatus(403); // Token không hợp lệ
-    req.user = user; // Lưu thông tin giải mã vào req.user
-    next(); // Tiếp tục middleware tiếp theo
+    if (err) return res.sendStatus(403); 
+    req.user = user; 
+    next(); 
   });
 };
 
@@ -22,7 +22,6 @@ router.post('/', verifyToken, async (req, res) => {
   const { title, description, imageURL, wordFileURL, facultyName } = req.body;
   
   try {
-    // Lưu article với userId từ token đã được xác thực
     const newArticle = new Article({
       title,
       description,
