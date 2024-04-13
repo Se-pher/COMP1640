@@ -60,7 +60,7 @@ const Student_Article_Details = () => {
           {article && (
             <s.ArticleContainer>
               <s.EditButton>
-                <Link to={`/Student/Edit/${id}`} className="edit-button">
+                <Link to={`/student/edit/article/${id}`} className="edit-button">
                   Edit
                 </Link>
               </s.EditButton>

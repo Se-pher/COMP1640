@@ -201,3 +201,11 @@ export const UploadedFilesContainer = styled.div`
   gap: 10px;
   margin-bottom: 20px;
 `;
+
+export const EditArticleButton = styled.button`
+  // Your edit article button styles here
+`;
+
+export const SelectFaculty = styled.select`
+  // Your select faculty styles here
+`;
