@@ -19,6 +19,7 @@ const EditArticle = () => {
   const [imageFile, setImageFile] = useState(null);
   const [wordFile, setWordFile] = useState(null);
   const [uploadedFiles, setUploadedFiles] = useState([]);
+  const [facultyList, setFacultyList] = useState([]);
 
   useEffect(() => {
     fetchArticle(id);
