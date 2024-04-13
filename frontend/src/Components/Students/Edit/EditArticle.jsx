@@ -12,13 +12,13 @@ import { useParams } from "react-router-dom";
 
 const EditArticle = () => {
   const { id } = useParams();
+  const [article, setArticle] = useState({});
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [facultyName, setFacultyName] = useState("");
   const [imageFile, setImageFile] = useState(null);
   const [wordFile, setWordFile] = useState(null);
   const [uploadedFiles, setUploadedFiles] = useState([]);
-  const [facultyList, setFacultyList] = useState([]);
 
   useEffect(() => {
     fetchArticle(id);
@@ -120,7 +120,6 @@ const EditArticle = () => {
 
   const handleEditSubmission = async () => {
     try {
-      // Validate required fields
       if (!title || !description || !facultyName) {
         toast.error("Please enter title, description, and select faculty", {
           position: "top-right",

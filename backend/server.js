@@ -239,13 +239,10 @@ app.post('/api/articles', verifyToken, async (req, res) => {
     const userId = req.user.userId;
     const newArticle = new Article({ title, description, imageURL, wordFileURL, facultyName, userId });
     await newArticle.save();
-
     const coordinators = await User.find({ role: 'Coordinator', facultyName});
-
     for (const coordinator of coordinators) {
       await sendEmail(coordinator.email, 'New article uploaded', `A new article has been uploaded for the ${facultyName} faculty.`);
     }
-
     res.status(201).json(newArticle);
   } catch (err) {
     res.status(400).json({ message: err.message });
@@ -274,6 +271,30 @@ app.put('/api/articles/:id/public', async (req, res) => {
     res.json(updatedArticle);
   } catch (error) {
     res.status(500).json({ message: error.message });
+  }
+});
+
+app.put('/api/articles/:id', verifyToken, async (req, res) => {
+  const { title, description, imageURL, wordFileURL, facultyName } = req.body;
+  const { id } = req.params;
+  try {
+    const userId = req.user.userId;
+    const article = await Article.findById(id);
+    if (!article) {
+      return res.status(404).json({ message: "Article not found" });
+    }
+    if (article.userId !== userId) {
+      return res.status(403).json({ message: "You are not authorized to edit this article" });
+    }
+    article.title = title;
+    article.description = description;
+    article.imageURL = imageURL;
+    article.wordFileURL = wordFileURL;
+    article.facultyName = facultyName;
+    await article.save();
+    res.json(article);
+  } catch (err) {
+    res.status(400).json({ message: err.message });
   }
 });
 
