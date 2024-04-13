@@ -12,6 +12,7 @@ import { useParams } from "react-router-dom";
 
 const EditArticle = () => {
   const { id } = useParams();
+  const [article, setArticle] = useState({});
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [facultyName, setFacultyName] = useState("");
@@ -120,7 +121,6 @@ const EditArticle = () => {
 
   const handleEditSubmission = async () => {
     try {
-      // Validate required fields
       if (!title || !description || !facultyName) {
         toast.error("Please enter title, description, and select faculty", {
           position: "top-right",
