@@ -22,6 +22,7 @@ const EditArticle = () => {
   const [facultyList, setFacultyList] = useState([]);
 
   useEffect(() => {
+    console.log(id);
     fetchArticle(id);
     fetchFaculties();
   }, [id]);
@@ -29,10 +30,13 @@ const EditArticle = () => {
   const fetchArticle = async (articleId) => {
     try {
       const response = await axios.get(`/api/articles/${articleId}`);
-      const articleData = response.data;
+      const articleData = response?.data?.article;
+      setArticle(articleData);
       setTitle(articleData.title);
       setDescription(articleData.description);
       setFacultyName(articleData.facultyName);
+      console.log(article);
+      console.log(title)
     } catch (error) {
       console.error("Error fetching article:", error);
     }
