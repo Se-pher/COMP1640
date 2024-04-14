@@ -3,7 +3,7 @@ import * as s from "../../../Style/Student/Students";
 import Sidebar from "../sidebar";
 import Navbar from "../../Navbar";
 import axios from "axios";
-// import Term from './Term';
+import Term from './Term';
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useDropzone } from "react-dropzone";
@@ -17,9 +17,11 @@ const Student_Upload = () => {
   const [userName] = useState("");
   const [facultyName, setFacultyName] = useState("");
   const [imageFile, setImageFile] = useState(null);
-  const [wordFile, setWordFile] = useState(null);
+  const [wordFile, setWordFile] = useState(null); 
   const [uploadedFiles, setUploadedFiles] = useState([]);
   const [facultyList, setFacultyList] = useState([]);
+  const [termsAccepted, setTermsAccepted] = useState(false);
+  const [openTermPopup, setOpenTermPopUp] = useState(false)
 
   useEffect(() => {
     fetchFaculties();
@@ -130,16 +132,28 @@ const Student_Upload = () => {
     }
   };
 
+  const handleAcceptTerm = () => {
+    setTermsAccepted(true);
+  };
+
   const handleLogout = () => {
     localStorage.removeItem("jwtToken");
     window.location.href = "/";
   };
 
-  const handleUpload = async () => {
-    try {
+  const openTermPopups = () => {
+    setOpenTermPopUp(true)
+  }
+  
+  const handleRejectTerm = () => {
+    setOpenTermPopUp(false);
+  }
 
-      if (!title || !description || !facultyName) {
-        toast.error("Please enter title, description, and select faculty", {
+  const handleUpload = async (accept) => {
+    if (accept) {
+      console.log(accept)
+      try {
+        toast.warning("Article is uploading!", {
           position: "top-right",
           autoClose: 5000,
           hideProgressBar: false,
@@ -148,36 +162,26 @@ const Student_Upload = () => {
           draggable: true,
           progress: undefined,
         });
-        return;
-      }
-      
-      const imageFormData = new FormData();
-      imageFormData.append("image", imageFile);
-  
-      const wordFileFormData = new FormData();
-      wordFileFormData.append("wordFile", wordFile);
-  
-      const imageResponse = await axios.post("/api/images", imageFormData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-        onUploadProgress: (progressEvent) => {
-          const progress = Math.round(
-            (progressEvent.loaded / progressEvent.total) * 100
-          );
-          setUploadedFiles((prevFiles) =>
-            prevFiles.map((file) =>
-              file.type === "image" ? { ...file, progress } : file
-            )
-          );
-        },
-      });
-      const imageURL = imageResponse.data.secure_url;
-  
-      const wordFileResponse = await axios.post(
-        "/api/wordFiles",
-        wordFileFormData,
-        {
+        if (!title || !description || !facultyName) {
+          toast.error("Please enter title, description, and select faculty", {
+            position: "top-right",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+          });
+          return;
+        }
+
+        const imageFormData = new FormData();
+        imageFormData.append("image", imageFile);
+
+        const wordFileFormData = new FormData();
+        wordFileFormData.append("wordFile", wordFile);
+
+        const imageResponse = await axios.post("/api/images", imageFormData, {
           headers: {
             "Content-Type": "multipart/form-data",
           },
@@ -187,53 +191,87 @@ const Student_Upload = () => {
             );
             setUploadedFiles((prevFiles) =>
               prevFiles.map((file) =>
-                file.type === "word" ? { ...file, progress } : file
+                file.type === "image" ? { ...file, progress } : file
               )
             );
           },
-        }
-      );
-      const fileURL = wordFileResponse.data.fileURL;
-  
-      if (!title || !description) {
-        toast.error("Please enter title and description", {
-          position: "top-right",
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
         });
-        return;
-      }
-  
-      const token = localStorage.getItem("jwtToken");
-      if (token) {
-        const userId = localStorage.getItem("userId");
+        const imageURL = imageResponse.data.secure_url;
 
-        const articleData = {
-          title,
-          description,
-          imageURL,
-          wordFileURL: fileURL,
-          facultyName,
-          userId, 
-        };
-  
-        const articleResponse = await axios.post("/api/articles", articleData, {
-          headers: {
-            Authorization: `Bearer ${token}`, 
-          },
-        });
-  
-        console.log("Article uploaded successfully:", articleResponse.data);
-        setTitle("");
-        setDescription("");
-        setImageFile(null);
-        setWordFile(null);
-  
-        toast.success("Article uploaded successfully!", {
+        const wordFileResponse = await axios.post(
+          "/api/wordFiles",
+          wordFileFormData,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+            onUploadProgress: (progressEvent) => {
+              const progress = Math.round(
+                (progressEvent.loaded / progressEvent.total) * 100
+              );
+              setUploadedFiles((prevFiles) =>
+                prevFiles.map((file) =>
+                  file.type === "word" ? { ...file, progress } : file
+                )
+              );
+            },
+          }
+        );
+        const fileURL = wordFileResponse.data.fileURL;
+
+        if (!title || !description) {
+          toast.error("Please enter title and description", {
+            position: "top-right",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+          });
+          return;
+        }
+
+        const token = localStorage.getItem("jwtToken");
+        if (token) {
+          // Lấy userId từ localStorage
+          const userId = localStorage.getItem("userId");
+
+          const articleData = {
+            title,
+            description,
+            imageURL,
+            wordFileURL: fileURL,
+            facultyName,
+            userId, // Thêm userId vào dữ liệu bài viết
+          };
+
+          const articleResponse = await axios.post("/api/articles", articleData, {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          });
+
+          console.log("Article uploaded successfully:", articleResponse.data);
+          setTitle("");
+          setDescription("");
+          setImageFile(null);
+          setWordFile(null);
+
+          toast.success("Article uploaded successfully!", {
+            position: "top-right",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+          });
+        }
+      } catch (error) {
+        console.error("Error uploading article:", error);
+
+        toast.error("Error uploading article", {
           position: "top-right",
           autoClose: 5000,
           hideProgressBar: false,
@@ -242,23 +280,11 @@ const Student_Upload = () => {
           draggable: true,
           progress: undefined,
         });
+      } finally {
+        setOpenTermPopUp(false)
       }
-    } catch (error) {
-      console.error("Error uploading article:", error);
-  
-      toast.error("Error uploading article", {
-        position: "top-right",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-      });
     }
   };
-
-  
 
   return (
     <s.Container>
@@ -271,6 +297,7 @@ const Student_Upload = () => {
           handleLogout={handleLogout}
         />
         <s.Main>
+          <Term openPopup={openTermPopup} onConfirm={handleUpload} onReject={handleRejectTerm}></Term>
           <s.UploadContainer>
             <s.SquareContainer>
               <s.TitleHeader>Upload Articles</s.TitleHeader>
@@ -340,7 +367,7 @@ const Student_Upload = () => {
                 ))}
               </s.UploadedFilesContainer>
               <s.ButtonContainer>
-                <s.UploadArticlesButton onClick={handleUpload}>
+                <s.UploadArticlesButton onClick={openTermPopups}>
                   Upload Articles
                 </s.UploadArticlesButton>
               </s.ButtonContainer>

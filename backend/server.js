@@ -8,8 +8,6 @@ const multer = require('multer');
 const upload = multer({ dest: 'uploads/' });
 const Article = require('./model/article');
 const bcrypt = require('bcrypt');
-const User = require('./model/user');
-const Feedback = require('./model/feedback');
 app.use(cors());
 app.use(express.json());
 const jwt = require('jsonwebtoken');
@@ -21,6 +19,29 @@ mongoose.connect('mongodb+srv://COMP1640:COMP1640group5@cluster0.kgdq0tl.mongodb
   .then(() => console.log('MongoDB connected'))
   .catch((err) => console.log(err));
 
+
+//USER
+const userSchema = new mongoose.Schema({
+  username: {
+    type: String,
+    required: true,
+  },
+  email: {
+    type: String,
+    required: true,
+    unique: true,
+  },
+  password: {
+    type: String,
+    required: true,
+  },
+  role: {
+    type: String,
+    required: true,
+  },
+  facultyName: String,
+});
+const User = mongoose.model('User', userSchema);
 app.post('/api/users', async (req, res) => {
   const { username, email, password, role, facultyName } = req.body;
 
@@ -43,7 +64,7 @@ app.get('/api/users', async (req, res) => {
     const users = await User.find();
     res.json(users);
   } catch (err) {
-    res.status(500).json({ message: err.message });
+    res.status(500).json({ message: err.message }); 
   }
 });
 
@@ -97,6 +118,24 @@ app.put('/api/users/:id', async (req, res) => {
 
 //Login 
 
+const verifyRole = (roles) => (req, res, next) => {
+  const token = req.headers.authorization?.split(' ')[1];
+  if (!token) {
+    return res.status(403).json({ message: 'No token provided!' });
+  }
+  try {
+    const decoded = jwt.verify(token, SECRET_KEY);
+    req.user = decoded;
+    if (!roles.includes(decoded.role)) {
+      return res.status(401).json({ message: 'Unauthorized!' });
+    }
+    next();
+  } catch (error) {
+    res.status(401).json({ message: 'Unauthorized!' });
+  }
+};
+
+
 app.post('/api/login', async (req, res) => {
   const { email, password } = req.body;
 
@@ -106,33 +145,25 @@ app.post('/api/login', async (req, res) => {
     if (!user) {
       return res.status(401).json({ message: 'Invalid email or password' });
     }
+
+    // So sánh mật khẩu đầu vào với mật khẩu đã mã hóa trong DB
     const isMatch = await bcrypt.compare(password, user.password);
 
     if (!isMatch) {
       return res.status(401).json({ message: 'Invalid email or password' });
     }
+
+    // Tạo token
     const token = jwt.sign({ userId: user._id, role: user.role }, SECRET_KEY, {
       expiresIn: '1d',
     });
 
-    res.json({ user: { email: user.email, role: user.role }, token }); 
+    res.json({ user: { email: user.email, role: user.role }, token }); // Trả lại thông tin người dùng nhưng không bao gồm mật khẩu
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
 });
 
-const verifyToken = (req, res, next) => {
-  const authHeader = req.headers['authorization'];
-  const token = authHeader && authHeader.split(' ')[1];
-
-  if (!token) return res.sendStatus(401);
-
-  jwt.verify(token, SECRET_KEY, (err, user) => {
-    if (err) return res.sendStatus(403);
-    req.user = user; 
-    next(); 
-  });
-};
 
 function generateRandomPassword(length = 8) {
   const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
@@ -141,7 +172,7 @@ function generateRandomPassword(length = 8) {
   for (let i = 0; i < length; i++) {
     const randomIndex = Math.floor(Math.random() * characters.length);
     password += characters.charAt(randomIndex);
-  }``
+  }
 
   return password;
 }
@@ -233,16 +264,21 @@ app.delete('/api/faculties/:id', async (req, res) => {
 
 
 //ARTICLE
-app.post('/api/articles', verifyToken, async (req, res) => {
+app.post('/api/articles', async (req, res) => {
   const { title, description, imageURL, wordFileURL, facultyName } = req.body;
+
   try {
-    const userId = req.user.userId;
-    const newArticle = new Article({ title, description, imageURL, wordFileURL, facultyName, userId });
+    // Tạo bài viết mới
+    const newArticle = new Article({ title, description, imageURL, wordFileURL, facultyName });
     await newArticle.save();
-    const coordinators = await User.find({ role: 'Coordinator', facultyName});
-    for (const coordinator of coordinators) {
-      await sendEmail(coordinator.email, 'New article uploaded', `A new article has been uploaded for the ${facultyName} faculty.`);
+
+    // Kiểm tra xem faculty của bài viết có khớp với faculty của user có role là coordinator hay không
+    const coordinatorUser = await User.findOne({ role: 'coordinator', facultyName });
+    if (coordinatorUser) {
+      // Gửi email thông báo tới coordinator
+      await sendEmail(coordinatorUser.email, 'New article uploaded', `A new article has been uploaded for the ${facultyName} faculty.`);
     }
+
     res.status(201).json(newArticle);
   } catch (err) {
     res.status(400).json({ message: err.message });
@@ -257,47 +293,6 @@ app.get('/api/articles', async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 });
-
-app.put('/api/articles/:id/public', async (req, res) => {
-  const { id } = req.params;
-  try {
-    const article = await Article.findById(id);
-    if (!article) {
-      return res.status(404).json({ message: 'Article not found' });
-    }
-    const newStatus = article.status === 'public' ? 'lock' : 'public';
-    
-    const updatedArticle = await Article.findByIdAndUpdate(id, { status: newStatus }, { new: true });
-    res.json(updatedArticle);
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-});
-
-app.put('/api/articles/:id', verifyToken, async (req, res) => {
-  const { title, description, imageURL, wordFileURL, facultyName } = req.body;
-  const { id } = req.params;
-  try {
-    const userId = req.user.userId;
-    const article = await Article.findById(id);
-    if (!article) {
-      return res.status(404).json({ message: "Article not found" });
-    }
-    if (article.userId !== userId) {
-      return res.status(403).json({ message: "You are not authorized to edit this article" });
-    }
-    article.title = title;
-    article.description = description;
-    article.imageURL = imageURL;
-    article.wordFileURL = wordFileURL;
-    article.facultyName = facultyName;
-    await article.save();
-    res.json(article);
-  } catch (err) {
-    res.status(400).json({ message: err.message });
-  }
-});
-
 
 //TOKEN
 
@@ -322,6 +317,18 @@ app.get('/api/decode-token', async (req, res) => {
   }
 });
 
+const verifyToken = (req, res, next) => {
+  const authHeader = req.headers['authorization'];
+  const token = authHeader && authHeader.split(' ')[1];
+
+  if (!token) return res.sendStatus(401); // Không có token
+
+  jwt.verify(token, SECRET_KEY, (err, user) => {
+    if (err) return res.sendStatus(403); // Token không hợp lệ
+    req.user = user; // Lưu thông tin giải mã vào req.user
+    next(); // Tiếp tục middleware tiếp theo
+  });
+};
 app.get('/api/user/articles', verifyToken, async (req, res) => {
   try {
     const userId = req.user.userId;
@@ -374,7 +381,7 @@ app.put('/api/user/decode-update', async (req, res) => {
 
 //Profile
 app.get('/api/user/profile', async (req, res) => {
-  const token = req.headers.authorization.split(' ')[1]; 
+  const token = req.headers.authorization.split(' ')[1]; // Lấy token từ tiêu đề 'Authorization'
 
   try {
 
@@ -393,7 +400,7 @@ app.get('/api/user/profile', async (req, res) => {
 });
 
 app.put('/api/user/profile', async (req, res) => {
-  const token = req.headers.authorization.split(' ')[1]; 
+  const token = req.headers.authorization.split(' ')[1]; // Lấy token từ tiêu đề 'Authorization'
   const { name, email, password } = req.body;
 
   try {
@@ -404,9 +411,11 @@ app.put('/api/user/profile', async (req, res) => {
       return res.status(404).json({ message: 'User not found' });
     }
 
-    if (name) user.username = name;
+    // Cập nhật thông tin người dùng
+    if (name) user.name = name;
     if (email) user.email = email;
     if (password) {
+      // Mã hóa mật khẩu mới trước khi lưu vào cơ sở dữ liệu
       const hashedPassword = await bcrypt.hash(password, 10);
       user.password = hashedPassword;
     }
@@ -434,32 +443,22 @@ app.get('/api/articles/:id', async (req, res) => {
     if (!article) {
       return res.status(404).json({ message: 'Article not found' });
     }
-    const user = await User.findById(article.userId);
-    if (!user) {
-      return res.status(404).json({ message: 'User not found' });
-    }
-    res.json({ article, username: user.username, status: article.status });
+    res.json(article);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 });
 
-app.get('/api/articlesFaculty', verifyToken, async (req, res) => {
-  try {
-    const userId = req.user.userId; 
-    const user = await User.findById(userId); 
-    if (!user) return res.status(404).json({ message: "User not found" });
+app.delete('/api/articles/:id', async (req, res) => {
+  const { id } = req.params;
 
-    const facultyName = user.facultyName; 
-    const articles = await Article.find({ facultyName: facultyName, status: 'public' }); 
-    res.json(articles);
-  } catch (error) {
-    console.error('Error fetching articles:', error);
-    res.status(500).json({ message: 'Internal server error' });
+  try {
+    await Article.findByIdAndDelete(id);
+    res.json({ message: 'Article deleted successfully' });
+  } catch (err) {
+    res.status(400).json({ message: err.message });
   }
 });
-
-
 
 const admin = require('firebase-admin');
 
@@ -536,7 +535,6 @@ app.post('/api/wordFiles', upload.single('wordFile'), async (req, res) => {
   }
 });
 
-
 //Feedback
 app.get('/api/feedbacks/:articleId', async (req, res) => {
   try {
@@ -575,3 +573,4 @@ app.delete('/api/articles/:id', verifyToken, async (req, res) => {
     res.status(400).json({ message: err.message });
   }
 });
+
