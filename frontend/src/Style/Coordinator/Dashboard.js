@@ -48,7 +48,7 @@ export const ChartContainerWrapper = styled.div`
 
 export const ChartContainer = styled.div`
   width: 70%;
-  height: 320px;
+  height: 300px;
   display: flex;
   justify-content: center;
 `;
@@ -76,26 +76,17 @@ export const ViewModeButtons = styled.div`
 `;
 
 export const LowerContainersWrapper = styled.div`
-  display: flex;
-  flex-direction: row;
-  gap: 15px;
   width: 100%;
 `;
 
 export const DataContainerWrapper = styled.div`
-  width: 47%;
+  width: 100%;
   height: 280px;
   background-color: white;
   border-radius: 10px;
   padding: 20px;
-`;
-
-export const FacultyCountsContainerWrapper = styled.div`
-  width: 48%;
-  height: 280px;
-  background-color: white;
-  border-radius: 10px;
-  padding: 20px;
+  max-width: -webkit-fill-available;
+  overflow:auto;
 `;
 
 export const DataContainer = styled.div`
@@ -103,7 +94,8 @@ export const DataContainer = styled.div`
 `;
 
 export const NewPostsContainer = styled.div`
-  width: 45%;
+  width: 100%;
+  margin-top: 20px;
 `;
 
 export const SectionTitle = styled.h3`
@@ -136,30 +128,17 @@ export const PostAuthor = styled.p`
   color: #666;
 `;
 
-export const FacultyCountsContainer = styled.div`
-  width: 45%;
-`;
+export const ArticleGrid = styled.div`
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-gap: 2rem;
+  margin-bottom: 2rem;
 
-export const FacultyList = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-`;
+  @media (max-width: 1024px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
 
-export const FacultyItem = styled.div`
-  background-color: #f0f0f0;
-  padding: 10px;
-  border-radius: 5px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-`;
-
-export const FacultyName = styled.span`
-  font-weight: bold;
-  color: #29325b;
-`;
-
-export const FacultyCount = styled.span`
-  color: #666;
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+  }
 `;

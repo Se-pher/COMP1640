@@ -35,10 +35,12 @@ const Coordinator_Articles = () => {
   const fetchArticles = async () => {
     try {
       const response = await axios.get("/api/articles", {
-        params: { facultyName }, 
+        params: { facultyName, sort: "createdAt" },
       });
-      const filteredArticles = response.data.filter(article => article.facultyName === facultyName);
-      setArticles(filteredArticles);
+      const filteredArticles = response.data.filter(
+        (article) => article.facultyName === facultyName
+      );
+      setArticles(filteredArticles.reverse());
     } catch (error) {
       console.error("Error fetching articles:", error.response.data.message);
     }

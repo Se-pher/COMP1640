@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import * as s from "../../../Style/Coordinator/Dashboard";
 import Navbar from "../../Navbar";
 import { Bar } from "react-chartjs-2";
@@ -12,6 +12,8 @@ import {
   Tooltip,
   Legend,
 } from "chart.js";
+import axios from "axios";
+import CoordinatorArticleCard from "../Articles/CoordinatorArticleCard";
 
 ChartJS.register(
   CategoryScale,
@@ -24,9 +26,9 @@ ChartJS.register(
 
 const Coordinator_Dashboard = () => {
   const [selectedItem, setSelectedItem] = useState("Dash Broad");
-  const handleItemClick = (item) => {
-    setSelectedItem(item);
-  };
+  const [articles, setArticles] = useState([]);
+  const [facultyName, setFacultyName] = useState("");
+  const [userName, setUserName] = useState("");
 
   const [chartData] = useState([
     { day: "Monday", value: 10 },
@@ -38,56 +40,105 @@ const Coordinator_Dashboard = () => {
     { day: "Sunday", value: 22 },
   ]);
 
-  const [newPosts] = useState([
-    { id: 1, title: "Post 1", author: "John Doe" },
-    { id: 2, title: "Post 2", author: "Jane Smith" },
-    { id: 3, title: "Post 3", author: "Bob Johnson" },
-  ]);
-  
-  const [facultyCounts] = useState([
-    { faculty: "Faculty of Arts", count: 25 },
-    { faculty: "Faculty of Science", count: 32 },
-    { faculty: "Faculty of Engineering", count: 18 },
-  ]);
-
-  const generateMonthlyData = () => {
-    const monthData = [];
-    for (let i = 1; i <= 30; i++) {
-      monthData.push({ day: `Day ${i}`, value: Math.floor(Math.random() * 50) });
-    }
-    return monthData;
-  };
-
-  const generateYearlyData = () => {
-    const yearlyData = [];
-    for (let i = 1; i <= 12; i++) {
-      yearlyData.push({ month: `Month ${i}`, value: Math.floor(Math.random() * 500) });
-    }
-    return yearlyData;
-  };
-
   const [viewMode, setViewMode] = useState("week");
 
   const handleChangeViewMode = (mode) => {
     setViewMode(mode);
   };
 
+  useEffect(() => {
+    const fetchProfile = async () => {
+      try {
+        const token = localStorage.getItem("jwtToken");
+        const response = await axios.get("/api/user/profile", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        setFacultyName(response.data.facultyName);
+        fetchArticles(response.data.facultyName);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    fetchProfile();
+  });
+
+  const fetchArticles = async () => {
+    try {
+      const response = await axios.get("/api/articles", {
+        params: { facultyName, limit: 3, sort: "createdAt" },
+      });
+      const filteredArticles = response.data.filter(
+        (article) => article.facultyName === facultyName
+      );
+      setArticles(filteredArticles.reverse());
+    } catch (error) {
+      console.error("Error fetching articles:", error.response.data.message);
+    }
+  };
+
+  const handleItemClick = (item) => {
+    setSelectedItem(item);
+  };
+
+  useEffect(() => {
+    const token = localStorage.getItem("jwtToken");
+    if (token) {
+      fetchUsername(token);
+    }
+  }, []);
+
+  const fetchUsername = async (token) => {
+    try {
+      const response = await axios.get("/api/decode-token", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      setUserName(response.data.username);
+    } catch (error) {
+      console.error("Error fetching username:", error.response.data.message);
+    }
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem("jwtToken");
+    window.location.href = "/";
+  };
+
   return (
     <s.Container>
       <Navbar />
       <s.MainContent>
-        <Sidebar selectedItem={selectedItem} handleItemClick={handleItemClick} />
+        <Sidebar
+          selectedItem={selectedItem}
+          handleItemClick={handleItemClick}
+          userName={userName}
+          handleLogout={handleLogout}
+        />
         <s.Main>
           <s.DashboardContainer>
-          <s.ChartContainerWrapper>
+            <s.ChartContainerWrapper>
               <s.ChartContainer>
                 <Bar
                   data={{
-                    labels: viewMode === "week" ? chartData.map((data) => data.day) : viewMode === "month" ? generateMonthlyData().map((data) => data.day) : generateYearlyData().map((data) => data.month),
+                    labels:
+                      viewMode === "week"
+                        ? chartData.map((data) => data.day)
+                        : viewMode === "month"
+                        ? generateMonthlyData().map((data) => data.day)
+                        : generateYearlyData().map((data) => data.month),
                     datasets: [
                       {
                         label: "Number of Posts",
-                        data: viewMode === "week" ? chartData.map((data) => data.value) : viewMode === "month" ? generateMonthlyData().map((data) => data.value) : generateYearlyData().map((data) => data.value),
+                        data:
+                          viewMode === "week"
+                            ? chartData.map((data) => data.value)
+                            : viewMode === "month"
+                            ? generateMonthlyData().map((data) => data.value)
+                            : generateYearlyData().map((data) => data.value),
                         backgroundColor: "rgba(75,192,192,0.6)",
                       },
                     ],
@@ -106,46 +157,55 @@ const Coordinator_Dashboard = () => {
                 />
               </s.ChartContainer>
               <s.ViewModeButtons>
-                    <button onClick={() => handleChangeViewMode("week")}>Week</button>
-                    <button onClick={() => handleChangeViewMode("month")}>Month</button>
-                    <button onClick={() => handleChangeViewMode("year")}>Year</button>
-                </s.ViewModeButtons>
+                <button onClick={() => handleChangeViewMode("week")}>
+                  Week
+                </button>
+                <button onClick={() => handleChangeViewMode("month")}>
+                  Month
+                </button>
+                <button onClick={() => handleChangeViewMode("year")}>
+                  Year
+                </button>
+              </s.ViewModeButtons>
             </s.ChartContainerWrapper>
             <s.LowerContainersWrapper>
               <s.DataContainerWrapper>
                 <s.DataContainer>
                   <s.NewPostsContainer>
-                    <s.SectionTitle>New Posts</s.SectionTitle>
-                    <s.PostList>
-                      {newPosts.map((post) => (
-                        <s.PostItem key={post.id}>
-                          <s.PostTitle>{post.title}</s.PostTitle>
-                          <s.PostAuthor>by {post.author}</s.PostAuthor>
-                        </s.PostItem>
+                    <s.SectionTitle>New Articles</s.SectionTitle>
+                    <s.ArticleGrid>
+                      {articles.slice(0, 3).map((article) => (
+                        <CoordinatorArticleCard
+                          key={article._id}
+                          article={article}
+                        />
                       ))}
-                    </s.PostList>
+                    </s.ArticleGrid>
                   </s.NewPostsContainer>
                 </s.DataContainer>
               </s.DataContainerWrapper>
-              <s.FacultyCountsContainerWrapper>
-                <s.FacultyCountsContainer>
-                  <s.SectionTitle>Faculty Counts</s.SectionTitle>
-                  <s.FacultyList>
-                    {facultyCounts.map((faculty, index) => (
-                      <s.FacultyItem key={index}>
-                        <s.FacultyName>{faculty.faculty}</s.FacultyName>
-                        <s.FacultyCount>{faculty.count}</s.FacultyCount>
-                      </s.FacultyItem>
-                    ))}
-                  </s.FacultyList>
-                </s.FacultyCountsContainer>
-              </s.FacultyCountsContainerWrapper>
             </s.LowerContainersWrapper>
           </s.DashboardContainer>
         </s.Main>
       </s.MainContent>
     </s.Container>
   );
+
+  function generateMonthlyData() {
+    const monthData = [];
+    for (let i = 1; i <= 30; i++) {
+      monthData.push({ day: `Day ${i}`, value: Math.floor(Math.random() * 50) });
+    }
+    return monthData;
+  }
+
+  function generateYearlyData() {
+    const yearlyData = [];
+    for (let i = 1; i <= 12; i++) {
+      yearlyData.push({ month: `Month ${i}`, value: Math.floor(Math.random() * 500) });
+    }
+    return yearlyData;
+  }
 };
 
 export default Coordinator_Dashboard;
