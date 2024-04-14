@@ -108,7 +108,7 @@ const Coordinator_Articles_Details = () => {
                 <textarea
                   value={newFeedback}
                   onChange={(e) => setNewFeedback(e.target.value)}
-                  placeholder="Nhập phản hồi của bạn..."
+                  placeholder="Enter your feedback..."
                   disabled={canCreateFeedback(article.createdAt)}
                 />
                 <button
@@ -116,9 +116,9 @@ const Coordinator_Articles_Details = () => {
                   disabled={canCreateFeedback(article.createdAt)}
                 >
                   {canCreateFeedback(article.createdAt) ? (
-                    <span>Không thể gửi</span>
+                    <span>Can not send</span>
                   ) : (
-                    <span>Gửi Phản Hồi</span>
+                    <span>Send Feedback</span>
                   )}
                 </button>
               </s.FeedbackForm>
