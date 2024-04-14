@@ -108,3 +108,12 @@ export const FeedbackContainer = styled.div`
     margin-bottom: 10px;
   }
 `;
+
+export const DeleteButton = styled.button`
+  background-color: red;
+  color: white;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+`;
