@@ -210,7 +210,6 @@ const Student_Upload = () => {
   
       const token = localStorage.getItem("jwtToken");
       if (token) {
-        // Lấy userId từ localStorage
         const userId = localStorage.getItem("userId");
 
         const articleData = {
@@ -219,7 +218,7 @@ const Student_Upload = () => {
           imageURL,
           wordFileURL: fileURL,
           facultyName,
-          userId, // Thêm userId vào dữ liệu bài viết
+          userId, 
         };
   
         const articleResponse = await axios.post("/api/articles", articleData, {

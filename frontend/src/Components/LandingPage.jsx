@@ -18,10 +18,10 @@ const LandingPage = () => {
   useEffect(() => {
     const fetchArticles = async () => {
       try {
-        const token = localStorage.getItem("jwtToken"); // Lấy token từ localStorage
+        const token = localStorage.getItem("jwtToken");
         const response = await axios.get('/api/articlesFaculty', {
           headers: {
-            Authorization: `Bearer ${token}`, // Gửi token trong tiêu đề 'Authorization'
+            Authorization: `Bearer ${token}`, 
           },
         });
         setArticles(response.data);
