@@ -25,6 +25,8 @@ const Student_Article_Details = () => {
         setArticle(response.data.article);
         setUserName(response.data.username);
         setStatus(response.data.status);
+        console.log(response);
+      
       } catch (error) {
         console.error("Error fetching article:", error);
       }
