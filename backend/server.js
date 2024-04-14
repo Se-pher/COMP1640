@@ -557,3 +557,21 @@ app.post('/api/feedbacks', async (req, res) => {
     res.status(500).json({ error: 'Internal server error' });
   }
 });
+
+app.delete('/api/articles/:id', verifyToken, async (req, res) => {
+  const { id } = req.params;
+  try {
+    const userId = req.user.userId;
+    const article = await Article.findById(id);
+    if (!article) {
+      return res.status(404).json({ message: "Article not found" });
+    }
+    if (article.userId !== userId) {
+      return res.status(403).json({ message: "You are not authorized to delete this article" });
+    }
+    await Article.findByIdAndDelete(id);
+    res.json({ message: "Article deleted successfully" });
+  } catch (err) {
+    res.status(400).json({ message: err.message });
+  }
+});
