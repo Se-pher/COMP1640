@@ -25,6 +25,8 @@ const Student_Article_Details = () => {
         setArticle(response.data.article);
         setUserName(response.data.username);
         setStatus(response.data.status);
+        console.log(response);
+      
       } catch (error) {
         console.error("Error fetching article:", error);
       }
@@ -48,6 +50,15 @@ const Student_Article_Details = () => {
     window.location.href = "/";
   };
 
+  const handleDeleteArticle = async (id) => {
+    try {
+      await axios.delete(`/api/articles/${id}`);
+      window.location.href = "/student/articles"; 
+    } catch (error) {
+      console.error("Error deleting article:", error.response.data.message);
+    }
+  };
+
   return (
     <s.Container>
       <Navbar />
@@ -66,6 +77,7 @@ const Student_Article_Details = () => {
                   Edit
                 </Link>
               </s.EditButton>
+              <s.DeleteButton onClick={handleDeleteArticle}>Delete</s.DeleteButton>
               <p>Status: {status}</p>
               {article.wordFileURL ? (
                 <DocViewer

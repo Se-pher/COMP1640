@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useReducer } from 'react';
+import { ToastContainer, toast } from "react-toastify";
 import styled from 'styled-components';
 
 const PopupOverlay = styled.div`
@@ -67,31 +68,47 @@ const RejectButton = styled(Button)`
   color: #fff;
 `;
 
-const Term = ({ onAccept }) => {
+export const Term = ({ openPopup, onConfirm, onReject }) => {
   const [accepted, setAccepted] = useState(false);
   const [read, setRead] = useState(false);
+  const [isOpen, setIsOpen] = useState(false)
 
   useEffect(() => {
     const isAccepted = localStorage.getItem('termsAccepted');
-    if (isAccepted) {
-      setAccepted(true);
-    }
-  }, []);
+    setIsOpen(openPopup)
+    // if (isAccepted) {
+    //   setAccepted(true);
+    // }
+    setAccepted(isAccepted);
+  }, [openPopup]);
 
   const handleAccept = () => {
     if (read) {
-      setAccepted(true);
-      localStorage.setItem('termsAccepted', true);
-      onAccept();
+      // setAccepted(true);
+      // localStorage.setItem('termsAccepted', true);
+      onConfirm(true)
+      // onAccept();
+    } else {
+      toast.error("Please accept the terms and conditions", {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
     }
   };
 
   const handleReject = () => {
     setAccepted(false);
+    setIsOpen(false)
+    onReject(false)
   };
 
   return (
-    <PopupOverlay open={!accepted}>
+    <PopupOverlay open={isOpen}>
       <PopupContent>
         <TitleHeader>Terms and Conditions for Student Contributors</TitleHeader>
         <Content>
@@ -127,6 +144,7 @@ const Term = ({ onAccept }) => {
           <AcceptButton onClick={handleAccept}>Accept</AcceptButton>
         </ButtonContainer>
       </PopupContent>
+      <ToastContainer />
     </PopupOverlay>
   );
 };
