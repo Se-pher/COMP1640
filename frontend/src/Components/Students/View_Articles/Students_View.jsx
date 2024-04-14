@@ -31,13 +31,15 @@ const Students_View = () => {
           headers: {
             Authorization: `Bearer ${token}`,
           },
+          params: {
+            sort: "createdAt",
+          },
         });
-        setArticles(response.data);
+        setArticles(response.data.reverse());
       } catch (error) {
         console.error("Error fetching articles:", error);
       }
     };
-
     fetchUserArticles();
   }, []);
 
