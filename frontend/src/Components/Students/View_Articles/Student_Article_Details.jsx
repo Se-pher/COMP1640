@@ -50,14 +50,23 @@ const Student_Article_Details = () => {
     window.location.href = "/";
   };
 
-  const handleDeleteArticle = async (id) => {
-    try {
-      await axios.delete(`/api/articles/${id}`);
-      window.location.href = "/student/articles"; 
-    } catch (error) {
-      console.error("Error deleting article:", error.response.data.message);
+  const handleDelete = async () => {
+    if (window.confirm("Are you sure you want to delete this article?")) {
+      try {
+        const token = localStorage.getItem("jwtToken");
+        const response = await axios.delete(`/api/articles/${id}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        console.log("Article deleted successfully");
+        window.location.href = "/student/View";
+      } catch (error) {
+        console.error("Error deleting article:", error);
+      }
     }
   };
+  
 
   return (
     <s.Container>
@@ -77,7 +86,7 @@ const Student_Article_Details = () => {
                   Edit
                 </Link>
               </s.EditButton>
-              <s.DeleteButton onClick={handleDeleteArticle}>Delete</s.DeleteButton>
+              <s.DeleteButton onClick={handleDelete}>Delete</s.DeleteButton>
               <p>Status: {status}</p>
               {article.wordFileURL ? (
                 <DocViewer

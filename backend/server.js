@@ -534,3 +534,43 @@ app.post('/api/wordFiles', upload.single('wordFile'), async (req, res) => {
     res.status(500).json({ err: 'Something went wrong' });
   }
 });
+
+//Feedback
+app.get('/api/feedbacks/:articleId', async (req, res) => {
+  try {
+    const feedbacks = await Feedback.find({ articleId: req.params.articleId });
+    res.json({ feedbacks });
+  } catch (error) {
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+app.post('/api/feedbacks', async (req, res) => {
+  try {
+    const { comment, articleId, username } = req.body;
+    const newFeedback = new Feedback({ comment, articleId, username });
+    await newFeedback.save();
+    res.status(201).json({ message: 'Feedback created successfully' });
+  } catch (error) {
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+app.delete('/api/articles/:id', verifyToken, async (req, res) => {
+  const { id } = req.params;
+  try {
+    const userId = req.user.userId;
+    const article = await Article.findById(id);
+    if (!article) {
+      return res.status(404).json({ message: "Article not found" });
+    }
+    if (article.userId !== userId) {
+      return res.status(403).json({ message: "You are not authorized to delete this article" });
+    }
+    await Article.findByIdAndDelete(id);
+    res.json({ message: "Article deleted successfully" });
+  } catch (err) {
+    res.status(400).json({ message: err.message });
+  }
+});
+
