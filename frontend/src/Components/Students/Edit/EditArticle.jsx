@@ -20,6 +20,8 @@ const EditArticle = () => {
   const [wordFile, setWordFile] = useState(null);
   const [uploadedFiles, setUploadedFiles] = useState([]);
   const [facultyList, setFacultyList] = useState([]);
+  const [oldImageURL, setOldImageURL] = useState("");
+  const [oldWordFileURL, setOldWordFileURL] = useState("");
 
   useEffect(() => {
     console.log(id);
@@ -35,6 +37,8 @@ const EditArticle = () => {
       setTitle(articleData.title);
       setDescription(articleData.description);
       setFacultyName(articleData.facultyName);
+      setOldImageURL(articleData.imageURL);
+      setOldWordFileURL(articleData.wordFileURL);
       console.log(article);
       console.log(title)
     } catch (error) {
@@ -123,7 +127,9 @@ const EditArticle = () => {
     }
   };
 
-  const handleEditSubmission = async () => {
+
+  const handleEditSubmission = async (e) => {
+    e.preventDefault();
     try {
       if (!title || !description || !facultyName) {
         toast.error("Please enter title, description, and select faculty", {
@@ -138,27 +144,80 @@ const EditArticle = () => {
         return;
       }
 
-      const formData = new FormData();
-      formData.append("title", title);
-      formData.append("description", description);
-      formData.append("facultyName", facultyName);
+      const imageFormData = new FormData();
+      if (imageFile) {
+        imageFormData.append("image", imageFile);
+      }
+
+      const wordFileFormData = new FormData();
+      if (wordFile) {
+        wordFileFormData.append("wordFile", wordFile);
+      }
+
+      let imageURL = oldImageURL;
+      let fileURL = oldWordFileURL;
 
       if (imageFile) {
-        formData.append("imageURL", imageFile);
+        const imageResponse = await axios.post("/api/images", imageFormData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+          onUploadProgress: (progressEvent) => {
+            const progress = Math.round(
+              (progressEvent.loaded / progressEvent.total) * 100
+            );
+            setUploadedFiles((prevFiles) =>
+              prevFiles.map((file) =>
+                file.type === "image" ? { ...file, progress } : file
+              )
+            );
+          },
+        });
+
+        imageURL = imageResponse.data.secure_url;
       }
 
       if (wordFile) {
-        formData.append("wordFileURL", wordFile);
-      }
+        const wordFileResponse = await axios.post(
+          "/api/wordFiles",
+          wordFileFormData,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+            onUploadProgress: (progressEvent) => {
+              const progress = Math.round(
+                (progressEvent.loaded / progressEvent.total) * 100
+              );
+              setUploadedFiles((prevFiles) =>
+                prevFiles.map((file) =>
+                  file.type === "word" ? { ...file, progress } : file
+                )
+              );
+            },
+          }
+        );
 
-      console.log("FormData:", formData);
+        fileURL = wordFileResponse.data.fileURL;
+      }
 
       const token = localStorage.getItem("jwtToken");
       if (token) {
-        const response = await axios.put(`/api/articles/${id}`, formData, {
+        const userId = localStorage.getItem("userId");
+        const articleData = {
+          title,
+          description,
+          imageURL: imageURL,
+          wordFileURL: fileURL,
+          facultyName,
+          userId,
+        };
+
+        console.log("Article: ", articleData);
+
+        const response = await axios.put(`/api/articles/${id}`, articleData, {
           headers: {
             Authorization: `Bearer ${token}`,
-            "Content-Type": "multipart/form-data",
           },
         });
 
