@@ -130,9 +130,9 @@ const Coordinator_Articles_Details = () => {
                   ))}
                 </ul>
               </s.FeedbackContainer>
-              <button onClick={handlePublicButtonClick}>
+              <s.PublicLock onClick={handlePublicButtonClick}>
                 {article.status === "public" ? "Lock" : "Public"}
-              </button>
+              </s.PublicLock>
             </s.ArticleContainer>
           )}
         </s.Main>
