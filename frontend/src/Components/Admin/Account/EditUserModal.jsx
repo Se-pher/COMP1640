@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from "react";
 import * as s from '../../../Style/PopUp';
 import axios from 'axios';
 
@@ -7,11 +7,47 @@ const EditUserModal = ({ user, onClose, onUpdateUser }) => {
   const [email, setEmail] = useState(user.email);
   const [password, setPassword] = useState(user.password);
   const [role, setRole] = useState(user.role);
+  const [facultyList, setFacultyList] = useState([]);
+  const [selectedFaculty, setSelectedFaculty] = useState("");
+  useEffect(() => {
+    fetchFaculties();
+  }, []);
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const fetchFaculties = async () => {
     try {
-      const updatedUser = { username, email, password, role };
+      const response = await axios.get("/api/faculties");
+      setFacultyList(response.data);
+    } catch (error) {
+      console.error("Error fetching faculties:", error.response.data.message);
+    }
+  };
+  const handleSubmit = async (e) => {
+    
+    
+    e.preventDefault();
+    let selectedFac = ""; 
+    switch (role) {
+      case "Coordinator":
+        selectedFac = selectedFaculty; 
+        break;
+      case "Admin":
+        selectedFac = ""; 
+        break;
+      case "Student":
+        selectedFac = ""; 
+        break;
+      case "Manager":
+        selectedFac = ""; 
+        break;
+        case "Guest":
+          selectedFac = selectedFaculty; 
+          break;
+      default:
+        selectedFac = "";
+        break;
+    }
+    try {
+      const updatedUser = { username, email, password, role, facultyName: selectedFac };
       const response = await axios.put(`/api/users/${user._id}`, updatedUser);
       onUpdateUser(response.data);
       onClose();
@@ -64,6 +100,22 @@ const EditUserModal = ({ user, onClose, onUpdateUser }) => {
                 <option value="Guest">Guest</option>
               </s.Select>
             </s.InputGroup>
+            {(role === "Coordinator" || role === "Guest") && (
+              <s.InputGroup>
+                <s.Label>Select Faculty</s.Label>
+                <s.Select
+                  value={selectedFaculty}
+                  onChange={(e) => setSelectedFaculty(e.target.value)}
+                >
+                  <option value="">Select a faculty</option>
+                  {facultyList.map((faculty) => (
+                    <option key={faculty._id} value={faculty.facultyName}>
+                      {faculty.facultyName}
+                    </option>
+                  ))}
+                </s.Select>
+              </s.InputGroup>
+            )}
             <s.ModalFooter>
               <s.Button type="submit">Save Changes</s.Button>
             </s.ModalFooter>
