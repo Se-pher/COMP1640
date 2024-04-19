@@ -176,7 +176,6 @@ app.post('/api/forgot-password', async (req, res) => {
 
 //FACULTY
 const facultySchema = new mongoose.Schema({
-  facultyId: String,
   facultyName: String,
   facultyDeadline: Date,
 });
@@ -195,6 +194,11 @@ app.post('/api/faculties', async (req, res) => {
   const { facultyId, facultyName, facultyDeadline } = req.body;
 
   try {
+    const existingFaculty = await Faculty.findOne({ facultyName });
+    if (existingFaculty) {
+      return res.status(400).json({ message: 'A faculty with this name already exists.' });
+    }
+
     const newFaculty = new Faculty({ facultyId, facultyName, facultyDeadline });
     await newFaculty.save();
     res.status(201).json(newFaculty);
