@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import * as s from "../../../Style/PopUp";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
@@ -7,10 +7,32 @@ const AddFacultyModal = ({ onClose, onAddFaculty }) => {
   const [facultyId, setFacultyId] = useState("");
   const [facultyName, setFacultyName] = useState("");
   const [deadline, setDeadline] = useState(new Date());
+  const [existingFacultyNames, setExistingFacultyNames] = useState([]);
+
+  useEffect(() => {
+    const fetchExistingFacultyNames = async () => {
+      try {
+        const response = await fetch("/api/faculties");
+        const data = await response.json();
+        const names = data.map((faculty) => faculty.facultyName);
+        setExistingFacultyNames(names);
+      } catch (error) {
+        console.error("Error fetching existing faculty names:", error);
+      }
+    };
+  
+    fetchExistingFacultyNames();
+  }, []);
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const newFaculty = { facultyId, facultyName, facultyDeadline: deadline };
+  
+    if (existingFacultyNames.includes(facultyName)) {
+      alert("A faculty with this name already exists.");
+      return;
+    }
+  
+    const newFaculty = { facultyName, facultyDeadline: deadline };
     onAddFaculty(newFaculty);
     onClose();
   };
@@ -24,14 +46,6 @@ const AddFacultyModal = ({ onClose, onAddFaculty }) => {
         </s.ModalHeader>
         <s.ModalBody>
           <form onSubmit={handleSubmit}>
-            <s.InputGroup>
-              <s.Label>Faculty ID</s.Label>
-              <s.Input
-                type="text"
-                value={facultyId}
-                onChange={(e) => setFacultyId(e.target.value)}
-              />
-            </s.InputGroup>
             <s.InputGroup>
               <s.Label>Faculty Name</s.Label>
               <s.Input

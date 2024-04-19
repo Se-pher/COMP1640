@@ -38,44 +38,46 @@ const Manager_Articles_View = () => {
         setSelectedArticles([...selectedArticles, article]);
       } else {
         setSelectedArticles(
-        selectedArticles.filter((a) => a._id !== article._id)
-      );
+          selectedArticles.filter((a) => a._id !== article._id)
+        );
+      }
+    } else {
+      console.log("Cannot select article: Deadline has not passed.");
     }
-  } else {
-    console.log("Cannot select article: Deadline has not passed.");
-  }
     console.log("Selected articles:", selectedArticles);
   };
 
   const handleDownloadSelectedArticles = async () => {
-    const zip = new JSZip();
-    const requests = [];
+    if (window.confirm("Are you sure want to downloads these articles?")) {
+      const zip = new JSZip();
+      const requests = [];
 
-    for (const article of selectedArticles) {
-      const wordFilePromise = axios.get(article.wordFileURL, {
-        responseType: "blob",
-      });
-      const imagePromise = axios.get(article.imageURL, {
-        responseType: "blob",
-      });
+      for (const article of selectedArticles) {
+        const wordFilePromise = axios.get(article.wordFileURL, {
+          responseType: "blob",
+        });
+        const imagePromise = axios.get(article.imageURL, {
+          responseType: "blob",
+        });
 
-      requests.push(wordFilePromise, imagePromise);
-    }
+        requests.push(wordFilePromise, imagePromise);
+      }
 
-    try {
-      const responses = await Promise.all(requests);
+      try {
+        const responses = await Promise.all(requests);
 
-      responses.forEach((response, index) => {
-        const article = selectedArticles[Math.floor(index / 2)];
-        const fileName =
-          index % 2 === 0 ? `${article.title}.docx` : `${article.title}.jpg`;
-        zip.file(fileName, response.data);
-      });
+        responses.forEach((response, index) => {
+          const article = selectedArticles[Math.floor(index / 2)];
+          const fileName =
+            index % 2 === 0 ? `${article.title}.docx` : `${article.title}.jpg`;
+          zip.file(fileName, response.data);
+        });
 
-      const zipBlob = await zip.generateAsync({ type: "blob" });
-      saveAs(zipBlob, "downloaded_articles.zip");
-    } catch (error) {
-      console.error("Error downloading articles:", error);
+        const zipBlob = await zip.generateAsync({ type: "blob" });
+        saveAs(zipBlob, "downloaded_articles.zip");
+      } catch (error) {
+        console.error("Error downloading articles:", error);
+      }
     }
   };
 
@@ -97,7 +99,7 @@ const Manager_Articles_View = () => {
 
   const handleLogout = () => {
     console.log("Logging out..."); // Thêm dòng này để ghi thông điệp vào console
-    localStorage.removeItem('jwtToken'); 
+    localStorage.removeItem('jwtToken');
     window.location.href = "/";
   };
 
@@ -105,9 +107,9 @@ const Manager_Articles_View = () => {
     <s.Container>
       <Navbar />
       <s.MainContent>
-        <Sidebar 
-        selectedItem="View Articles"
-        handleLogout={handleLogout}/>
+        <Sidebar
+          selectedItem="View Articles"
+          handleLogout={handleLogout} />
         <s.Main>
           <s.ArticlesContainer>
             <s.ArticleGrid>

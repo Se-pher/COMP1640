@@ -25,7 +25,7 @@ import Error404 from "./Components/Error404";
 import axios from "axios";
 
 
-axios.defaults.baseURL = "https://comp1640-io6i.onrender.com";
+axios.defaults.baseURL = "http://localhost:5000/";
 
 function App() {
   return (
