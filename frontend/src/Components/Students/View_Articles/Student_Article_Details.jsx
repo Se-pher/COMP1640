@@ -12,6 +12,7 @@ const Student_Article_Details = () => {
   const [selectedItem, setSelectedItem] = useState("View Articles");
   const [article, setArticle] = useState(null);
   const [userName, setUserName] = useState("");
+  const [facultyDeadline, setFacultyDeadline] = useState(null);
   const [feedbacks, setFeedbacks] = useState([]);
   const [status, setStatus] = useState("");
   const handleItemClick = (item) => {
@@ -24,9 +25,11 @@ const Student_Article_Details = () => {
         const response = await axios.get(`/api/articles/${id}`);
         setArticle(response.data.article);
         setUserName(response.data.username);
+        setFacultyDeadline(response.data.facultyDeadline);
         setStatus(response.data.status);
         console.log(response);
-      
+        console.log("Faculty: ", setFacultyDeadline);
+
       } catch (error) {
         console.error("Error fetching article:", error);
       }
@@ -66,7 +69,16 @@ const Student_Article_Details = () => {
       }
     }
   };
-  
+
+
+  const isDeadlinePassed = () => {
+    const currentDate = new Date();
+    const deadline = new Date(facultyDeadline);
+    console.log(deadline);
+    console.log("Deadline: ", deadline < currentDate);
+    return deadline < currentDate;
+  };
+
 
   return (
     <s.Container>
@@ -81,11 +93,15 @@ const Student_Article_Details = () => {
         <s.Main>
           {article && (
             <s.ArticleContainer>
-              <s.EditButton>
+              {isDeadlinePassed() ? (
+                <s.EditButton>Deadline Passed</s.EditButton>
+              ) : (
+                <s.EditButton>
                 <Link to={`/student/edit/article/${id}`} className="edit-button">
                   Edit
                 </Link>
-              </s.EditButton>
+                </s.EditButton>
+              )}
               <s.DeleteButton onClick={handleDelete}>Delete</s.DeleteButton>
               <p>Status: {status}</p>
               {article.wordFileURL ? (

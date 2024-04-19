@@ -442,7 +442,11 @@ app.get('/api/articles/:id', async (req, res) => {
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
     }
-    res.json({ article, username: user.username, status: article.status });
+    const faculty = await Faculty.findOne({ facultyName: article.facultyName });
+    if (!faculty) {
+      return res.status(404).json({ message: 'Faculty not found' });
+    }
+    res.json({ article, username: user.username, facultyDeadline: faculty.facultyDeadline,status: article.status });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
