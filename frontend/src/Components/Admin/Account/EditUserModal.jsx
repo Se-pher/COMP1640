@@ -85,7 +85,6 @@ const EditUserModal = ({ user, onClose, onUpdateUser }) => {
               <s.Label>Password</s.Label>
               <s.Input
                 type="password"
-                value={password}
                 onChange={(e) => setPassword(e.target.value)}
               />
             </s.InputGroup>
@@ -93,8 +92,8 @@ const EditUserModal = ({ user, onClose, onUpdateUser }) => {
               <s.Label>Role</s.Label>
               <s.Select value={role} onChange={(e) => setRole(e.target.value)}>
                 <option value="">Select a role</option>
-                <option value="admin">Admin</option>
-                <option value="student">Student</option>
+                <option value="Admin">Admin</option>
+                <option value="Student">Student</option>
                 <option value="Coordinator">Coordinator</option>
                 <option value="Manager">Manager</option>
                 <option value="Guest">Guest</option>

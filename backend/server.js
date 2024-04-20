@@ -52,9 +52,11 @@ app.put('/api/users/:id', async (req, res) => {
   const { username, email, password, role, facultyName } = req.body;
 
   try {
+    const hashedPassword = await bcrypt.hash(password, 10);
+
     const updatedUser = await User.findByIdAndUpdate(
       id,
-      { username, email, password, role, facultyName },
+      { username, email, password: hashedPassword, role, facultyName },
       { new: true }
     );
     res.json(updatedUser);
