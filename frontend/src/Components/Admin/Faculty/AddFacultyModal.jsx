@@ -4,7 +4,6 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
 const AddFacultyModal = ({ onClose, onAddFaculty }) => {
-  const [facultyId, setFacultyId] = useState("");
   const [facultyName, setFacultyName] = useState("");
   const [deadline, setDeadline] = useState(new Date());
   const [existingFacultyNames, setExistingFacultyNames] = useState([]);

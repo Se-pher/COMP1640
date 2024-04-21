@@ -193,7 +193,7 @@ app.get('/api/faculties', async (req, res) => {
 });
 
 app.post('/api/faculties', async (req, res) => {
-  const { facultyId, facultyName, facultyDeadline } = req.body;
+  const { facultyName, facultyDeadline } = req.body;
 
   try {
     const existingFaculty = await Faculty.findOne({ facultyName });
@@ -201,7 +201,7 @@ app.post('/api/faculties', async (req, res) => {
       return res.status(400).json({ message: 'A faculty with this name already exists.' });
     }
 
-    const newFaculty = new Faculty({ facultyId, facultyName, facultyDeadline });
+    const newFaculty = new Faculty({ facultyName, facultyDeadline });
     await newFaculty.save();
     res.status(201).json(newFaculty);
   } catch (err) {
