@@ -211,12 +211,12 @@ app.post('/api/faculties', async (req, res) => {
 
 app.put('/api/faculties/:id', async (req, res) => {
   const { id } = req.params;
-  const { facultyId, facultyName, facultyDeadline } = req.body;
+  const {facultyName, facultyDeadline } = req.body;
 
   try {
     const updatedFaculty = await Faculty.findByIdAndUpdate(
       id,
-      { facultyId, facultyName, facultyDeadline },
+      { facultyName, facultyDeadline },
       { new: true }
     );
     res.json(updatedFaculty);
