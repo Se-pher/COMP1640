@@ -377,7 +377,6 @@ app.put('/api/user/decode-update', async (req, res) => {
 });
 
 
-
 //Profile
 app.get('/api/user/profile', async (req, res) => {
   const token = req.headers.authorization.split(' ')[1]; 
