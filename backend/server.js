@@ -50,7 +50,6 @@ app.get('/api/users', async (req, res) => {
 app.put('/api/users/:id', async (req, res) => {
   const { id } = req.params;
   const { username, email, password, role, facultyName } = req.body;
-
   try {
     const hashedPassword = await bcrypt.hash(password, 10);
 
