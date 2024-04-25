@@ -183,7 +183,7 @@ export const Pagination = styled.div`
 export const Sidebar = styled.div`
   display: flex;
   align-items: center;
-  width: 40%;
+  width: 100%;
   justify-content: space-between;
 
   @media only screen and (max-width: 768px) {
@@ -200,7 +200,35 @@ export const SidebarImageContainer = styled.div`
 export const SidebarImage = styled.img`
   width: 100%;
   max-width: 500px;
+  height: 530px;
+  @media only screen and (max-width: 768px) {
+    height: auto;
+  }
+`;
+
+export const SloganContainer = styled.div`
+  position: relative;
+  margin-left: 2rem;
+`;
+
+export const SloganImage = styled.img`
+  width: 100%;
+  max-width: 800px;
   height: auto;
+  @media only screen and (max-width: 768px) {
+    height: auto;
+  }
+`;
+
+export const Slogan = styled.div`
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: white;
+  font-size: 1.5rem;
+  font-weight: bold;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
 `;
 
 export const ArticleCount = styled.div`
