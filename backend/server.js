@@ -50,14 +50,29 @@ app.get('/api/users', async (req, res) => {
 app.put('/api/users/:id', async (req, res) => {
   const { id } = req.params;
   const { username, email, password, role, facultyName } = req.body;
+
   try {
-    const hashedPassword = await bcrypt.hash(password, 10);
+    const updatedFields = {};
+    
+    if (username) updatedFields.username = username;
+    if (email) updatedFields.email = email;
+    if (password) {
+      const hashedPassword = await bcrypt.hash(password, 10);
+      updatedFields.password = hashedPassword;
+    }
+    if (role) updatedFields.role = role;
+    if (facultyName) updatedFields.facultyName = facultyName;
 
     const updatedUser = await User.findByIdAndUpdate(
       id,
-      { username, email, password: hashedPassword, role, facultyName },
+      updatedFields,
       { new: true }
     );
+
+    if (!updatedUser) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
     res.json(updatedUser);
   } catch (err) {
     res.status(400).json({ message: err.message });
