@@ -1,4 +1,5 @@
 import Mountain from "../Image/Mountains.jpg";
+import Beach from "../Image/image.jfif"
 import * as s from "../Style/Landing";
 import React, { useState, useEffect } from 'react';
 import ArticleCard from './ArticleCard';
@@ -104,6 +105,10 @@ const LandingPage = () => {
               Currently {articles.length} Articles
             </s.ArticleCount>
           </s.SidebarImageContainer>
+          <s.SloganContainer>
+            <s.SloganImage src={Beach} alt="Slogan Image" />
+            <s.Slogan>this is the best website</s.Slogan>
+          </s.SloganContainer>
         </s.Sidebar>
       </s.Section>
       <s.Footer>
