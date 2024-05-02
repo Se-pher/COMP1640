@@ -9,13 +9,22 @@ export const Container = styled.div`
   display: flex;
   flex-direction: column;
   height: 100vh;
-  background-color: #EAEBEF;
+  background-color: #eaebef;
+
+  @media (max-width: 768px) {
+    height: auto;
+  }
 `;
 
 export const MainContent = styled.div`
   display: flex;
   flex: 1;
   margin-top: 20px;
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+    margin-top: 0;
+  }
 `;
 
 export const Main = styled.div`
@@ -23,6 +32,11 @@ export const Main = styled.div`
   padding: 20px;
   margin-right: 20px;
   margin-top: 50px;
+
+  @media (max-width: 768px) {
+    margin-right: 0;
+    margin-top: 0;
+  }
 `;
 
 export const DashboardContainer = styled.div`
@@ -44,6 +58,12 @@ export const ChartContainerWrapper = styled.div`
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+    height: auto;
+    margin-top: 80px;
+  }
 `;
 
 export const ChartContainer = styled.div`
@@ -51,6 +71,11 @@ export const ChartContainer = styled.div`
   height: 300px;
   display: flex;
   justify-content: center;
+
+  @media (max-width: 768px) {
+    width: 100%;
+    height: 250px;
+  }
 `;
 
 export const ViewModeButtons = styled.div`
@@ -73,6 +98,11 @@ export const ViewModeButtons = styled.div`
       color: white;
     }
   }
+
+  @media (max-width: 768px) {
+    width: 100%;
+    margin-top: 10px;
+  }
 `;
 
 export const LowerContainersWrapper = styled.div`
@@ -86,11 +116,19 @@ export const DataContainerWrapper = styled.div`
   border-radius: 10px;
   padding: 20px;
   max-width: -webkit-fill-available;
-  overflow:auto;
+  overflow: auto;
+
+  @media (max-width: 768px) {
+    height: auto;
+  }
 `;
 
 export const DataContainer = styled.div`
   display: flex;
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+  }
 `;
 
 export const NewPostsContainer = styled.div`
