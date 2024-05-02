@@ -109,6 +109,17 @@ export const SquareContainer = styled.div`
   align-items: center;
   border-radius: 10px;
   padding-bottom: 20px;
+  @media (max-width: 768px) {
+    width: 370px;
+    height: 350px;
+    background-color: white;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-radius: 10px;
+    position: absolute;
+    top: 150px;
+  }
 `;
 
 export const LogoutButton = styled.div`
