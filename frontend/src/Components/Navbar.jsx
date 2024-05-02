@@ -3,6 +3,7 @@ import * as s from '../Style/Navbar';
 import NotificationIcon from "../Image/Notification.png";
 import SearchIcon from "../Image/Search.png";
 import axios from 'axios';
+
 const Navbar = ({ username }) => {
   const [userName, setUserName] = useState('');
   useEffect(() => {

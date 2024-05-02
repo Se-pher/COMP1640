@@ -10,6 +10,7 @@ const Article = require('./model/article');
 const bcrypt = require('bcrypt');
 const User = require('./model/user');
 const Feedback = require('./model/feedback');
+const Faculty = require('./model/faculty');
 app.use(cors());
 app.use(express.json());
 const jwt = require('jsonwebtoken');
@@ -198,12 +199,7 @@ app.post('/api/forgot-password', async (req, res) => {
 
 
 //FACULTY
-const facultySchema = new mongoose.Schema({
-  facultyName: String,
-  facultyDeadline: Date,
-});
 
-const Faculty = mongoose.model('Faculty', facultySchema);
 app.get('/api/faculties', async (req, res) => {
   try {
     const faculties = await Faculty.find();
@@ -420,7 +416,7 @@ app.get('/api/user/profile', async (req, res) => {
 
 app.put('/api/user/profile', async (req, res) => {
   const token = req.headers.authorization.split(' ')[1]; 
-  const { name, email, password } = req.body;
+  const { name, email, password, currentPassword } = req.body;
 
   try {
     const decoded = jwt.verify(token, SECRET_KEY);
@@ -428,6 +424,11 @@ app.put('/api/user/profile', async (req, res) => {
 
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
+    }
+
+    const isPasswordValid = await bcrypt.compare(currentPassword, user.password);
+    if (!isPasswordValid) {
+      return res.status(400).json({ message: 'Current password is incorrect' });
     }
 
     if (name) user.username = name;
@@ -444,6 +445,7 @@ app.put('/api/user/profile', async (req, res) => {
     res.status(401).json({ message: 'Invalid token' });
   }
 });
+
 
 
 const port = process.env.PORT || 5000;
