@@ -1,4 +1,4 @@
-import React, { useState, useEffect  } from "react";
+import React, { useState, useEffect } from "react";
 import * as s from "../../../Style/Admin/Admin_faculty";
 import Sidebar from "../sidebar";
 import Navbar from "../../Navbar";
@@ -40,6 +40,10 @@ const AdminFaculty = () => {
   };
 
   const handleAddFaculty = async (newFaculty) => {
+    if (facultyData.some(faculty => faculty.facultyName === newFaculty.facultyName)) {
+      alert("A faculty with this name already exists.");
+      return;
+    }
     try {
       const response = await axios.post('/api/faculties', newFaculty);
       const addedFaculty = response.data;
@@ -52,17 +56,19 @@ const AdminFaculty = () => {
   const handleEditFaculty = (faculty) => {
     setEditedFaculty(faculty);
   };
-  
+
   const handleUpdateFaculty = (updatedFaculty) => {
     setFacultyData(facultyData.map(faculty => (faculty._id === updatedFaculty._id ? updatedFaculty : faculty)));
   };
-  
+
   const handleDeleteFaculty = async (facultyId) => {
-    try {
-      await axios.delete(`/api/faculties/${facultyId}`);
-      setFacultyData(facultyData.filter(faculty => faculty._id !== facultyId));
-    } catch (error) {
-      console.error('Error deleting faculty:', error);
+    if (window.confirm("Are you sure you want to delete this article?")) {
+      try {
+        await axios.delete(`/api/faculties/${facultyId}`);
+        setFacultyData(facultyData.filter(faculty => faculty._id !== facultyId));
+      } catch (error) {
+        console.error('Error deleting faculty:', error);
+      }
     }
   };
 
@@ -87,7 +93,7 @@ const AdminFaculty = () => {
   };
 
   const handleLogout = () => {
-    localStorage.removeItem('jwtToken'); 
+    localStorage.removeItem('jwtToken');
     window.location.href = '/login';
   };
 
@@ -95,7 +101,7 @@ const AdminFaculty = () => {
     <s.Container>
       <Navbar />
       <s.MainContent>
-      <Sidebar
+        <Sidebar
           selectedItem={selectedItem}
           handleItemClick={handleItemClick}
           userName={userName}
@@ -111,7 +117,6 @@ const AdminFaculty = () => {
                 <s.UserTable>
                   <thead>
                     <tr>
-                      <s.TableHeader>Faculty ID</s.TableHeader>
                       <s.TableHeader>Faculty Name</s.TableHeader>
                       <s.TableHeader>Faculty Deadline</s.TableHeader>
                       <s.TableHeader>Action</s.TableHeader>
@@ -120,7 +125,6 @@ const AdminFaculty = () => {
                   <tbody>
                     {facultyData.map((faculty) => (
                       <s.TableRow key={faculty._id}>
-                        <s.TableCell>{faculty.facultyId}</s.TableCell>
                         <s.TableCell>{faculty.facultyName}</s.TableCell>
                         <s.TableCell>{format(new Date(faculty.facultyDeadline), 'dd/MM/yyyy')}</s.TableCell>
                         <s.TableCell>

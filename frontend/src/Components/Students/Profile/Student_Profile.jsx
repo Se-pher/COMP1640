@@ -45,6 +45,7 @@ const Student_Profile = () => {
           name: newName,
           email: newEmail,
           password: newPassword,
+          currentPassword: currentPassword, 
         },
         {
           headers: {

@@ -20,8 +20,7 @@ const Manager_Profile = () => {
     const fetchProfile = async () => {
       try {
         const token = localStorage.getItem("jwtToken");
-        setToken(token); // Store token from localStorage
-        // Update the API endpoint if necessary to match the manager's profile endpoint
+        setToken(token); 
         const response = await axios.get("/api/user/profile", {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -40,17 +39,17 @@ const Manager_Profile = () => {
 
   const handleSave = async () => {
     try {
-      // Ensure the API endpoint is correct for updating a manager's profile
       const response = await axios.put(
         "/api/user/profile",
         {
           name: newName,
           email: newEmail,
           password: newPassword,
+          currentPassword: currentPassword, 
         },
         {
           headers: {
-            Authorization: `Bearer ${token}`,
+            Authorization: `Bearer ${token}`, 
           },
         }
       );
@@ -68,7 +67,7 @@ const Manager_Profile = () => {
   };
 
   const handleLogout = () => {
-    console.log("Logging out..."); // Thêm dòng này để ghi thông điệp vào console
+    console.log("Logging out..."); 
     localStorage.removeItem('jwtToken'); 
     window.location.href = "/";
   };
@@ -81,7 +80,7 @@ const Manager_Profile = () => {
         <Sidebar
           selectedItem={selectedItem}
           handleItemClick={handleItemClick}
-          userName={userProfile.username} // This might need adjustment if the manager profile has different fields
+          userName={userProfile.username} 
           handleLogout={handleLogout}
         />
         <s.Main>

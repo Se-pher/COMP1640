@@ -5,14 +5,13 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
 const EditFacultyModal = ({ faculty, onClose, onUpdateFaculty }) => {
-  const [facultyId, setFacultyId] = useState(faculty.facultyId);
   const [facultyName, setFacultyName] = useState(faculty.facultyName);
   const [deadline, setDeadline] = useState(new Date(faculty.facultyDeadline));
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const updatedFaculty = { facultyId, facultyName, facultyDeadline: deadline };
+      const updatedFaculty = {facultyName, facultyDeadline: deadline };
       const response = await axios.put(`/api/faculties/${faculty._id}`, updatedFaculty);
       onUpdateFaculty(response.data);
       onClose();
@@ -31,12 +30,6 @@ const EditFacultyModal = ({ faculty, onClose, onUpdateFaculty }) => {
         <s.ModalBody>
           <form onSubmit={handleSubmit}>
             <s.InputGroup>
-              <s.Label>Faculty ID</s.Label>
-              <s.Input
-                type="text"
-                value={facultyId}
-                onChange={(e) => setFacultyId(e.target.value)}
-              />
             </s.InputGroup>
             <s.InputGroup>
               <s.Label>Faculty Name</s.Label>

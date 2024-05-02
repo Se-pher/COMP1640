@@ -10,6 +10,7 @@ const Article = require('./model/article');
 const bcrypt = require('bcrypt');
 const User = require('./model/user');
 const Feedback = require('./model/feedback');
+const Faculty = require('./model/faculty');
 app.use(cors());
 app.use(express.json());
 const jwt = require('jsonwebtoken');
@@ -52,11 +53,27 @@ app.put('/api/users/:id', async (req, res) => {
   const { username, email, password, role, facultyName } = req.body;
 
   try {
+    const updatedFields = {};
+    
+    if (username) updatedFields.username = username;
+    if (email) updatedFields.email = email;
+    if (password) {
+      const hashedPassword = await bcrypt.hash(password, 10);
+      updatedFields.password = hashedPassword;
+    }
+    if (role) updatedFields.role = role;
+    if (facultyName) updatedFields.facultyName = facultyName;
+
     const updatedUser = await User.findByIdAndUpdate(
       id,
-      { username, email, password, role, facultyName },
+      updatedFields,
       { new: true }
     );
+
+    if (!updatedUser) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
     res.json(updatedUser);
   } catch (err) {
     res.status(400).json({ message: err.message });
@@ -79,9 +96,16 @@ app.put('/api/users/:id', async (req, res) => {
   const { username, email, password, role, facultyName } = req.body;
 
   try {
+    const hashedPassword = await bcrypt.hash(password, 10); 
     const updatedUser = await User.findByIdAndUpdate(
       id,
-      { username, email, password, role, facultyName },
+      { 
+        username, 
+        email, 
+        password: hashedPassword, 
+        role, 
+        facultyName 
+      },
       { new: true }
     );
 
@@ -175,13 +199,7 @@ app.post('/api/forgot-password', async (req, res) => {
 
 
 //FACULTY
-const facultySchema = new mongoose.Schema({
-  facultyId: String,
-  facultyName: String,
-  facultyDeadline: Date,
-});
 
-const Faculty = mongoose.model('Faculty', facultySchema);
 app.get('/api/faculties', async (req, res) => {
   try {
     const faculties = await Faculty.find();
@@ -192,10 +210,15 @@ app.get('/api/faculties', async (req, res) => {
 });
 
 app.post('/api/faculties', async (req, res) => {
-  const { facultyId, facultyName, facultyDeadline } = req.body;
+  const { facultyName, facultyDeadline } = req.body;
 
   try {
-    const newFaculty = new Faculty({ facultyId, facultyName, facultyDeadline });
+    const existingFaculty = await Faculty.findOne({ facultyName });
+    if (existingFaculty) {
+      return res.status(400).json({ message: 'A faculty with this name already exists.' });
+    }
+
+    const newFaculty = new Faculty({ facultyName, facultyDeadline });
     await newFaculty.save();
     res.status(201).json(newFaculty);
   } catch (err) {
@@ -205,12 +228,12 @@ app.post('/api/faculties', async (req, res) => {
 
 app.put('/api/faculties/:id', async (req, res) => {
   const { id } = req.params;
-  const { facultyId, facultyName, facultyDeadline } = req.body;
+  const {facultyName, facultyDeadline } = req.body;
 
   try {
     const updatedFaculty = await Faculty.findByIdAndUpdate(
       id,
-      { facultyId, facultyName, facultyDeadline },
+      { facultyName, facultyDeadline },
       { new: true }
     );
     res.json(updatedFaculty);
@@ -371,7 +394,6 @@ app.put('/api/user/decode-update', async (req, res) => {
 });
 
 
-
 //Profile
 app.get('/api/user/profile', async (req, res) => {
   const token = req.headers.authorization.split(' ')[1]; 
@@ -394,7 +416,7 @@ app.get('/api/user/profile', async (req, res) => {
 
 app.put('/api/user/profile', async (req, res) => {
   const token = req.headers.authorization.split(' ')[1]; 
-  const { name, email, password } = req.body;
+  const { name, email, password, currentPassword } = req.body;
 
   try {
     const decoded = jwt.verify(token, SECRET_KEY);
@@ -402,6 +424,11 @@ app.put('/api/user/profile', async (req, res) => {
 
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
+    }
+
+    const isPasswordValid = await bcrypt.compare(currentPassword, user.password);
+    if (!isPasswordValid) {
+      return res.status(400).json({ message: 'Current password is incorrect' });
     }
 
     if (name) user.username = name;
@@ -418,6 +445,7 @@ app.put('/api/user/profile', async (req, res) => {
     res.status(401).json({ message: 'Invalid token' });
   }
 });
+
 
 
 const port = process.env.PORT || 5000;
@@ -438,7 +466,11 @@ app.get('/api/articles/:id', async (req, res) => {
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
     }
-    res.json({ article, username: user.username, status: article.status });
+    const faculty = await Faculty.findOne({ facultyName: article.facultyName });
+    if (!faculty) {
+      return res.status(404).json({ message: 'Faculty not found' });
+    }
+    res.json({ article, username: user.username, facultyDeadline: faculty.facultyDeadline,status: article.status });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
