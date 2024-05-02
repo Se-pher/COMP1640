@@ -44,10 +44,11 @@ const Admin_Profile = () => {
           name: newName,
           email: newEmail,
           password: newPassword,
+          currentPassword: currentPassword, 
         },
         {
           headers: {
-            Authorization: `Bearer ${token}`, // Gửi token trong tiêu đề 'Authorization'
+            Authorization: `Bearer ${token}`, 
           },
         }
       );
@@ -57,6 +58,7 @@ const Admin_Profile = () => {
       console.error(error);
     }
   };
+  
 
   const handleDiscard = () => {
     setNewName(userProfile.name);
@@ -106,7 +108,6 @@ const Admin_Profile = () => {
                     <s.FieldLabel>Current Password</s.FieldLabel>
                     <s.FieldInput
                       placeholder="Enter Current Password" 
-                      value={newName}
                       onChange={(e) => setCurrentPassword(e.target.value)}
                       type="password"
                     />

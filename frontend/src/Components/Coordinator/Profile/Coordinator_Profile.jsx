@@ -20,10 +20,10 @@ const Coordinator_Profile = () => {
     const fetchProfile = async () => {
       try {
         const token = localStorage.getItem("jwtToken");
-        setToken(token); // Lấy token từ localStorage
+        setToken(token); 
         const response = await axios.get("/api/user/profile", {
           headers: {
-            Authorization: `Bearer ${token}`, // Gửi token trong tiêu đề 'Authorization'
+            Authorization: `Bearer ${token}`, 
           },
         });
         setUserProfile(response.data);
@@ -45,10 +45,11 @@ const Coordinator_Profile = () => {
           name: newName,
           email: newEmail,
           password: newPassword,
+          currentPassword: currentPassword, 
         },
         {
           headers: {
-            Authorization: `Bearer ${token}`, // Gửi token trong tiêu đề 'Authorization'
+            Authorization: `Bearer ${token}`, 
           },
         }
       );
