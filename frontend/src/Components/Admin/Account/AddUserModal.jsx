@@ -83,7 +83,25 @@ const AddUserModal = ({ onClose, onAddUser }) => {
       const newUser = { username, email, password, role, facultyName: selectedFac };
       await axios.post("/api/users", newUser);
       onClose();
+      toast.success("Add User successfully!", {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
     } catch (error) {
+      toast.error("Error adding user!", {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
       console.error("Error adding user:", error.response.data.message);
     }
   };
