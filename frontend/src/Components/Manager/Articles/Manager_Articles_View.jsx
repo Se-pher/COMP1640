@@ -86,7 +86,6 @@ const Manager_Articles_View = () => {
       try {
         const response = await axios.get("/api/articles");
         setArticles(response.data);
-
         const facultiesResponse = await axios.get("/api/faculties");
         setFaculties(facultiesResponse.data);
       } catch (error) {

@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import * as s from "../../../Style/PopUp";
 import axios from "axios";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const AddUserModal = ({ onClose, onAddUser }) => {
   const [username, setUsername] = useState("");
@@ -8,10 +10,12 @@ const AddUserModal = ({ onClose, onAddUser }) => {
   const [password, setPassword] = useState("");
   const [role, setRole] = useState("");
   const [facultyList, setFacultyList] = useState([]);
+  const [users, setUsers] = useState([]);
   const [selectedFaculty, setSelectedFaculty] = useState("");
 
   useEffect(() => {
     fetchFaculties();
+    fetchUsers();
   }, []);
 
   const fetchFaculties = async () => {
@@ -23,8 +27,35 @@ const AddUserModal = ({ onClose, onAddUser }) => {
     }
   };
 
+  const fetchUsers = async () => {
+    try {
+      const response = await axios.get("/api/users");
+      setUsers(response.data);
+    } catch (error) {
+      console.error("Error fetching users:", error.response.data.message);
+    }
+  };
+
+  const isExistingUser = () => {
+    const existingUsername = users.find(user => user.username === username);
+    const existingEmail = users.find(user => user.email === email);
+    return existingUsername || existingEmail;
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (isExistingUser()) {
+      toast.error("Username or email already exists.", {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+      return;
+    }
     let selectedFac = ""; 
   
     switch (role) {
@@ -52,7 +83,25 @@ const AddUserModal = ({ onClose, onAddUser }) => {
       const newUser = { username, email, password, role, facultyName: selectedFac };
       await axios.post("/api/users", newUser);
       onClose();
+      toast.success("Add User successfully!", {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
     } catch (error) {
+      toast.error("Error adding user!", {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
       console.error("Error adding user:", error.response.data.message);
     }
   };
@@ -123,6 +172,7 @@ const AddUserModal = ({ onClose, onAddUser }) => {
             </s.ModalFooter>
           </form>
         </s.ModalBody>
+        <ToastContainer />
       </s.ModalContent>
     </s.Modal>
   );
