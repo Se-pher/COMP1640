@@ -495,11 +495,11 @@ app.get('/api/articlesFaculty', verifyToken, async (req, res) => {
 
 const admin = require('firebase-admin');
 
-const serviceAccount = require('./comp1640clound-firebase-adminsdk-8bb7x-be325de63f.json');
+const serviceAccount = require('./comp1640cloud-firebase-adminsdk-m472w-c63147a365.json')
 
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
-  storageBucket: 'comp1640clound.appspot.com'
+  storageBucket: 'comp1640cloud.appspot.com'
 });
 
 const bucket = admin.storage().bucket();
