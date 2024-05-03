@@ -29,6 +29,15 @@ app.post('/api/users', async (req, res) => {
     if (!username || !email || !password || !role) {
       return res.status(400).json({ message: 'Missing required fields' });
     }
+    const existingUsername = await User.findOne({ username });
+    if (existingUsername) {
+      return res.status(400).json({ message: 'A User with this username already exists.' });
+    }
+
+    const existingEmail = await User.findOne({ email });
+    if (existingEmail) {
+      return res.status(400).json({ message: 'A User with this email already exists.' });
+    }
 
     const hashedPassword = await bcrypt.hash(password, 5);
     const newUser = new User({ username, email, password: hashedPassword, role, facultyName });
