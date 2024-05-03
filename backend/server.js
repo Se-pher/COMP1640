@@ -11,6 +11,8 @@ const bcrypt = require('bcrypt');
 const User = require('./model/user');
 const Feedback = require('./model/feedback');
 const Faculty = require('./model/faculty');
+const articlesRouter = require('./articles');
+app.use('/api/articles', articlesRouter);
 app.use(cors());
 app.use(express.json());
 const jwt = require('jsonwebtoken');
@@ -22,6 +24,8 @@ mongoose.connect('mongodb+srv://COMP1640:COMP1640group5@cluster0.kgdq0tl.mongodb
   .then(() => console.log('MongoDB connected'))
   .catch((err) => console.log(err));
 
+
+//User
 app.post('/api/users', async (req, res) => {
   const { username, email, password, role, facultyName } = req.body;
 
@@ -29,6 +33,7 @@ app.post('/api/users', async (req, res) => {
     if (!username || !email || !password || !role) {
       return res.status(400).json({ message: 'Missing required fields' });
     }
+
     const existingUsername = await User.findOne({ username });
     if (existingUsername) {
       return res.status(400).json({ message: 'A User with this username already exists.' });
@@ -129,7 +134,6 @@ app.put('/api/users/:id', async (req, res) => {
 });
 
 //Login 
-
 app.post('/api/login', async (req, res) => {
   const { email, password } = req.body;
 
@@ -154,6 +158,7 @@ app.post('/api/login', async (req, res) => {
   }
 });
 
+//verifyToken 
 const verifyToken = (req, res, next) => {
   const authHeader = req.headers['authorization'];
   const token = authHeader && authHeader.split(' ')[1];
@@ -178,7 +183,7 @@ function generateRandomPassword(length = 8) {
 
   return password;
 }
-
+//Forgot Password
 app.post('/api/forgot-password', async (req, res) => {
   const { email } = req.body;
 
@@ -330,9 +335,27 @@ app.put('/api/articles/:id', verifyToken, async (req, res) => {
   }
 });
 
+app.delete('/api/articles/:id', verifyToken, async (req, res) => {
+  const { id } = req.params;
+  try {
+    const userId = req.user.userId;
+    const article = await Article.findById(id);
+    if (!article) {
+      return res.status(404).json({ message: "Article not found" });
+    }
+    if (article.userId !== userId) {
+      return res.status(403).json({ message: "You are not authorized to delete this article" });
+    }
+    await Article.findByIdAndDelete(id);
+    res.json({ message: "Article deleted successfully" });
+  } catch (err) {
+    res.status(400).json({ message: err.message });
+  }
+});
+
+
 
 //TOKEN
-
 app.get('/api/decode-token', async (req, res) => {
   if (!req.headers.authorization || !req.headers.authorization.startsWith('Bearer ')) {
     return res.status(401).json({ message: 'No token provided' });
@@ -457,14 +480,9 @@ app.put('/api/user/profile', async (req, res) => {
 
 
 
-const port = process.env.PORT || 5000;
-app.listen(port, () => {
-  console.log(`Server is running on port ${port}`);
-});
 
-const articlesRouter = require('./articles');
-app.use('/api/articles', articlesRouter);
 
+//Article by ID, Faculty
 app.get('/api/articles/:id', async (req, res) => {
   try {
     const article = await Article.findById(req.params.id);
@@ -501,7 +519,7 @@ app.get('/api/articlesFaculty', verifyToken, async (req, res) => {
 });
 
 
-
+//FireBase
 const admin = require('firebase-admin');
 
 const serviceAccount = require('./comp1640clound-firebase-adminsdk-8bb7x-be325de63f.json');
@@ -599,20 +617,7 @@ app.post('/api/feedbacks', async (req, res) => {
   }
 });
 
-app.delete('/api/articles/:id', verifyToken, async (req, res) => {
-  const { id } = req.params;
-  try {
-    const userId = req.user.userId;
-    const article = await Article.findById(id);
-    if (!article) {
-      return res.status(404).json({ message: "Article not found" });
-    }
-    if (article.userId !== userId) {
-      return res.status(403).json({ message: "You are not authorized to delete this article" });
-    }
-    await Article.findByIdAndDelete(id);
-    res.json({ message: "Article deleted successfully" });
-  } catch (err) {
-    res.status(400).json({ message: err.message });
-  }
+const port = process.env.PORT || 5000;
+app.listen(port, () => {
+  console.log(`Server is running on port ${port}`);
 });
