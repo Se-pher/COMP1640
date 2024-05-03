@@ -97,8 +97,8 @@ const Manager_Articles_View = () => {
   }, []);
 
   const handleLogout = () => {
-    console.log("Logging out..."); // Thêm dòng này để ghi thông điệp vào console
-    localStorage.removeItem('jwtToken');
+    console.log("Logging out...");
+    localStorage.removeItem('jwtToken'); 
     window.location.href = "/";
   };
 

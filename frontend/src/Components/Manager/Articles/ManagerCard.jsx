@@ -7,13 +7,13 @@
       onSelect(article, !isSelected);
     };
 
-    const truncateDescription = (description, limit) => {
-      const words = description.split(' ');
-      if (words.length > limit) {
-        return words.slice(0, limit).join(' ') + '...';
-      }
-      return description;
+    const truncateDescription = (text, maxLength) => {
+      if (text.length <= maxLength) return text;
+      return `${text.slice(0, maxLength)}...`;
     };
+    
+    const titles = truncateDescription(article.title, 26);
+    const shortDescription = truncateDescription(article.description, 93);
 
     const formatDeadlineMessage = () => {
       return "Cannot select article: Deadline has not passed.";
@@ -28,8 +28,8 @@
           <s.ArticleDate>
             {new Date(article.createdAt).toLocaleDateString()} | {article.facultyName}
           </s.ArticleDate>
-          <s.ArticleTitle>{truncateDescription(article.title, 6)}</s.ArticleTitle>
-          <s.ArticleDescription>{truncateDescription(article.description, 14)}</s.ArticleDescription>
+          <s.ArticleTitle>{titles}</s.ArticleTitle>
+          <s.ArticleDescription>{shortDescription}</s.ArticleDescription>
           <s.SelectionCheckbox>
           <input
             type="checkbox"

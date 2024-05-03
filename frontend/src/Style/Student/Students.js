@@ -37,7 +37,6 @@ export const UploadContainer = styled.div`
 
 export const SquareContainer = styled.div`
   width: 100%;
-  height: 650px;
   background-color: white;
   display: flex;
   flex-direction: column;
@@ -50,7 +49,8 @@ export const SquareContainer = styled.div`
   @media (max-width: 768px) {
     position: fixed;
     margin-left: 20px;
-    height: 750px;
+    max-height: 650px;
+    height:600px;
   }
 `;
 
