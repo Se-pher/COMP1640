@@ -11,8 +11,6 @@ const bcrypt = require('bcrypt');
 const User = require('./model/user');
 const Feedback = require('./model/feedback');
 const Faculty = require('./model/faculty');
-const articlesRouter = require('./articles');
-app.use('/api/articles', articlesRouter);
 app.use(cors());
 app.use(express.json());
 const jwt = require('jsonwebtoken');
@@ -24,24 +22,12 @@ mongoose.connect('mongodb+srv://COMP1640:COMP1640group5@comp1640.x6wcpq8.mongodb
   .then(() => console.log('MongoDB connected'))
   .catch((err) => console.log(err));
 
-
-//User
 app.post('/api/users', async (req, res) => {
   const { username, email, password, role, facultyName } = req.body;
 
   try {
     if (!username || !email || !password || !role) {
       return res.status(400).json({ message: 'Missing required fields' });
-    }
-
-    const existingUsername = await User.findOne({ username });
-    if (existingUsername) {
-      return res.status(400).json({ message: 'A User with this username already exists.' });
-    }
-
-    const existingEmail = await User.findOne({ email });
-    if (existingEmail) {
-      return res.status(400).json({ message: 'A User with this email already exists.' });
     }
 
     const hashedPassword = await bcrypt.hash(password, 5);
@@ -134,6 +120,7 @@ app.put('/api/users/:id', async (req, res) => {
 });
 
 //Login 
+
 app.post('/api/login', async (req, res) => {
   const { email, password } = req.body;
 
@@ -158,7 +145,6 @@ app.post('/api/login', async (req, res) => {
   }
 });
 
-//verifyToken 
 const verifyToken = (req, res, next) => {
   const authHeader = req.headers['authorization'];
   const token = authHeader && authHeader.split(' ')[1];
@@ -183,7 +169,7 @@ function generateRandomPassword(length = 8) {
 
   return password;
 }
-//Forgot Password
+
 app.post('/api/forgot-password', async (req, res) => {
   const { email } = req.body;
 
@@ -335,27 +321,9 @@ app.put('/api/articles/:id', verifyToken, async (req, res) => {
   }
 });
 
-app.delete('/api/articles/:id', verifyToken, async (req, res) => {
-  const { id } = req.params;
-  try {
-    const userId = req.user.userId;
-    const article = await Article.findById(id);
-    if (!article) {
-      return res.status(404).json({ message: "Article not found" });
-    }
-    if (article.userId !== userId) {
-      return res.status(403).json({ message: "You are not authorized to delete this article" });
-    }
-    await Article.findByIdAndDelete(id);
-    res.json({ message: "Article deleted successfully" });
-  } catch (err) {
-    res.status(400).json({ message: err.message });
-  }
-});
-
-
 
 //TOKEN
+
 app.get('/api/decode-token', async (req, res) => {
   if (!req.headers.authorization || !req.headers.authorization.startsWith('Bearer ')) {
     return res.status(401).json({ message: 'No token provided' });
@@ -377,8 +345,6 @@ app.get('/api/decode-token', async (req, res) => {
   }
 });
 
-
-//Get article by ID
 app.get('/api/user/articles', verifyToken, async (req, res) => {
   try {
     const userId = req.user.userId;
@@ -389,6 +355,43 @@ app.get('/api/user/articles', verifyToken, async (req, res) => {
   }
 });
 
+
+app.put('/api/user/decode-update', async (req, res) => {
+  const { username, email, currentPassword, newPassword } = req.body;
+
+  if (!req.headers.authorization || !req.headers.authorization.startsWith('Bearer ')) {
+    return res.status(401).json({ message: 'Token không được cung cấp' });
+  }
+
+  const token = req.headers.authorization.split(' ')[1];
+
+  try {
+    const decoded = jwt.verify(token, SECRET_KEY);
+    const user = await User.findById(decoded.userId);
+    console.log(decoded.userId)
+    if (!user) {
+      return res.status(404).json({ message: 'Không tìm thấy người dùng' });
+    }
+
+    const isMatch = await bcrypt.compare(currentPassword, user.password);
+    if (!isMatch) {
+      return res.status(400).json({ message: 'Mật khẩu hiện tại không chính xác' });
+    }
+    user.username = username || user.username;
+    user.email = email || user.email;
+    if (newPassword) {
+      user.password = await bcrypt.hash(newPassword, 10);
+    }
+    await user.save();
+    res.json({
+      username: user.username,
+      email: user.email,
+      message: 'Thông tin người dùng và mật khẩu đã được cập nhật'
+    });
+  } catch (err) {
+    res.status(500).json({ message: 'Token không hợp lệ hoặc lỗi server' });
+  }
+});
 
 
 //Profile
@@ -445,9 +448,14 @@ app.put('/api/user/profile', async (req, res) => {
 
 
 
+const port = process.env.PORT || 5000;
+app.listen(port, () => {
+  console.log(`Server is running on port ${port}`);
+});
 
+const articlesRouter = require('./articles');
+app.use('/api/articles', articlesRouter);
 
-//Article by ID, Faculty
 app.get('/api/articles/:id', async (req, res) => {
   try {
     const article = await Article.findById(req.params.id);
@@ -484,7 +492,7 @@ app.get('/api/articlesFaculty', verifyToken, async (req, res) => {
 });
 
 
-//FireBase
+
 const admin = require('firebase-admin');
 
 const serviceAccount = require('./comp1640cloud-firebase-adminsdk-m472w-c63147a365.json')
@@ -582,7 +590,20 @@ app.post('/api/feedbacks', async (req, res) => {
   }
 });
 
-const port = process.env.PORT || 5000;
-app.listen(port, () => {
-  console.log(`Server is running on port ${port}`);
+app.delete('/api/articles/:id', verifyToken, async (req, res) => {
+  const { id } = req.params;
+  try {
+    const userId = req.user.userId;
+    const article = await Article.findById(id);
+    if (!article) {
+      return res.status(404).json({ message: "Article not found" });
+    }
+    if (article.userId !== userId) {
+      return res.status(403).json({ message: "You are not authorized to delete this article" });
+    }
+    await Article.findByIdAndDelete(id);
+    res.json({ message: "Article deleted successfully" });
+  } catch (err) {
+    res.status(400).json({ message: err.message });
+  }
 });
