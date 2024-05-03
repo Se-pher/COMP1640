@@ -31,7 +31,7 @@ const Sidebar = ({ selectedItem, handleItemClick, userName, handleLogout }) => {
               onClick={() => handleItemClick("Dash Broad")}
             >
               <s.SidebarItem selected={selectedItem === "Dash Broad"}>
-                Dash Broad
+                DashBoard
               </s.SidebarItem>
             </s.StyledLink>
             <s.StyledLink
